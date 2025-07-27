@@ -1,0 +1,2260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trading Journal - EOC Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --primary-light: #3a86ff;
+      --secondary-color: #4895ef;
+      --accent-color: #4cc9f0;
+      --win-color: #4ade80;
+      --loss-color: #f87171;
+      --text-light: #f8f9fa;
+      --text-dark: #212529;
+      --bg-dark: #1e293b;
+      --bg-darker: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.8);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --light-bg: #f8f9fa;
+      --light-text: #212529;
+      --light-card: #ffffff;
+      --light-border: #e9ecef;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+      color: var(--text-light);
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: background 0.3s ease;
+    }
+    
+    body.light-mode {
+      background: var(--light-bg);
+      color: var(--light-text);
+      --card-bg: var(--light-card);
+      --border-color: var(--light-border);
+    }
+    
+    h1, h2, h3 {
+      font-weight: 600;
+      color: var(--text-light);
+      margin-top: 0;
+    }
+    
+    body.light-mode h1,
+    body.light-mode h2,
+    body.light-mode h3 {
+      color: var(--light-text);
+    }
+    
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(90deg, var(--primary-light), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      animation: fadeInScale 1s ease-in-out;
+    }
+    
+    @keyframes fadeInScale {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    /* Menu de navigation */
+    nav {
+      background-color: var(--bg-darker);
+      padding: 1rem 0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    body.light-mode nav {
+      background-color: white;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--text-light);
+      text-decoration: none;
+    }
+    
+    body.light-mode .nav-brand {
+      color: var(--light-text);
+    }
+    
+    .nav-brand i {
+      color: var(--primary-light);
+    }
+    
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .nav-menu a {
+      color: var(--text-light);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: all 0.2s ease-in-out;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    body.light-mode .nav-menu a {
+      color: var(--light-text);
+    }
+    
+    .nav-menu a:hover, .nav-menu a.active {
+      background-color: rgba(67, 97, 238, 0.2);
+      color: var(--primary-light);
+    }
+    
+    .nav-menu a.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .menu-button {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    body.light-mode .menu-button {
+      color: var(--light-text);
+    }
+    
+    .dropdown-menu {
+      position: absolute;
+      right: 2rem;
+      top: 4rem;
+      background-color: var(--bg-darker);
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      padding: 0.5rem;
+      min-width: 200px;
+      border: 1px solid var(--border-color);
+      display: none;
+      z-index: 1000;
+    }
+    
+    body.light-mode .dropdown-menu {
+      background-color: white;
+      border: 1px solid #e9ecef;
+    }
+    
+    .dropdown-menu.show {
+      display: block;
+    }
+    
+    .dropdown-menu a {
+      display: block;
+      padding: 0.75rem 1rem;
+      color: var(--text-light);
+      text-decoration: none;
+      border-radius: 0.25rem;
+      transition: background-color 0.2s;
+    }
+    
+    body.light-mode .dropdown-menu a {
+      color: var(--light-text);
+    }
+    
+    .dropdown-menu a:hover {
+      background-color: rgba(67, 97, 238, 0.2);
+    }
+    
+    /* Conteneur principal */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    /* Sections */
+    .section {
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .section.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Tableau des trades */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 2rem 0;
+      background-color: var(--card-bg);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    
+    body.light-mode table {
+      background-color: white;
+      border: 1px solid #e9ecef;
+    }
+    
+    th, td {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    body.light-mode th,
+    body.light-mode td {
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    th {
+      background-color: var(--bg-darker);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      color: var(--primary-light);
+    }
+    
+    body.light-mode th {
+      background-color: #f8f9fa;
+    }
+    
+    tr:last-child td {
+      border-bottom: none;
+    }
+    
+    tr:hover td {
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+    
+    body.light-mode tr:hover td {
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+    
+    td.symbol-cell {
+      font-weight: 600;
+      color: var(--accent-color);
+    }
+    
+    /* Boutons */
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+    
+    button {
+      padding: 0.75rem 1.25rem;
+      background-color: var(--primary-color);
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      transition: all 0.2s ease-in-out;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+    
+    button:hover {
+      background-color: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    button.secondary {
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-light);
+    }
+    
+    body.light-mode button.secondary {
+      color: var(--light-text);
+      border: 1px solid #e9ecef;
+    }
+    
+    button.secondary:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary-light);
+    }
+    
+    body.light-mode button.secondary:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    button i {
+      font-size: 1rem;
+    }
+    
+    /* Statistiques */
+    .stats {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background-color: var(--card-bg);
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    
+    body.light-mode .stats {
+      background-color: white;
+      border: 1px solid #e9ecef;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .stat-card {
+      background-color: var(--bg-darker);
+      padding: 1.25rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      transition: all 0.2s ease-in-out;
+    }
+    
+    body.light-mode .stat-card {
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .stat-card h3 {
+      margin-top: 0;
+      font-size: 0.9rem;
+      color: var(--primary-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .stat-card .value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+    }
+    
+    .stat-card .description {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    body.light-mode .stat-card .description {
+      color: rgba(0, 0, 0, 0.6);
+    }
+    
+    /* Graphiques */
+    .chart-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 1.5rem;
+      margin: 2.5rem 0;
+    }
+    
+    .chart-wrapper {
+      background-color: var(--card-bg);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    
+    body.light-mode .chart-wrapper {
+      background-color: white;
+      border: 1px solid #e9ecef;
+    }
+    
+    .chart-wrapper h2 {
+      margin-bottom: 1.5rem;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    canvas {
+      width: 100% !important;
+      height: auto !important;
+      max-height: 400px;
+    }
+    
+    /* Filtres */
+    .filter-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      align-items: center;
+      background-color: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    
+    body.light-mode .filter-container {
+      background-color: white;
+      border: 1px solid #e9ecef;
+    }
+    
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .filter-group label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    
+    input, select {
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      padding: 0.65rem 0.75rem;
+      background-color: var(--bg-darker);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      transition: all 0.2s ease-in-out;
+    }
+    
+    body.light-mode input,
+    body.light-mode select {
+      background-color: white;
+      color: var(--light-text);
+      border: 1px solid #e9ecef;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+    }
+    
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .badge-win {
+      background-color: rgba(74, 222, 128, 0.2);
+      color: var(--win-color);
+    }
+    
+    .badge-loss {
+      background-color: rgba(248, 113, 113, 0.2);
+      color: var(--loss-color);
+    }
+    
+    /* Paramètres */
+    .settings-option {
+      margin-bottom: 1.5rem;
+    }
+    
+    .settings-option h3 {
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .settings-option .option-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .settings-option .option-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      background-color: var(--bg-darker);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    body.light-mode .settings-option .option-item {
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+    }
+    
+    .settings-option .option-item:hover {
+      background-color: rgba(67, 97, 238, 0.2);
+      border-color: var(--primary-light);
+    }
+    
+    .settings-option .option-item.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+    
+    /* Broker Section */
+    .brokers-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .broker-card {
+      background-color: var(--card-bg);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+    
+    .broker-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .broker-card h3 {
+      margin-top: 0;
+      color: var(--primary-light);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .broker-card p {
+      margin-bottom: 1.5rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    body.light-mode .broker-card p {
+      color: rgba(0, 0, 0, 0.6);
+    }
+    
+    .broker-card a {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    
+    .broker-card a:hover {
+      background-color: var(--primary-light);
+    }
+    
+    /* Auth Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background-color: var(--card-bg);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+    
+    body.light-mode .modal-content {
+      background-color: white;
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+    }
+    
+    body.light-mode .close-modal {
+      color: var(--light-text);
+    }
+    
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .auth-form h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+    
+    .auth-form input {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-darker);
+      color: var(--text-light);
+    }
+    
+    body.light-mode .auth-form input {
+      background-color: white;
+      color: var(--light-text);
+      border: 1px solid #e9ecef;
+    }
+    
+    .auth-form button {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+    }
+    
+    .auth-switch {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    
+    .auth-switch a {
+      color: var(--primary-light);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    
+    .auth-switch a:hover {
+      text-decoration: underline;
+    }
+    
+    .auth-error {
+      color: var(--loss-color);
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .nav-menu {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+      }
+      
+      .menu-button {
+        display: block;
+      }
+      
+      .nav-menu.hidden {
+        display: none;
+      }
+      
+      .filter-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .filter-group {
+        width: 100%;
+      }
+      
+      .chart-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .brokers-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 1rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <!-- Menu de navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="nav-brand">
+        <i class="fas fa-chart-line"></i>
+        <span>EOC Pro</span>
+      </a>
+      
+      <button class="menu-button" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <ul class="nav-menu">
+        <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> <span class="nav-text">Dashboard</span></a></li>
+        <li><a href="#" data-section="performance"><i class="fas fa-chart-bar"></i> <span class="nav-text">Performance</span></a></li>
+        <li><a href="#" data-section="journal"><i class="fas fa-book"></i> <span class="nav-text">Journal</span></a></li>
+        <li><a href="#" data-section="brokers"><i class="fas fa-building"></i> <span class="nav-text">Brokers</span></a></li>
+        <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> <span class="nav-text">Settings</span></a></li>
+      </ul>
+      
+      <div class="dropdown-menu" id="dropdownMenu">
+        <a href="#" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> <span class="nav-text">Dashboard</span></a>
+        <a href="#" data-section="performance"><i class="fas fa-chart-bar"></i> <span class="nav-text">Performance</span></a>
+        <a href="#" data-section="journal"><i class="fas fa-book"></i> <span class="nav-text">Journal</span></a>
+        <a href="#" data-section="brokers"><i class="fas fa-building"></i> <span class="nav-text">Brokers</span></a>
+        <a href="#" data-section="settings"><i class="fas fa-cog"></i> <span class="nav-text">Settings</span></a>
+        <hr style="border-color: var(--border-color); margin: 0.5rem 0;">
+        <a href="#" id="calendar-link"><i class="fas fa-calendar"></i> <span class="nav-text">Calendar</span></a>
+        <a href="#" id="login-link"><i class="fas fa-sign-in-alt"></i> <span class="nav-text">Login</span></a>
+        <a href="#" id="signup-link"><i class="fas fa-user-plus"></i> <span class="nav-text">Sign Up</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Section Dashboard -->
+    <section id="dashboard-section" class="section active">
+      <div class="page-header">
+        <h1 id="animated-title"><i class="fas fa-tachometer-alt"></i> <span class="section-title">TRADING DASHBOARD</span></h1>
+        <button onclick="addTrade()" class="secondary"><i class="fas fa-plus"></i> <span class="btn-text">New Trade</span></button>
+      </div>
+
+      <div class="filter-container fade-in">
+        <div class="filter-group">
+          <label for="initialCapital"><i class="fas fa-wallet"></i> <span class="filter-text">Initial Capital:</span></label>
+          <input type="number" id="initialCapital" value="1000" onchange="updateStats()" />
+        </div>
+        
+        <div class="filter-group">
+          <label for="symbolFilter"><i class="fas fa-filter"></i> <span class="filter-text">Symbol:</span></label>
+          <input type="text" id="symbolFilter" placeholder="Filter by symbol" oninput="updateStats()">
+        </div>
+        
+        <div class="filter-group">
+          <label for="dateFromFilter"><i class="fas fa-calendar"></i> <span class="filter-text">From:</span></label>
+          <input type="date" id="dateFromFilter" onchange="updateStats()">
+        </div>
+        
+        <div class="filter-group">
+          <label for="dateToFilter"><i class="fas fa-calendar"></i> <span class="filter-text">To:</span></label>
+          <input type="date" id="dateToFilter" onchange="updateStats()">
+        </div>
+        
+        <button onclick="resetFilters()"><i class="fas fa-sync-alt"></i> <span class="btn-text">Reset</span></button>
+      </div>
+
+      <div class="button-group">
+        <button onclick="downloadJSON()"><i class="fas fa-save"></i> <span class="btn-text">Save</span></button>
+        <button onclick="downloadCSV()"><i class="fas fa-file-csv"></i> <span class="btn-text">Export CSV</span></button>
+        <input type="file" id="fileInput" accept="application/json" style="display: none;" />
+        <button onclick="document.getElementById('fileInput').click()" class="secondary"><i class="fas fa-folder-open"></i> <span class="btn-text">Load</span></button>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table id="tradeTable">
+          <thead>
+            <tr>
+              <th class="table-header">Date</th>
+              <th class="table-header">Symbol</th>
+              <th class="table-header">Lot</th>
+              <th class="table-header">Type</th>
+              <th class="table-header">Entry</th>
+              <th class="table-header">Exit</th>
+              <th class="table-header">Result</th>
+              <th class="table-header">P/L ($)</th>
+              <th class="table-header">RR</th>
+              <th class="table-header">Notes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="stats" class="fade-in">
+        <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Performance Statistics</span></h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3 class="stat-title">Total P/L</h3>
+            <div class="value" id="totalGain">0 $</div>
+            <div class="description stat-desc">Cumulative P/L</div>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-title">Win Rate</h3>
+            <div class="value" id="winRate">0%</div>
+            <div class="description stat-desc">Winning trades</div>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-title">Avg. Profit</h3>
+            <div class="value" id="averageProfit">0 $</div>
+            <div class="description stat-desc">Per trade</div>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-title">Avg. RR</h3>
+            <div class="value" id="averageRRR">0</div>
+            <div class="description stat-desc">Risk-Reward Ratio</div>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-title">Profit Factor</h3>
+            <div class="value" id="profitFactor">0</div>
+            <div class="description stat-desc">Gains/Losses ratio</div>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-title">Total Trades</h3>
+            <div class="value" id="totalTrades">0</div>
+            <div class="description stat-desc">Executed trades</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-wrapper fade-in">
+          <h2><i class="fas fa-chart-line"></i> <span class="section-title">Capital Evolution</span></h2>
+          <canvas id="capitalChart" width="800" height="400"></canvas>
+        </div>
+        
+        <div class="chart-wrapper fade-in">
+          <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Trades Performance</span></h2>
+          <canvas id="pieChart" width="300" height="300"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-wrapper fade-in">
+          <h2><i class="fas fa-chart-bar"></i> <span class="section-title">Daily Performance</span></h2>
+          <canvas id="dailyChart" width="800" height="400"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Performance -->
+    <section id="performance-section" class="section">
+      <div class="page-header">
+        <h1><i class="fas fa-chart-bar"></i> <span class="section-title">Performance</span></h1>
+      </div>
+
+      <div class="stats">
+        <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Performance Statistics</span></h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3 class="stat-title">Total P/L</h3>
+            <div class="value" id="perf-totalGain">0 $</div>
+            <div class="description stat-desc">Cumulative P/L</div>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-title">Win Rate</h3>
+            <div class="value" id="perf-winRate">0%</div>
+            <div class="description stat-desc">Winning trades</div>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-title">Avg. Profit</h3>
+            <div class="value" id="perf-averageProfit">0 $</div>
+            <div class="description stat-desc">Per trade</div>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-title">Avg. RR</h3>
+            <div class="value" id="perf-averageRRR">0</div>
+            <div class="description stat-desc">Risk-Reward Ratio</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-wrapper">
+          <h2><i class="fas fa-chart-line"></i> <span class="section-title">Capital Evolution</span></h2>
+          <canvas id="perf-capitalChart" width="800" height="400"></canvas>
+        </div>
+        
+        <div class="chart-wrapper">
+          <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Trades Performance</span></h2>
+          <canvas id="perf-pieChart" width="300" height="300"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-wrapper">
+          <h2><i class="fas fa-chart-bar"></i> <span class="section-title">Daily Performance</span></h2>
+          <canvas id="perf-dailyChart" width="800" height="400"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Journal -->
+    <section id="journal-section" class="section">
+      <div class="page-header">
+        <h1><i class="fas fa-book"></i> <span class="section-title">Trading Journal</span></h1>
+        <button onclick="addTrade()"><i class="fas fa-plus"></i> <span class="btn-text">New Trade</span></button>
+      </div>
+
+      <div class="filter-container">
+        <div class="filter-group">
+          <label for="journal-capital"><i class="fas fa-wallet"></i> <span class="filter-text">Initial Capital:</span></label>
+          <input type="number" id="journal-capital" value="1000">
+        </div>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table id="journal-table">
+          <thead>
+            <tr>
+              <th class="table-header">Date</th>
+              <th class="table-header">Symbol</th>
+              <th class="table-header">Lot</th>
+              <th class="table-header">Type</th>
+              <th class="table-header">Entry</th>
+              <th class="table-header">Exit</th>
+              <th class="table-header">Result</th>
+              <th class="table-header">P/L ($)</th>
+              <th class="table-header">RR</th>
+              <th class="table-header">Notes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="button-group">
+        <button onclick="saveJournal()"><i class="fas fa-save"></i> <span class="btn-text">Save</span></button>
+        <button onclick="addTrade()" class="secondary"><i class="fas fa-plus"></i> <span class="btn-text">Add Trade</span></button>
+      </div>
+    </section>
+
+    <!-- Section Brokers -->
+    <section id="brokers-section" class="section">
+      <div class="page-header">
+        <h1><i class="fas fa-building"></i> <span class="section-title">Recommended Brokers</span></h1>
+      </div>
+
+      <div class="brokers-container">
+        <div class="broker-card">
+          <h3><i class="fas fa-check-circle"></i> EXNESS</h3>
+          <p class="broker-desc">Trade with tight spreads and instant execution on one of the most trusted brokers in the industry.</p>
+          <a href="https://one.exnesstrack.org/intl/fr/a/i911hyordj" target="_blank" class="broker-link">Open Account</a>
+        </div>
+        
+        <div class="broker-card">
+          <h3><i class="fas fa-check-circle"></i> HEADWAY</h3>
+          <p class="broker-desc">Start your trading journey with Headway and enjoy competitive trading conditions.</p>
+          <a href="https://headway.partners/user/signup?hwp=2107f0" target="_blank" class="broker-link">Open Account</a>
+        </div>
+        
+        <div class="broker-card">
+          <h3><i class="fas fa-check-circle"></i> FBS</h3>
+          <p class="broker-desc">Join FBS broker and trade with leverage up to 1:3000 on various financial instruments.</p>
+          <a href="https://fbs.partners?ibl=891392&ibp=25515221" target="_blank" class="broker-link">Open Account</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Paramètres -->
+    <section id="settings-section" class="section">
+      <div class="page-header">
+        <h1><i class="fas fa-cog"></i> <span class="section-title">Settings</span></h1>
+      </div>
+
+      <div class="settings-option">
+        <h3><i class="fas fa-language"></i> <span class="settings-title">Language</span></h3>
+        <div class="option-group">
+          <div class="option-item active" data-lang="en">
+            <i class="fas fa-check"></i> English
+          </div>
+          <div class="option-item" data-lang="fr">
+            Français
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-option">
+        <h3><i class="fas fa-moon"></i> <span class="settings-title">Display Mode</span></h3>
+        <div class="option-group">
+          <div class="option-item active" data-theme="dark">
+            <i class="fas fa-check"></i> Dark
+          </div>
+          <div class="option-item" data-theme="light">
+            Light
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-option">
+        <h3><i class="fas fa-file-export"></i> <span class="settings-title">Export</span></h3>
+        <div class="button-group">
+          <button onclick="downloadCSV()"><i class="fas fa-file-csv"></i> <span class="btn-text">Export CSV</span></button>
+          <button onclick="downloadExcel()" class="secondary"><i class="fas fa-file-excel"></i> <span class="btn-text">Export Excel</span></button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Auth Modals -->
+  <div class="modal" id="login-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal('login-modal')">&times;</button>
+      <div class="auth-form">
+        <h2 class="auth-title">Login</h2>
+        <input type="email" id="login-email" placeholder="Email">
+        <input type="password" id="login-password" placeholder="Password">
+        <button onclick="login()" class="auth-btn">Login</button>
+        <div class="auth-switch">
+          <span class="auth-switch-text">Don't have an account? </span>
+          <a onclick="showSignup()" class="auth-switch-link">Sign up</a>
+        </div>
+        <div class="auth-error" id="login-error"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="signup-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal('signup-modal')">&times;</button>
+      <div class="auth-form">
+        <h2 class="auth-title">Sign Up</h2>
+        <input type="text" id="signup-name" placeholder="Full Name">
+        <input type="email" id="signup-email" placeholder="Email">
+        <input type="password" id="signup-password" placeholder="Password">
+        <input type="password" id="signup-confirm" placeholder="Confirm Password">
+        <button onclick="signup()" class="auth-btn">Sign Up</button>
+        <div class="auth-switch">
+          <span class="auth-switch-text">Already have an account? </span>
+          <a onclick="showLogin()" class="auth-switch-link">Login</a>
+        </div>
+        <div class="auth-error" id="signup-error"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Language translations
+    const translations = {
+      en: {
+        dashboard: "TRADING DASHBOARD",
+        performance: "Performance",
+        journal: "Trading Journal",
+        brokers: "Recommended Brokers",
+        settings: "Settings",
+        newTrade: "New Trade",
+        initialCapital: "Initial Capital",
+        symbol: "Symbol",
+        from: "From",
+        to: "To",
+        reset: "Reset",
+        save: "Save",
+        exportCSV: "Export CSV",
+        load: "Load",
+        date: "Date",
+        lot: "Lot",
+        type: "Type",
+        entry: "Entry",
+        exit: "Exit",
+        result: "Result",
+        pl: "P/L ($)",
+        rr: "RR",
+        notes: "Notes",
+        totalPL: "Total P/L",
+        winRate: "Win Rate",
+        avgProfit: "Avg. Profit",
+        avgRR: "Avg. RR",
+        profitFactor: "Profit Factor",
+        totalTrades: "Total Trades",
+        cumulativePL: "Cumulative P/L",
+        winningTrades: "Winning trades",
+        perTrade: "Per trade",
+        riskReward: "Risk-Reward Ratio",
+        gainsLosses: "Gains/Losses ratio",
+        executedTrades: "Executed trades",
+        capitalEvolution: "Capital Evolution",
+        tradesPerformance: "Trades Performance",
+        dailyPerformance: "Daily Performance",
+        performanceStats: "Performance Statistics",
+        language: "Language",
+        displayMode: "Display Mode",
+        dark: "Dark",
+        light: "Light",
+        export: "Export",
+        exportExcel: "Export Excel",
+        login: "Login",
+        signup: "Sign Up",
+        calendar: "Calendar",
+        fullName: "Full Name",
+        email: "Email",
+        password: "Password",
+        confirmPassword: "Confirm Password",
+        noAccount: "Don't have an account?",
+        haveAccount: "Already have an account?"
+      },
+      fr: {
+        dashboard: "TABLEAU DE BORD TRADING",
+        performance: "Performance",
+        journal: "Journal de Trading",
+        brokers: "Brokers Recommandés",
+        settings: "Paramètres",
+        newTrade: "Nouveau Trade",
+        initialCapital: "Capital Initial",
+        symbol: "Symbole",
+        from: "De",
+        to: "À",
+        reset: "Réinitialiser",
+        save: "Sauvegarder",
+        exportCSV: "Exporter CSV",
+        load: "Charger",
+        date: "Date",
+        lot: "Lot",
+        type: "Type",
+        entry: "Entrée",
+        exit: "Sortie",
+        result: "Résultat",
+        pl: "G/P ($)",
+        rr: "RR",
+        notes: "Notes",
+        totalPL: "Gain Total",
+        winRate: "Taux de Réussite",
+        avgProfit: "Profit Moyen",
+        avgRR: "RR Moyen",
+        profitFactor: "Facteur de Profit",
+        totalTrades: "Nombre de Trades",
+        cumulativePL: "Cumul des gains/pertes",
+        winningTrades: "Trades gagnants",
+        perTrade: "Par trade",
+        riskReward: "Ratio Risk-Reward",
+        gainsLosses: "Ratio gains/pertes",
+        executedTrades: "Total exécutés",
+        capitalEvolution: "Évolution du Capital",
+        tradesPerformance: "Performance des Trades",
+        dailyPerformance: "Performance Journalière",
+        performanceStats: "Statistiques de Performance",
+        language: "Langue",
+        displayMode: "Mode d'Affichage",
+        dark: "Sombre",
+        light: "Clair",
+        export: "Exportation",
+        exportExcel: "Exporter Excel",
+        login: "Connexion",
+        signup: "Inscription",
+        calendar: "Calendrier",
+        fullName: "Nom Complet",
+        email: "Email",
+        password: "Mot de Passe",
+        confirmPassword: "Confirmer Mot de Passe",
+        noAccount: "Pas de compte?",
+        haveAccount: "Déjà un compte?"
+      }
+    };
+
+    // Variables globales
+    let trades = [];
+    let allTrades = [];
+    let capitalChart, pieChart, dailyChart;
+    let perfCapitalChart, perfPieChart, perfDailyChart;
+    let currentSection = 'dashboard';
+    let savedCapital = localStorage.getItem('tradingCapital') || 1000;
+    let currentLanguage = 'en';
+
+    // Fonctions pour les options des graphiques
+    function getChartOptions(title, isBar = false) {
+      return {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: title,
+            font: {
+              size: 16
+            }
+          }
+        },
+        scales: isBar ? {
+          y: {
+            beginAtZero: false
+          }
+        } : {
+          y: {
+            beginAtZero: false
+          }
+        }
+      };
+    }
+
+    function getPieChartOptions() {
+      return {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: translations[currentLanguage].tradesPerformance,
+            font: {
+              size: 16
+            }
+          }
+        }
+      };
+    }
+
+    // Initialisation des graphiques
+    function initCharts() {
+      // Graphiques pour la section Dashboard
+      const capitalCtx = document.getElementById('capitalChart').getContext('2d');
+      const pieCtx = document.getElementById('pieChart').getContext('2d');
+      const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+      
+      capitalChart = new Chart(capitalCtx, {
+        type: 'line',
+        data: { labels: [], datasets: [] },
+        options: getChartOptions(translations[currentLanguage].capitalEvolution)
+      });
+      
+      pieChart = new Chart(pieCtx, {
+        type: 'doughnut',
+        data: { 
+          labels: [
+            translations[currentLanguage].winningTrades, 
+            translations[currentLanguage].winningTrades.replace('Winning', 'Losing')
+          ], 
+          datasets: [] 
+        },
+        options: getPieChartOptions()
+      });
+      
+      dailyChart = new Chart(dailyCtx, {
+        type: 'bar',
+        data: { labels: [], datasets: [] },
+        options: getChartOptions(translations[currentLanguage].dailyPerformance, true)
+      });
+
+      // Graphiques pour la section Performance
+      const perfCapitalCtx = document.getElementById('perf-capitalChart').getContext('2d');
+      const perfPieCtx = document.getElementById('perf-pieChart').getContext('2d');
+      const perfDailyCtx = document.getElementById('perf-dailyChart').getContext('2d');
+      
+      perfCapitalChart = new Chart(perfCapitalCtx, {
+        type: 'line',
+        data: { labels: [], datasets: [] },
+        options: getChartOptions(translations[currentLanguage].capitalEvolution)
+      });
+      
+      perfPieChart = new Chart(perfPieCtx, {
+        type: 'doughnut',
+        data: { 
+          labels: [
+            translations[currentLanguage].winningTrades, 
+            translations[currentLanguage].winningTrades.replace('Winning', 'Losing')
+          ], 
+          datasets: [] 
+        },
+        options: getPieChartOptions()
+      });
+      
+      perfDailyChart = new Chart(perfDailyCtx, {
+        type: 'bar',
+        data: { labels: [], datasets: [] },
+        options: getChartOptions(translations[currentLanguage].dailyPerformance, true)
+      });
+    }
+
+    // Fonction pour basculer entre les sections
+    function showSection(sectionId) {
+      // Masquer toutes les sections
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // Afficher la section sélectionnée
+      document.getElementById(sectionId + '-section').classList.add('active');
+      
+      // Mettre à jour le menu de navigation
+      document.querySelectorAll('.nav-menu a').forEach(link => {
+        link.classList.remove('active');
+      });
+      
+      document.querySelector(`.nav-menu a[data-section="${sectionId}"]`).classList.add('active');
+      
+      // Mettre à jour la section courante
+      currentSection = sectionId;
+      
+      // Si c'est la section Performance, mettre à jour les graphiques
+      if (sectionId === 'performance') {
+        updatePerformanceCharts();
+      }
+      
+      // Si c'est la section Journal, charger les données
+      if (sectionId === 'journal') {
+        loadJournalData();
+      }
+      
+      // Animer le titre si c'est la section dashboard
+      if (sectionId === 'dashboard') {
+        animateTitle();
+      }
+    }
+
+    // Fonction pour ajouter un trade
+    function addTrade() {
+      let table;
+      if (currentSection === 'journal') {
+        table = document.querySelector("#journal-table tbody");
+      } else {
+        table = document.querySelector("#tradeTable tbody");
+      }
+      
+      const row = document.createElement("tr");
+
+      const fields = [
+        { type: "date" },
+        { type: "text", placeholder: "EURUSD" },
+        { type: "number", placeholder: "0.01", step: "0.01" },
+        { type: "select", options: ["Buy", "Sell"] },
+        { type: "number", placeholder: "1.1200" },
+        { type: "number", placeholder: "1.1150" },
+        { type: "select", options: ["WIN", "LOSS"] },
+        { type: "number", placeholder: "50" },
+        { type: "text", placeholder: "Notes" }
+      ];
+
+      fields.forEach((field, i) => {
+        const td = document.createElement("td");
+        if (i === 1) td.classList.add("symbol-cell");
+        
+        let input;
+        if (field.type === "select") {
+          input = document.createElement("select");
+          field.options.forEach(opt => {
+            const option = document.createElement("option");
+            option.value = opt;
+            option.textContent = opt;
+            input.appendChild(option);
+          });
+          
+          // Ajouter un écouteur pour le champ Résultat
+          if (i === 6) {
+            input.addEventListener('change', function() {
+              updateGainField(this);
+            });
+          }
+        } else {
+          input = document.createElement("input");
+          input.type = field.type;
+          if (field.placeholder) input.placeholder = field.placeholder;
+          if (field.step) input.step = field.step;
+          
+          // Ajouter un écouteur pour le champ Gain
+          if (i === 7) {
+            input.addEventListener('input', function() {
+              formatGainField(this);
+            });
+          }
+        }
+        
+        td.appendChild(input);
+        row.appendChild(td);
+      });
+
+      // Cellule RRR
+      const rrrCell = document.createElement("td");
+      rrrCell.textContent = "0.00";
+      row.appendChild(rrrCell);
+
+      table.appendChild(row);
+      
+      // Si c'est la section Journal, ajouter un écouteur pour calculer le RRR
+      if (currentSection === 'journal') {
+        const entryInput = row.querySelectorAll("td")[4].querySelector("input");
+        const exitInput = row.querySelectorAll("td")[5].querySelector("input");
+        const directionSelect = row.querySelectorAll("td")[3].querySelector("select");
+        
+        const calculateRRRForRow = () => {
+          const entry = entryInput.value;
+          const exit = exitInput.value;
+          const direction = directionSelect.value;
+          const rrr = calculateRRR(entry, exit, direction);
+          rrrCell.textContent = rrr.toFixed(2);
+          rrrCell.style.color = rrr >= 1 ? "var(--win-color)" : "var(--loss-color)";
+          rrrCell.style.fontWeight = "bold";
+        };
+        
+        entryInput.addEventListener('input', calculateRRRForRow);
+        exitInput.addEventListener('input', calculateRRRForRow);
+        directionSelect.addEventListener('change', calculateRRRForRow);
+      }
+    }
+
+    // Fonction pour mettre à jour le champ Gain en fonction du résultat
+    function updateGainField(selectElement) {
+      const row = selectElement.closest("tr");
+      const gainInput = row.querySelectorAll("td")[7].querySelector("input");
+      const currentValue = parseFloat(gainInput.value) || 0;
+      
+      if (selectElement.value === "WIN") {
+        gainInput.value = Math.abs(currentValue);
+      } else {
+        gainInput.value = -Math.abs(currentValue);
+      }
+      
+      formatGainField(gainInput);
+    }
+
+    // Fonction pour formater le champ Gain
+    function formatGainField(inputElement) {
+      const value = parseFloat(inputElement.value) || 0;
+      const row = inputElement.closest("tr");
+      const resultSelect = row.querySelectorAll("td")[6].querySelector("select");
+      const isWin = resultSelect.value === "WIN";
+      
+      inputElement.style.backgroundColor = isWin ? "rgba(74, 222, 128, 0.2)" : "rgba(248, 113, 113, 0.2)";
+      inputElement.style.color = isWin ? "var(--win-color)" : "var(--loss-color)";
+      inputElement.style.fontWeight = "bold";
+      inputElement.style.borderRadius = "9999px";
+      inputElement.style.textAlign = "center";
+    }
+
+    // Fonction pour calculer le RRR
+    function calculateRRR(entry, exit, direction) {
+      if (!entry || !exit || parseFloat(entry) === 0 || parseFloat(exit) === 0) return 0;
+      const entryVal = parseFloat(entry);
+      const exitVal = parseFloat(exit);
+      return direction === "Buy" ? (entryVal - exitVal) / exitVal : (exitVal - entryVal) / entryVal;
+    }
+
+    // Fonction pour mettre à jour les statistiques
+    function updateStats() {
+      const rows = document.querySelectorAll("#tradeTable tbody tr");
+      trades = [];
+      let totalGain = 0;
+      let wins = 0;
+      let totalRRR = 0;
+      let totalProfit = 0;
+      let totalLoss = 0;
+
+      rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        if (cells.length >= 10) {
+          const gainField = cells[7].querySelector("input");
+          const gainRaw = parseFloat(gainField?.value?.replace(/[^0-9.-]/g, '')) || 0;
+          const result = cells[6].querySelector("select").value;
+          const gain = result === "WIN" ? Math.abs(gainRaw) : -Math.abs(gainRaw);
+          
+          if (gainField) {
+            gainField.value = (gain >= 0 ? "+" : "") + gain.toFixed(2);
+            gainField.style.backgroundColor = result === "WIN" ? "rgba(74, 222, 128, 0.2)" : "rgba(248, 113, 113, 0.2)";
+            gainField.style.color = result === "WIN" ? "var(--win-color)" : "var(--loss-color)";
+            gainField.style.fontWeight = "bold";
+            gainField.style.borderRadius = "9999px";
+            gainField.style.textAlign = "center";
+          }
+
+          const direction = cells[3].querySelector("select").value;
+          const entry = cells[4].querySelector("input").value;
+          const exit = cells[5].querySelector("input").value;
+          const rrr = calculateRRR(entry, exit, direction);
+          
+          if (cells.length > 8) {
+            cells[8].textContent = rrr.toFixed(2);
+            cells[8].style.color = rrr >= 1 ? "var(--win-color)" : "var(--loss-color)";
+            cells[8].style.fontWeight = "bold";
+          }
+
+          const trade = {
+            date: cells[0].querySelector("input").value,
+            symbole: cells[1].querySelector("input").value,
+            lot: cells[2].querySelector("input").value,
+            direction: direction,
+            entry: entry,
+            exit: exit,
+            result: result,
+            gain: gain,
+            rrr: rrr,
+            notes: cells[9].querySelector("input")?.value || ""
+          };
+
+          trades.push(trade);
+
+          totalGain += gain;
+          totalRRR += rrr;
+          if (result === "WIN") {
+            wins++;
+            totalProfit += gain;
+          } else {
+            totalLoss += Math.abs(gain);
+          }
+        }
+      });
+
+      allTrades = [...trades];
+      applyFilters();
+      updateCharts();
+      
+      const avg = trades.length ? totalGain / trades.length : 0;
+      const winRate = trades.length ? (wins / trades.length) * 100 : 0;
+      const avgRRR = trades.length ? totalRRR / trades.length : 0;
+      const profitFactor = totalLoss > 0 ? totalProfit / totalLoss : totalProfit > 0 ? Infinity : 0;
+
+      document.getElementById("totalGain").textContent = `${totalGain >= 0 ? "+" : ""}${totalGain.toFixed(2)} $`;
+      document.getElementById("averageProfit").textContent = `${avg >= 0 ? "+" : ""}${avg.toFixed(2)} $`;
+      document.getElementById("winRate").textContent = `${winRate.toFixed(1)}%`;
+      document.getElementById("averageRRR").textContent = avgRRR.toFixed(2);
+      document.getElementById("profitFactor").textContent = profitFactor === Infinity ? "∞" : profitFactor.toFixed(2);
+      document.getElementById("totalTrades").textContent = trades.length;
+    }
+
+    // Fonction pour mettre à jour les graphiques de performance
+    function updatePerformanceCharts() {
+      const initialCapital = parseFloat(document.getElementById("initialCapital").value) || 0;
+      let capitalData = [initialCapital];
+      const labels = ['Initial'];
+      
+      trades.forEach((trade, i) => {
+        capitalData.push(capitalData[i] + trade.gain);
+        labels.push(`Trade ${i+1}`);
+      });
+
+      // Mettre à jour le graphique d'évolution du capital
+      perfCapitalChart.data.labels = labels;
+      perfCapitalChart.data.datasets = [{
+        label: 'Capital ($)',
+        data: capitalData,
+        borderColor: 'var(--win-color)',
+        backgroundColor: 'rgba(74, 222, 128, 0.1)',
+        tension: 0.1,
+        fill: true,
+        pointBackgroundColor: capitalData.map((val, i) => i === 0 ? 'gray' : val > capitalData[i-1] ? 'var(--win-color)' : 'var(--loss-color)'),
+        pointRadius: capitalData.map((val, i) => i === 0 ? 3 : 5)
+      }];
+      
+      perfCapitalChart.update();
+
+      // Mettre à jour le graphique de performance des trades
+      const wins = trades.filter(t => t.result === "WIN").length;
+      const losses = trades.length - wins;
+      
+      perfPieChart.data.datasets = [{
+        data: [wins, losses],
+        backgroundColor: ['var(--win-color)', 'var(--loss-color)'],
+        borderColor: ['rgba(255,255,255,0.8)', 'rgba(255,255,255,0.8)'],
+        borderWidth: 1
+      }];
+      
+      perfPieChart.update();
+
+      // Mettre à jour le graphique de performance journalière
+      const dailyData = {};
+      trades.forEach(trade => {
+        if (!dailyData[trade.date]) {
+          dailyData[trade.date] = 0;
+        }
+        dailyData[trade.date] += trade.gain;
+      });
+      
+      const dates = Object.keys(dailyData).sort();
+      const gains = dates.map(date => dailyData[date]);
+      
+      perfDailyChart.data.labels = dates;
+      perfDailyChart.data.datasets = [{
+        label: 'Daily P/L ($)',
+        data: gains,
+        backgroundColor: gains.map(g => g >= 0 ? 'var(--win-color)' : 'var(--loss-color)'),
+        borderColor: gains.map(g => g >= 0 ? 'rgba(74, 222, 128, 0.8)' : 'rgba(248, 113, 113, 0.8)'),
+        borderWidth: 1
+      }];
+      
+      perfDailyChart.update();
+      
+      // Mettre à jour les statistiques de performance
+      const totalGain = capitalData.length > 1 ? capitalData[capitalData.length - 1] - initialCapital : 0;
+      const avg = trades.length ? totalGain / trades.length : 0;
+      const winRate = trades.length ? (wins / trades.length) * 100 : 0;
+      const avgRRR = trades.length ? trades.reduce((sum, trade) => sum + trade.rrr, 0) / trades.length : 0;
+      
+      document.getElementById("perf-totalGain").textContent = `${totalGain >= 0 ? "+" : ""}${totalGain.toFixed(2)} $`;
+      document.getElementById("perf-averageProfit").textContent = `${avg >= 0 ? "+" : ""}${avg.toFixed(2)} $`;
+      document.getElementById("perf-winRate").textContent = `${winRate.toFixed(1)}%`;
+      document.getElementById("perf-averageRRR").textContent = avgRRR.toFixed(2);
+    }
+
+    // Fonction pour mettre à jour les graphiques
+    function updateCharts() {
+      updateCapitalChart();
+      updatePieChart();
+      updateDailyChart();
+    }
+
+    function updateCapitalChart() {
+      const initialCapital = parseFloat(document.getElementById("initialCapital").value) || 0;
+      let capitalData = [initialCapital];
+      const labels = ['Initial'];
+      
+      trades.forEach((trade, i) => {
+        capitalData.push(capitalData[i] + trade.gain);
+        labels.push(`Trade ${i+1}`);
+      });
+
+      capitalChart.data.labels = labels;
+      capitalChart.data.datasets = [{
+        label: 'Capital ($)',
+        data: capitalData,
+        borderColor: 'var(--accent-color)',
+        backgroundColor: 'rgba(76, 201, 240, 0.1)',
+        tension: 0.1,
+        fill: true,
+        pointBackgroundColor: capitalData.map((val, i) => i === 0 ? 'gray' : val > capitalData[i-1] ? 'var(--win-color)' : 'var(--loss-color)'),
+        pointRadius: capitalData.map((val, i) => i === 0 ? 3 : 5)
+      }];
+      
+      capitalChart.update();
+    }
+
+    function updatePieChart() {
+      const wins = trades.filter(t => t.result === "WIN").length;
+      const losses = trades.length - wins;
+      
+      pieChart.data.labels = [translations[currentLanguage].winningTrades, translations[currentLanguage].winningTrades.replace('Winning', 'Losing')];
+      pieChart.data.datasets = [{
+        data: [wins, losses],
+        backgroundColor: ['var(--win-color)', 'var(--loss-color)'],
+        borderColor: ['rgba(255,255,255,0.8)', 'rgba(255,255,255,0.8)'],
+        borderWidth: 1
+      }];
+      
+      pieChart.update();
+    }
+
+    function updateDailyChart() {
+      // Group trades by date
+      const dailyData = {};
+      trades.forEach(trade => {
+        if (!dailyData[trade.date]) {
+          dailyData[trade.date] = 0;
+        }
+        dailyData[trade.date] += trade.gain;
+      });
+      
+      const dates = Object.keys(dailyData).sort();
+      const gains = dates.map(date => dailyData[date]);
+      
+      dailyChart.data.labels = dates;
+      dailyChart.data.datasets = [{
+        label: 'Daily P/L ($)',
+        data: gains,
+        backgroundColor: gains.map(g => g >= 0 ? 'var(--win-color)' : 'var(--loss-color)'),
+        borderColor: gains.map(g => g >= 0 ? 'rgba(74, 222, 128, 0.8)' : 'rgba(248, 113, 113, 0.8)'),
+        borderWidth: 1
+      }];
+      
+      dailyChart.update();
+    }
+
+    // Fonction pour appliquer les filtres
+    function applyFilters() {
+      const symbolFilter = document.getElementById("symbolFilter").value.toLowerCase();
+      const dateFrom = document.getElementById("dateFromFilter").value;
+      const dateTo = document.getElementById("dateToFilter").value;
+
+      trades = allTrades.filter(trade => {
+        const symbolMatch = !symbolFilter || trade.symbole.toLowerCase().includes(symbolFilter);
+        const dateFromMatch = !dateFrom || trade.date >= dateFrom;
+        const dateToMatch = !dateTo || trade.date <= dateTo;
+        return symbolMatch && dateFromMatch && dateToMatch;
+      });
+    }
+
+    // Fonction pour réinitialiser les filtres
+    function resetFilters() {
+      document.getElementById("symbolFilter").value = "";
+      document.getElementById("dateFromFilter").value = "";
+      document.getElementById("dateToFilter").value = "";
+      updateStats();
+    }
+
+    // Fonction pour sauvegarder le journal
+    function saveJournal() {
+      const rows = document.querySelectorAll("#journal-table tbody tr");
+      const journalTrades = [];
+      const capital = parseFloat(document.getElementById("journal-capital").value) || 0;
+      
+      rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        if (cells.length >= 10) {
+          const gainField = cells[7].querySelector("input");
+          const gainRaw = parseFloat(gainField?.value?.replace(/[^0-9.-]/g, '')) || 0;
+          const result = cells[6].querySelector("select").value;
+          const gain = result === "WIN" ? Math.abs(gainRaw) : -Math.abs(gainRaw);
+
+          const direction = cells[3].querySelector("select").value;
+          const entry = cells[4].querySelector("input").value;
+          const exit = cells[5].querySelector("input").value;
+          const rrr = calculateRRR(entry, exit, direction);
+
+          const trade = {
+            date: cells[0].querySelector("input").value,
+            symbole: cells[1].querySelector("input").value,
+            lot: cells[2].querySelector("input").value,
+            direction: direction,
+            entry: entry,
+            exit: exit,
+            result: result,
+            gain: gain,
+            rrr: rrr,
+            notes: cells[9].querySelector("input")?.value || ""
+          };
+
+          journalTrades.push(trade);
+        }
+      });
+
+      // Sauvegarder dans localStorage
+      localStorage.setItem('tradingJournal', JSON.stringify(journalTrades));
+      localStorage.setItem('tradingCapital', capital);
+      
+      alert("Journal saved successfully!");
+    }
+
+    // Fonction pour charger les données du journal
+    function loadJournalData() {
+      const savedData = localStorage.getItem('tradingJournal');
+      const savedCapital = localStorage.getItem('tradingCapital') || 1000;
+      
+      document.getElementById("journal-capital").value = savedCapital;
+      
+      const tbody = document.querySelector("#journal-table tbody");
+      tbody.innerHTML = "";
+      
+      if (savedData) {
+        try {
+          const data = JSON.parse(savedData);
+          data.forEach(item => {
+            addTrade();
+            const lastRow = tbody.lastChild.querySelectorAll("td");
+            lastRow[0].querySelector("input").value = item.date;
+            lastRow[1].querySelector("input").value = item.symbole;
+            lastRow[2].querySelector("input").value = item.lot;
+            lastRow[3].querySelector("select").value = item.direction;
+            lastRow[4].querySelector("input").value = item.entry;
+            lastRow[5].querySelector("input").value = item.exit;
+            lastRow[6].querySelector("select").value = item.result;
+            lastRow[7].querySelector("input").value = (item.gain >= 0 ? "+" : "") + item.gain.toFixed(2);
+            lastRow[8].textContent = item.rrr.toFixed(2);
+            lastRow[8].style.color = item.rrr >= 1 ? "var(--win-color)" : "var(--loss-color)";
+            lastRow[8].style.fontWeight = "bold";
+            if (lastRow[9].querySelector("input")) {
+              lastRow[9].querySelector("input").value = item.notes || "";
+            }
+            
+            // Formater le champ Gain
+            formatGainField(lastRow[7].querySelector("input"));
+          });
+        } catch (error) {
+          console.error("Error loading journal:", error);
+        }
+      }
+    }
+
+    // Fonction pour exporter en JSON
+    function downloadJSON() {
+      const data = JSON.stringify(allTrades, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `trading_journal_${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+    }
+
+    // Fonction pour exporter en CSV
+    function downloadCSV() {
+      const headers = ["Date", "Symbol", "Lot", "Direction", "Entry", "Exit", "Result", "P/L", "RR", "Notes"];
+      const csvRows = [
+        headers.join(","),
+        ...allTrades.map(trade => 
+          headers.map(header => {
+            const key = header.toLowerCase().replace('/', '').replace(' ', '');
+            const value = trade[key] || "";
+            return `"${value.toString().replace(/"/g, '""')}"`;
+          }).join(",")
+        )
+      ];
+      
+      const csv = csvRows.join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `trading_journal_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+    }
+
+    // Fonction pour exporter en Excel
+    function downloadExcel() {
+      // Pour simplifier, nous allons générer un CSV avec une extension .xlsx
+      // Dans une application réelle, vous pourriez utiliser une bibliothèque comme SheetJS
+      downloadCSV();
+    }
+
+    // Fonction pour charger un fichier
+    document.getElementById("fileInput").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        try {
+          const data = JSON.parse(event.target.result);
+          const tbody = document.querySelector("#tradeTable tbody");
+          tbody.innerHTML = "";
+          data.forEach(item => {
+            addTrade();
+            const lastRow = tbody.lastChild.querySelectorAll("td");
+            lastRow[0].querySelector("input").value = item.date;
+            lastRow[1].querySelector("input").value = item.symbole;
+            lastRow[2].querySelector("input").value = item.lot;
+            lastRow[3].querySelector("select").value = item.direction;
+            lastRow[4].querySelector("input").value = item.entry || item.tp || "";
+            lastRow[5].querySelector("input").value = item.exit || item.sl || "";
+            lastRow[6].querySelector("select").value = item.result;
+            const gainValue = typeof item.gain === 'number' ? item.gain : parseFloat(item.gain.replace(/[^0-9.-]/g, ''));
+            lastRow[7].querySelector("input").value = (gainValue >= 0 ? "+" : "") + gainValue.toFixed(2);
+            if (lastRow[9] && lastRow[9].querySelector("input")) {
+              lastRow[9].querySelector("input").value = item.notes || "";
+            }
+          });
+          updateStats();
+        } catch (error) {
+          alert("Error loading file: " + error.message);
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // Fonction pour basculer le menu mobile
+    function toggleMenu() {
+      const dropdown = document.getElementById("dropdownMenu");
+      dropdown.classList.toggle("show");
+    }
+
+    // Fonction pour basculer le thème
+    function toggleTheme(theme) {
+      if (theme === 'light') {
+        document.body.classList.add('light-mode');
+      } else {
+        document.body.classList.remove('light-mode');
+      }
+      
+      // Mettre à jour les options
+      document.querySelectorAll('.option-item[data-theme]').forEach(item => {
+        item.classList.remove('active');
+        item.innerHTML = item.innerHTML.replace('<i class="fas fa-check"></i>', '');
+      });
+      
+      document.querySelector(`.option-item[data-theme="${theme}"]`).classList.add('active');
+      document.querySelector(`.option-item[data-theme="${theme}"]`).innerHTML = '<i class="fas fa-check"></i> ' + document.querySelector(`.option-item[data-theme="${theme}"]`).textContent.trim();
+      
+      // Mettre à jour les graphiques
+      if (capitalChart) capitalChart.update();
+      if (pieChart) pieChart.update();
+      if (dailyChart) dailyChart.update();
+      if (perfCapitalChart) perfCapitalChart.update();
+      if (perfPieChart) perfPieChart.update();
+      if (perfDailyChart) perfDailyChart.update();
+      
+      // Sauvegarder le thème
+      localStorage.setItem('theme', theme);
+    }
+
+    // Fonction pour changer la langue
+    function changeLanguage(lang) {
+      currentLanguage = lang;
+      
+      // Mettre à jour les options
+      document.querySelectorAll('.option-item[data-lang]').forEach(item => {
+        item.classList.remove('active');
+        item.innerHTML = item.innerHTML.replace('<i class="fas fa-check"></i>', '');
+      });
+      
+      document.querySelector(`.option-item[data-lang="${lang}"]`).classList.add('active');
+      document.querySelector(`.option-item[data-lang="${lang}"]`).innerHTML = '<i class="fas fa-check"></i> ' + document.querySelector(`.option-item[data-lang="${lang}"]`).textContent.trim();
+      
+      // Mettre à jour toutes les traductions
+      updateTranslations();
+      
+      // Sauvegarder la langue
+      localStorage.setItem('language', lang);
+    }
+
+    // Fonction pour mettre à jour toutes les traductions
+    function updateTranslations() {
+      // Mettre à jour les textes avec la classe spécifique
+      document.querySelectorAll('.section-title').forEach(el => {
+        const key = el.textContent.trim().toLowerCase().replace(' ', '');
+        if (translations[currentLanguage][key]) {
+          el.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      document.querySelectorAll('.nav-text').forEach(el => {
+        const key = el.textContent.trim().toLowerCase().replace(' ', '');
+        if (translations[currentLanguage][key]) {
+          el.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      document.querySelectorAll('.btn-text').forEach(el => {
+        const key = el.textContent.trim().toLowerCase().replace(' ', '');
+        if (translations[currentLanguage][key]) {
+          el.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      document.querySelectorAll('.filter-text').forEach(el => {
+        const key = el.textContent.trim().toLowerCase().replace(' ', '');
+        if (translations[currentLanguage][key]) {
+          el.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      document.querySelectorAll('.table-header').forEach(el => {
+        const key = el.textContent.trim().toLowerCase().replace('/', '').replace(' ', '');
+        if (translations[currentLanguage][key]) {
+          el.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      document.querySelectorAll('.stat-title').forEach(el => {
+        const key = el.textContent.trim().toLowerCase().replace('.', '').replace(' ', '');
+        if (translations[currentLanguage][key]) {
+          el.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      document.querySelectorAll('.stat-desc').forEach(el => {
+        const key = el.textContent.trim().toLowerCase().replace('/', '').replace(' ', '');
+        if (translations[currentLanguage][key]) {
+          el.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      document.querySelectorAll('.settings-title').forEach(el => {
+        const key = el.textContent.trim().toLowerCase().replace(' ', '');
+        if (translations[currentLanguage][key]) {
+          el.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      document.querySelectorAll('.auth-title').forEach(el => {
+        const key = el.textContent.trim().toLowerCase();
+        if (translations[currentLanguage][key]) {
+          el.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      document.querySelectorAll('.auth-switch-text').forEach(el => {
+        const key = el.textContent.trim().toLowerCase().replace('?', '').replace("'", '');
+        if (translations[currentLanguage][key]) {
+          el.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      document.querySelectorAll('.auth-switch-link').forEach(el => {
+        const key = el.textContent.trim().toLowerCase();
+        if (translations[currentLanguage][key]) {
+          el.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      // Mettre à jour les placeholders
+      document.querySelectorAll('input[placeholder="Email"]').forEach(el => {
+        el.placeholder = translations[currentLanguage].email;
+      });
+      
+      document.querySelectorAll('input[placeholder="Password"]').forEach(el => {
+        el.placeholder = translations[currentLanguage].password;
+      });
+      
+      document.querySelectorAll('input[placeholder="Full Name"]').forEach(el => {
+        el.placeholder = translations[currentLanguage].fullName;
+      });
+      
+      document.querySelectorAll('input[placeholder="Confirm Password"]').forEach(el => {
+        el.placeholder = translations[currentLanguage].confirmPassword;
+      });
+      
+      // Mettre à jour les graphiques
+      if (capitalChart) {
+        capitalChart.options.plugins.title.text = translations[currentLanguage].capitalEvolution;
+        capitalChart.update();
+      }
+      
+      if (pieChart) {
+        pieChart.options.plugins.title.text = translations[currentLanguage].tradesPerformance;
+        pieChart.data.labels = [translations[currentLanguage].winningTrades, translations[currentLanguage].winningTrades.replace('Winning', 'Losing')];
+        pieChart.update();
+      }
+      
+      if (dailyChart) {
+        dailyChart.options.plugins.title.text = translations[currentLanguage].dailyPerformance;
+        dailyChart.update();
+      }
+      
+      if (perfCapitalChart) {
+        perfCapitalChart.options.plugins.title.text = translations[currentLanguage].capitalEvolution;
+        perfCapitalChart.update();
+      }
+      
+      if (perfPieChart) {
+        perfPieChart.options.plugins.title.text = translations[currentLanguage].tradesPerformance;
+        perfPieChart.data.labels = [translations[currentLanguage].winningTrades, translations[currentLanguage].winningTrades.replace('Winning', 'Losing')];
+        perfPieChart.update();
+      }
+      
+      if (perfDailyChart) {
+        perfDailyChart.options.plugins.title.text = translations[currentLanguage].dailyPerformance;
+        perfDailyChart.update();
+      }
+    }
+
+    // Fonction pour animer le titre
+    function animateTitle() {
+      const title = document.getElementById('animated-title');
+      title.style.animation = 'none';
+      void title.offsetWidth; // Trigger reflow
+      title.style.animation = 'fadeInScale 1s ease-in-out';
+    }
+
+    // Fonctions pour la modal d'authentification
+    function showLogin() {
+      document.getElementById('login-modal').style.display = 'flex';
+      document.getElementById('signup-modal').style.display = 'none';
+    }
+
+    function showSignup() {
+      document.getElementById('signup-modal').style.display = 'flex';
+      document.getElementById('login-modal').style.display = 'none';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    // Fonction de connexion (version simplifiée sans Firebase)
+    function login() {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const errorElement = document.getElementById('login-error');
+      
+      errorElement.textContent = '';
+      
+      // Validation simple
+      if (!email || !password) {
+        errorElement.textContent = currentLanguage === 'fr' ? 'Email et mot de passe requis' : 'Email and password required';
+        return;
+      }
+      
+      // Simuler une connexion réussie
+      closeModal('login-modal');
+      alert(currentLanguage === 'fr' ? 'Connexion simulée (sans Firebase)' : 'Simulated login (no Firebase)');
+    }
+
+    // Fonction d'inscription (version simplifiée sans Firebase)
+    function signup() {
+      const name = document.getElementById('signup-name').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm').value;
+      const errorElement = document.getElementById('signup-error');
+      
+      errorElement.textContent = '';
+      
+      // Validation simple
+      if (!name || !email || !password || !confirmPassword) {
+        errorElement.textContent = currentLanguage === 'fr' ? 'Tous les champs sont requis' : 'All fields are required';
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        errorElement.textContent = currentLanguage === 'fr' ? 'Les mots de passe ne correspondent pas' : 'Passwords do not match';
+        return;
+      }
+      
+      if (password.length < 6) {
+        errorElement.textContent = currentLanguage === 'fr' ? 'Le mot de passe doit contenir au moins 6 caractères' : 'Password must be at least 6 characters';
+        return;
+      }
+      
+      // Simuler une inscription réussie
+      closeModal('signup-modal');
+      alert(currentLanguage === 'fr' ? 'Inscription simulée (sans Firebase)' : 'Simulated signup (no Firebase)');
+    }
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', () => {
+      initCharts();
+      
+      // Ajouter 3 trades d'exemple
+      for (let i = 0; i < 3; i++) addTrade();
+      
+      // Mettre à jour les statistiques initiales
+      updateStats();
+      
+      // Configurer les écouteurs d'événements pour la navigation
+      document.querySelectorAll('.nav-menu a, .dropdown-menu a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const section = this.getAttribute('data-section');
+          if (section) {
+            showSection(section);
+          }
+          
+          // Fermer le menu déroulant si ouvert
+          document.getElementById('dropdownMenu').classList.remove('show');
+          
+          // Animer le titre si c'est la section dashboard
+          if (section === 'dashboard') {
+            animateTitle();
+          }
+        });
+      });
+      
+      // Configurer les écouteurs d'événements pour les paramètres
+      document.querySelectorAll('.option-item[data-theme]').forEach(item => {
+        item.addEventListener('click', function() {
+          const theme = this.getAttribute('data-theme');
+          toggleTheme(theme);
+        });
+      });
+      
+      document.querySelectorAll('.option-item[data-lang]').forEach(item => {
+        item.addEventListener('click', function() {
+          const lang = this.getAttribute('data-lang');
+          changeLanguage(lang);
+        });
+      });
+      
+      // Configurer l'écouteur d'événements pour le capital initial dans le journal
+      document.getElementById('journal-capital').addEventListener('change', function() {
+        localStorage.setItem('tradingCapital', this.value);
+      });
+      
+      // Configurer les écouteurs pour l'authentification
+      document.getElementById('login-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        showLogin();
+      });
+      
+      document.getElementById('signup-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        showSignup();
+      });
+      
+      // Charger le thème et la langue sauvegardés
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      toggleTheme(savedTheme);
+      
+      const savedLang = localStorage.getItem('language') || 'en';
+      changeLanguage(savedLang);
+      
+      // Animer le titre initial
+      animateTitle();
+    });
+  </script>
+</body>
+</html>
