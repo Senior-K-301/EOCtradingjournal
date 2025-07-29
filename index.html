@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Trading Journal - EOC Pro</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <style>
     :root {
       --primary-color: #4361ee;
@@ -480,7 +483,7 @@
       white-space: nowrap;
     }
     
-    input, select {
+    input, select, textarea {
       border: 1px solid var(--border-color);
       border-radius: 0.5rem;
       padding: 0.65rem 0.75rem;
@@ -492,13 +495,14 @@
     }
     
     body.light-mode input,
-    body.light-mode select {
+    body.light-mode select,
+    body.light-mode textarea {
       background-color: white;
       color: var(--light-text);
       border: 1px solid #e9ecef;
     }
     
-    input:focus, select:focus {
+    input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--primary-light);
       box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
@@ -723,6 +727,59 @@
       margin-top: 0.5rem;
     }
     
+    /* Nouveaux styles */
+    .ia-feedback {
+      background-color: var(--card-bg);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .ia-feedback h2 {
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .feedback-content {
+      font-style: italic;
+      line-height: 1.6;
+    }
+    
+    .conseil-card {
+      background-color: var(--card-bg);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1.5rem 0;
+      border-left: 4px solid var(--primary-color);
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    body.light-mode .conseil-card {
+      background-color: var(--light-card);
+    }
+    
+    .calendar-container {
+      background-color: var(--card-bg);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    
+    .economic-calendar {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 0.5rem;
+    }
+    
     /* Responsive */
     @media (max-width: 768px) {
       .nav-container {
@@ -774,6 +831,14 @@
       .stats-grid {
         grid-template-columns: 1fr;
       }
+      
+      table {
+        font-size: 0.8rem;
+      }
+      
+      th, td {
+        padding: 0.5rem;
+      }
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -796,6 +861,7 @@
         <li><a href="#" data-section="performance"><i class="fas fa-chart-bar"></i> <span class="nav-text">Performance</span></a></li>
         <li><a href="#" data-section="journal"><i class="fas fa-book"></i> <span class="nav-text">Journal</span></a></li>
         <li><a href="#" data-section="brokers"><i class="fas fa-building"></i> <span class="nav-text">Brokers</span></a></li>
+        <li><a href="#" data-section="calendar"><i class="fas fa-calendar-alt"></i> <span class="nav-text">Calendar</span></a></li>
         <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> <span class="nav-text">Settings</span></a></li>
       </ul>
       
@@ -804,9 +870,8 @@
         <a href="#" data-section="performance"><i class="fas fa-chart-bar"></i> <span class="nav-text">Performance</span></a>
         <a href="#" data-section="journal"><i class="fas fa-book"></i> <span class="nav-text">Journal</span></a>
         <a href="#" data-section="brokers"><i class="fas fa-building"></i> <span class="nav-text">Brokers</span></a>
-        <a href="#" data-section="settings"><i class="fas fa-cog"></i> <span class="nav-text">Settings</span></a>
+        <a href="#" data-section="calendar"><i class="fas fa-calendar-alt"></i> <span class="nav-text">Calendar</span></a>
         <hr style="border-color: var(--border-color); margin: 0.5rem 0;">
-        <a href="#" id="calendar-link"><i class="fas fa-calendar"></i> <span class="nav-text">Calendar</span></a>
         <a href="#" id="login-link"><i class="fas fa-sign-in-alt"></i> <span class="nav-text">Login</span></a>
         <a href="#" id="signup-link"><i class="fas fa-user-plus"></i> <span class="nav-text">Sign Up</span></a>
       </div>
@@ -819,6 +884,10 @@
       <div class="page-header">
         <h1 id="animated-title"><i class="fas fa-tachometer-alt"></i> <span class="section-title">TRADING DASHBOARD</span></h1>
         <button onclick="addTrade()" class="secondary"><i class="fas fa-plus"></i> <span class="btn-text">New Trade</span></button>
+      </div>
+
+      <div class="conseil-card" id="conseilDuJour">
+        <i class="fas fa-lightbulb"></i> Chargement du conseil...
       </div>
 
       <div class="filter-container fade-in">
@@ -905,6 +974,13 @@
             <div class="value" id="totalTrades">0</div>
             <div class="description stat-desc">Executed trades</div>
           </div>
+        </div>
+      </div>
+
+      <div class="ia-feedback">
+        <h2><i class="fas fa-robot"></i> <span class="section-title">Daily Feedback</span></h2>
+        <div class="feedback-content" id="dailyFeedback">
+          Loading daily analysis...
         </div>
       </div>
 
@@ -1047,6 +1123,19 @@
       </div>
     </section>
 
+    <!-- Section Calendar -->
+    <section id="calendar-section" class="section">
+      <div class="page-header">
+        <h1><i class="fas fa-calendar-alt"></i> <span class="section-title">Economic Calendar</span></h1>
+      </div>
+      
+      <div class="calendar-container">
+        <iframe src="https://www.forexfactory.com/calendar" 
+                class="economic-calendar"
+                allowfullscreen></iframe>
+      </div>
+    </section>
+
     <!-- Section Paramètres -->
     <section id="settings-section" class="section">
       <div class="page-header">
@@ -1126,6 +1215,20 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD5XqZ5J5Z5J5J5J5J5J5J5J5J5J5J5J5",
+      authDomain: "eoc-pro-trading.firebaseapp.com",
+      projectId: "eoc-pro-trading",
+      storageBucket: "eoc-pro-trading.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:1234567890:web:1234567890abcdef"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
     // Language translations
     const translations = {
       en: {
@@ -1134,6 +1237,7 @@
         journal: "Trading Journal",
         brokers: "Recommended Brokers",
         settings: "Settings",
+        calendar: "Economic Calendar",
         newTrade: "New Trade",
         initialCapital: "Initial Capital",
         symbol: "Symbol",
@@ -1176,13 +1280,14 @@
         exportExcel: "Export Excel",
         login: "Login",
         signup: "Sign Up",
-        calendar: "Calendar",
         fullName: "Full Name",
         email: "Email",
         password: "Password",
         confirmPassword: "Confirm Password",
         noAccount: "Don't have an account?",
-        haveAccount: "Already have an account?"
+        haveAccount: "Already have an account?",
+        dailyFeedback: "Daily Feedback",
+        conseilDuJour: "Tip of the day"
       },
       fr: {
         dashboard: "TABLEAU DE BORD TRADING",
@@ -1190,6 +1295,7 @@
         journal: "Journal de Trading",
         brokers: "Brokers Recommandés",
         settings: "Paramètres",
+        calendar: "Calendrier Économique",
         newTrade: "Nouveau Trade",
         initialCapital: "Capital Initial",
         symbol: "Symbole",
@@ -1232,13 +1338,14 @@
         exportExcel: "Exporter Excel",
         login: "Connexion",
         signup: "Inscription",
-        calendar: "Calendrier",
         fullName: "Nom Complet",
         email: "Email",
         password: "Mot de Passe",
         confirmPassword: "Confirmer Mot de Passe",
         noAccount: "Pas de compte?",
-        haveAccount: "Déjà un compte?"
+        haveAccount: "Déjà un compte?",
+        dailyFeedback: "Feedback Journalier",
+        conseilDuJour: "Conseil du jour"
       }
     };
 
@@ -1251,51 +1358,27 @@
     let savedCapital = localStorage.getItem('tradingCapital') || 1000;
     let currentLanguage = 'en';
 
-    // Fonctions pour les options des graphiques
-    function getChartOptions(title, isBar = false) {
-      return {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: title,
-            font: {
-              size: 16
-            }
-          }
-        },
-        scales: isBar ? {
-          y: {
-            beginAtZero: false
-          }
-        } : {
-          y: {
-            beginAtZero: false
-          }
-        }
-      };
-    }
-
-    function getPieChartOptions() {
-      return {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: translations[currentLanguage].tradesPerformance,
-            font: {
-              size: 16
-            }
-          }
-        }
-      };
-    }
+    // Conseils du jour
+    const conseils = {
+      en: [
+        "Remember: your capital is your oxygen. Protect it.",
+        "If you're not sure, don't trade. Inaction is sometimes the best decision.",
+        "3 losses in a row? Take a break. Come back with a clear mind.",
+        "Aim to be good today, not perfect.",
+        "Note your feeling before each trade, you'll see emotional patterns.",
+        "Patience pays. Don't chase the market.",
+        "Your journal is your mirror: it reveals the truth."
+      ],
+      fr: [
+        "N'oublie pas : ton capital, c'est ton oxygène. Protège-le.",
+        "Si tu n'es pas sûr, ne trade pas. L'inaction est parfois la meilleure décision.",
+        "3 pertes d'affilée ? Pause. Reviens l'esprit clair.",
+        "Tu veux être bon aujourd'hui, pas parfait.",
+        "Note ton ressenti avant chaque trade, tu verras les patterns émotionnels.",
+        "La patience paie. Ne cours pas après le marché.",
+        "Le journal est ton miroir : il révèle la vérité."
+      ]
+    };
 
     // Initialisation des graphiques
     function initCharts() {
@@ -1307,7 +1390,32 @@
       capitalChart = new Chart(capitalCtx, {
         type: 'line',
         data: { labels: [], datasets: [] },
-        options: getChartOptions(translations[currentLanguage].capitalEvolution)
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: translations[currentLanguage].capitalEvolution,
+              font: { size: 16 }
+            },
+            legend: { display: false }
+          },
+          elements: {
+            line: {
+              borderColor: '#4ade80', // Vert constant
+              backgroundColor: 'rgba(74, 222, 128, 0.1)',
+              tension: 0.1,
+              fill: true
+            },
+            point: {
+              radius: 5,
+              hoverRadius: 7
+            }
+          },
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
       });
       
       pieChart = new Chart(pieCtx, {
@@ -1319,13 +1427,38 @@
           ], 
           datasets: [] 
         },
-        options: getPieChartOptions()
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: translations[currentLanguage].tradesPerformance,
+              font: { size: 16 }
+            },
+            legend: { position: 'bottom' }
+          },
+          cutout: '70%',
+          maintainAspectRatio: false
+        }
       });
       
       dailyChart = new Chart(dailyCtx, {
         type: 'bar',
         data: { labels: [], datasets: [] },
-        options: getChartOptions(translations[currentLanguage].dailyPerformance, true)
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: translations[currentLanguage].dailyPerformance,
+              font: { size: 16 }
+            },
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
       });
 
       // Graphiques pour la section Performance
@@ -1336,7 +1469,32 @@
       perfCapitalChart = new Chart(perfCapitalCtx, {
         type: 'line',
         data: { labels: [], datasets: [] },
-        options: getChartOptions(translations[currentLanguage].capitalEvolution)
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: translations[currentLanguage].capitalEvolution,
+              font: { size: 16 }
+            },
+            legend: { display: false }
+          },
+          elements: {
+            line: {
+              borderColor: '#4ade80', // Vert constant
+              backgroundColor: 'rgba(74, 222, 128, 0.1)',
+              tension: 0.1,
+              fill: true
+            },
+            point: {
+              radius: 5,
+              hoverRadius: 7
+            }
+          },
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
       });
       
       perfPieChart = new Chart(perfPieCtx, {
@@ -1348,13 +1506,38 @@
           ], 
           datasets: [] 
         },
-        options: getPieChartOptions()
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: translations[currentLanguage].tradesPerformance,
+              font: { size: 16 }
+            },
+            legend: { position: 'bottom' }
+          },
+          cutout: '70%',
+          maintainAspectRatio: false
+        }
       });
       
       perfDailyChart = new Chart(perfDailyCtx, {
         type: 'bar',
         data: { labels: [], datasets: [] },
-        options: getChartOptions(translations[currentLanguage].dailyPerformance, true)
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: translations[currentLanguage].dailyPerformance,
+              font: { size: 16 }
+            },
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
       });
     }
 
@@ -1369,11 +1552,12 @@
       document.getElementById(sectionId + '-section').classList.add('active');
       
       // Mettre à jour le menu de navigation
-      document.querySelectorAll('.nav-menu a').forEach(link => {
+      document.querySelectorAll('.nav-menu a, .dropdown-menu a').forEach(link => {
         link.classList.remove('active');
+        if (link.getAttribute('data-section') === sectionId) {
+          link.classList.add('active');
+        }
       });
-      
-      document.querySelector(`.nav-menu a[data-section="${sectionId}"]`).classList.add('active');
       
       // Mettre à jour la section courante
       currentSection = sectionId;
@@ -1391,6 +1575,7 @@
       // Animer le titre si c'est la section dashboard
       if (sectionId === 'dashboard') {
         animateTitle();
+        updateDailyFeedback();
       }
     }
 
@@ -1410,11 +1595,11 @@
         { type: "text", placeholder: "EURUSD" },
         { type: "number", placeholder: "0.01", step: "0.01" },
         { type: "select", options: ["Buy", "Sell"] },
-        { type: "number", placeholder: "1.1200" },
-        { type: "number", placeholder: "1.1150" },
+        { type: "number", placeholder: "1.1200", step: "0.0001" },
+        { type: "number", placeholder: "1.1250", step: "0.0001" },
         { type: "select", options: ["WIN", "LOSS"] },
         { type: "number", placeholder: "50" },
-        { type: "text", placeholder: "Notes" }
+        { type: "text", placeholder: "1.5" }
       ];
 
       fields.forEach((field, i) => {
@@ -1435,6 +1620,7 @@
           if (i === 6) {
             input.addEventListener('change', function() {
               updateGainField(this);
+              calculateRRForRow(this.closest('tr'));
             });
           }
         } else {
@@ -1455,33 +1641,37 @@
         row.appendChild(td);
       });
 
-      // Cellule RRR
-      const rrrCell = document.createElement("td");
-      rrrCell.textContent = "0.00";
-      row.appendChild(rrrCell);
+      // Cellule Notes
+      const notesCell = document.createElement("td");
+      const notesInput = document.createElement("textarea");
+      notesInput.placeholder = "Sentiment/Note...";
+      notesInput.style.width = "100%";
+      notesInput.style.minHeight = "50px";
+      notesCell.appendChild(notesInput);
+      row.appendChild(notesCell);
+
+      // Ajouter des écouteurs pour calculer automatiquement le RR
+      const entryInput = row.querySelectorAll("td")[4].querySelector("input");
+      const exitInput = row.querySelectorAll("td")[5].querySelector("input");
+      const directionSelect = row.querySelectorAll("td")[3].querySelector("select");
+      const rrCell = row.querySelectorAll("td")[8].querySelector("input");
+      
+      const calculateRRForRow = () => {
+        const entry = entryInput.value;
+        const exit = exitInput.value;
+        const direction = directionSelect.value;
+        
+        if (entry && exit) {
+          const rr = calculateRRR(entry, exit, direction);
+          rrCell.value = rr;
+        }
+      };
+      
+      entryInput.addEventListener('input', calculateRRForRow);
+      exitInput.addEventListener('input', calculateRRForRow);
+      directionSelect.addEventListener('change', calculateRRForRow);
 
       table.appendChild(row);
-      
-      // Si c'est la section Journal, ajouter un écouteur pour calculer le RRR
-      if (currentSection === 'journal') {
-        const entryInput = row.querySelectorAll("td")[4].querySelector("input");
-        const exitInput = row.querySelectorAll("td")[5].querySelector("input");
-        const directionSelect = row.querySelectorAll("td")[3].querySelector("select");
-        
-        const calculateRRRForRow = () => {
-          const entry = entryInput.value;
-          const exit = exitInput.value;
-          const direction = directionSelect.value;
-          const rrr = calculateRRR(entry, exit, direction);
-          rrrCell.textContent = rrr.toFixed(2);
-          rrrCell.style.color = rrr >= 1 ? "var(--win-color)" : "var(--loss-color)";
-          rrrCell.style.fontWeight = "bold";
-        };
-        
-        entryInput.addEventListener('input', calculateRRRForRow);
-        exitInput.addEventListener('input', calculateRRRForRow);
-        directionSelect.addEventListener('change', calculateRRRForRow);
-      }
     }
 
     // Fonction pour mettre à jour le champ Gain en fonction du résultat
@@ -1515,10 +1705,15 @@
 
     // Fonction pour calculer le RRR
     function calculateRRR(entry, exit, direction) {
-      if (!entry || !exit || parseFloat(entry) === 0 || parseFloat(exit) === 0) return 0;
+      if (!entry || !exit) return 0;
       const entryVal = parseFloat(entry);
       const exitVal = parseFloat(exit);
-      return direction === "Buy" ? (entryVal - exitVal) / exitVal : (exitVal - entryVal) / entryVal;
+      
+      if (direction === "Buy") {
+        return ((exitVal - entryVal) / entryVal * 100).toFixed(2);
+      } else {
+        return ((entryVal - exitVal) / entryVal * 100).toFixed(2);
+      }
     }
 
     // Fonction pour mettre à jour les statistiques
@@ -1541,24 +1736,14 @@
           
           if (gainField) {
             gainField.value = (gain >= 0 ? "+" : "") + gain.toFixed(2);
-            gainField.style.backgroundColor = result === "WIN" ? "rgba(74, 222, 128, 0.2)" : "rgba(248, 113, 113, 0.2)";
-            gainField.style.color = result === "WIN" ? "var(--win-color)" : "var(--loss-color)";
-            gainField.style.fontWeight = "bold";
-            gainField.style.borderRadius = "9999px";
-            gainField.style.textAlign = "center";
+            formatGainField(gainField);
           }
 
           const direction = cells[3].querySelector("select").value;
           const entry = cells[4].querySelector("input").value;
           const exit = cells[5].querySelector("input").value;
-          const rrr = calculateRRR(entry, exit, direction);
+          const rrr = parseFloat(cells[8].querySelector("input").value) || 0;
           
-          if (cells.length > 8) {
-            cells[8].textContent = rrr.toFixed(2);
-            cells[8].style.color = rrr >= 1 ? "var(--win-color)" : "var(--loss-color)";
-            cells[8].style.fontWeight = "bold";
-          }
-
           const trade = {
             date: cells[0].querySelector("input").value,
             symbole: cells[1].querySelector("input").value,
@@ -1569,7 +1754,7 @@
             result: result,
             gain: gain,
             rrr: rrr,
-            notes: cells[9].querySelector("input")?.value || ""
+            notes: cells[9].querySelector("textarea")?.value || ""
           };
 
           trades.push(trade);
@@ -1618,11 +1803,11 @@
       perfCapitalChart.data.datasets = [{
         label: 'Capital ($)',
         data: capitalData,
-        borderColor: 'var(--win-color)',
+        borderColor: '#4ade80',
         backgroundColor: 'rgba(74, 222, 128, 0.1)',
         tension: 0.1,
         fill: true,
-        pointBackgroundColor: capitalData.map((val, i) => i === 0 ? 'gray' : val > capitalData[i-1] ? 'var(--win-color)' : 'var(--loss-color)'),
+        pointBackgroundColor: capitalData.map((val, i) => i === 0 ? 'gray' : val > capitalData[i-1] ? '#4ade80' : '#f87171'),
         pointRadius: capitalData.map((val, i) => i === 0 ? 3 : 5)
       }];
       
@@ -1634,7 +1819,7 @@
       
       perfPieChart.data.datasets = [{
         data: [wins, losses],
-        backgroundColor: ['var(--win-color)', 'var(--loss-color)'],
+        backgroundColor: ['#4ade80', '#f87171'],
         borderColor: ['rgba(255,255,255,0.8)', 'rgba(255,255,255,0.8)'],
         borderWidth: 1
       }];
@@ -1657,7 +1842,7 @@
       perfDailyChart.data.datasets = [{
         label: 'Daily P/L ($)',
         data: gains,
-        backgroundColor: gains.map(g => g >= 0 ? 'var(--win-color)' : 'var(--loss-color)'),
+        backgroundColor: gains.map(g => g >= 0 ? '#4ade80' : '#f87171'),
         borderColor: gains.map(g => g >= 0 ? 'rgba(74, 222, 128, 0.8)' : 'rgba(248, 113, 113, 0.8)'),
         borderWidth: 1
       }];
@@ -1697,11 +1882,11 @@
       capitalChart.data.datasets = [{
         label: 'Capital ($)',
         data: capitalData,
-        borderColor: 'var(--accent-color)',
-        backgroundColor: 'rgba(76, 201, 240, 0.1)',
+        borderColor: '#4ade80',
+        backgroundColor: 'rgba(74, 222, 128, 0.1)',
         tension: 0.1,
         fill: true,
-        pointBackgroundColor: capitalData.map((val, i) => i === 0 ? 'gray' : val > capitalData[i-1] ? 'var(--win-color)' : 'var(--loss-color)'),
+        pointBackgroundColor: capitalData.map((val, i) => i === 0 ? 'gray' : val > capitalData[i-1] ? '#4ade80' : '#f87171'),
         pointRadius: capitalData.map((val, i) => i === 0 ? 3 : 5)
       }];
       
@@ -1712,10 +1897,13 @@
       const wins = trades.filter(t => t.result === "WIN").length;
       const losses = trades.length - wins;
       
-      pieChart.data.labels = [translations[currentLanguage].winningTrades, translations[currentLanguage].winningTrades.replace('Winning', 'Losing')];
+      pieChart.data.labels = [
+        translations[currentLanguage].winningTrades, 
+        translations[currentLanguage].winningTrades.replace('Winning', 'Losing')
+      ];
       pieChart.data.datasets = [{
         data: [wins, losses],
-        backgroundColor: ['var(--win-color)', 'var(--loss-color)'],
+        backgroundColor: ['#4ade80', '#f87171'],
         borderColor: ['rgba(255,255,255,0.8)', 'rgba(255,255,255,0.8)'],
         borderWidth: 1
       }];
@@ -1740,7 +1928,7 @@
       dailyChart.data.datasets = [{
         label: 'Daily P/L ($)',
         data: gains,
-        backgroundColor: gains.map(g => g >= 0 ? 'var(--win-color)' : 'var(--loss-color)'),
+        backgroundColor: gains.map(g => g >= 0 ? '#4ade80' : '#f87171'),
         borderColor: gains.map(g => g >= 0 ? 'rgba(74, 222, 128, 0.8)' : 'rgba(248, 113, 113, 0.8)'),
         borderWidth: 1
       }];
@@ -1787,7 +1975,7 @@
           const direction = cells[3].querySelector("select").value;
           const entry = cells[4].querySelector("input").value;
           const exit = cells[5].querySelector("input").value;
-          const rrr = calculateRRR(entry, exit, direction);
+          const rrr = parseFloat(cells[8].querySelector("input").value) || 0;
 
           const trade = {
             date: cells[0].querySelector("input").value,
@@ -1799,7 +1987,7 @@
             result: result,
             gain: gain,
             rrr: rrr,
-            notes: cells[9].querySelector("input")?.value || ""
+            notes: cells[9].querySelector("textarea")?.value || ""
           };
 
           journalTrades.push(trade);
@@ -1809,6 +1997,11 @@
       // Sauvegarder dans localStorage
       localStorage.setItem('tradingJournal', JSON.stringify(journalTrades));
       localStorage.setItem('tradingCapital', capital);
+      
+      // Mettre à jour le tableau de bord
+      allTrades = [...journalTrades];
+      trades = [...journalTrades];
+      updateStats();
       
       alert("Journal saved successfully!");
     }
@@ -1837,11 +2030,9 @@
             lastRow[5].querySelector("input").value = item.exit;
             lastRow[6].querySelector("select").value = item.result;
             lastRow[7].querySelector("input").value = (item.gain >= 0 ? "+" : "") + item.gain.toFixed(2);
-            lastRow[8].textContent = item.rrr.toFixed(2);
-            lastRow[8].style.color = item.rrr >= 1 ? "var(--win-color)" : "var(--loss-color)";
-            lastRow[8].style.fontWeight = "bold";
-            if (lastRow[9].querySelector("input")) {
-              lastRow[9].querySelector("input").value = item.notes || "";
+            lastRow[8].querySelector("input").value = item.rrr.toFixed(2);
+            if (lastRow[9].querySelector("textarea")) {
+              lastRow[9].querySelector("textarea").value = item.notes || "";
             }
             
             // Formater le champ Gain
@@ -1914,8 +2105,9 @@
             lastRow[6].querySelector("select").value = item.result;
             const gainValue = typeof item.gain === 'number' ? item.gain : parseFloat(item.gain.replace(/[^0-9.-]/g, ''));
             lastRow[7].querySelector("input").value = (gainValue >= 0 ? "+" : "") + gainValue.toFixed(2);
-            if (lastRow[9] && lastRow[9].querySelector("input")) {
-              lastRow[9].querySelector("input").value = item.notes || "";
+            lastRow[8].querySelector("input").value = item.rrr?.toFixed(2) || "0";
+            if (lastRow[9] && lastRow[9].querySelector("textarea")) {
+              lastRow[9].querySelector("textarea").value = item.notes || "";
             }
           });
           updateStats();
@@ -1977,8 +2169,86 @@
       // Mettre à jour toutes les traductions
       updateTranslations();
       
+      // Mettre à jour le conseil du jour
+      showDailyTip();
+      
+      // Mettre à jour le feedback
+      updateDailyFeedback();
+      
       // Sauvegarder la langue
       localStorage.setItem('language', lang);
+    }
+
+    // Fonction pour afficher le conseil du jour
+    function showDailyTip() {
+      const randomTip = conseils[currentLanguage][Math.floor(Math.random() * conseils[currentLanguage].length)];
+      document.getElementById("conseilDuJour").innerHTML = `
+        <i class="fas fa-lightbulb"></i> ${randomTip}
+      `;
+    }
+
+    // Fonction pour générer le feedback journalier
+    function updateDailyFeedback() {
+      const today = new Date().toISOString().split('T')[0];
+      const todayTrades = allTrades.filter(t => t.date === today);
+      
+      if (todayTrades.length === 0) {
+        document.getElementById("dailyFeedback").textContent = 
+          currentLanguage === 'fr' 
+            ? "Aucun trade enregistré aujourd'hui." 
+            : "No trades recorded today.";
+        return;
+      }
+      
+      const wins = todayTrades.filter(t => t.result === "WIN").length;
+      const losses = todayTrades.length - wins;
+      const winRate = (wins / todayTrades.length * 100).toFixed(0);
+      
+      // Trouver l'heure avec le plus de trades gagnants
+      const hours = {};
+      todayTrades.forEach(trade => {
+        if (trade.result === "WIN") {
+          const hour = trade.date.split('T')[1]?.split(':')[0] || 'unknown';
+          hours[hour] = (hours[hour] || 0) + 1;
+        }
+      });
+      
+      let bestHour = null;
+      let maxWins = 0;
+      for (const [hour, count] of Object.entries(hours)) {
+        if (count > maxWins) {
+          maxWins = count;
+          bestHour = hour;
+        }
+      }
+      
+      // Générer le feedback
+      let feedback = currentLanguage === 'fr' 
+        ? `Tu as fait ${todayTrades.length} trades aujourd'hui, ${wins} gagnants (${winRate}% de réussite). `
+        : `You made ${todayTrades.length} trades today, ${wins} winners (${winRate}% win rate). `;
+      
+      if (bestHour) {
+        feedback += currentLanguage === 'fr' 
+          ? `Ton meilleur moment était à ${bestHour}h. `
+          : `Your best time was at ${bestHour}h. `;
+      }
+      
+      // Ajouter un conseil basé sur la performance
+      if (winRate >= 70) {
+        feedback += currentLanguage === 'fr' 
+          ? "Excellent journée ! Continue comme ça en respectant ta stratégie."
+          : "Excellent day! Keep it up by sticking to your strategy.";
+      } else if (winRate >= 50) {
+        feedback += currentLanguage === 'fr' 
+          ? "Journée correcte. Analyse tes trades pour identifier les points d'amélioration."
+          : "Good day. Analyze your trades to identify areas for improvement.";
+      } else {
+        feedback += currentLanguage === 'fr' 
+          ? "Journée difficile. Prends du recul et analyse ce qui n'a pas fonctionné."
+          : "Tough day. Step back and analyze what didn't work.";
+      }
+      
+      document.getElementById("dailyFeedback").textContent = feedback;
     }
 
     // Fonction pour mettre à jour toutes les traductions
@@ -2078,6 +2348,10 @@
         el.placeholder = translations[currentLanguage].confirmPassword;
       });
       
+      document.querySelectorAll('textarea[placeholder="Sentiment/Note..."]').forEach(el => {
+        el.placeholder = currentLanguage === 'fr' ? "Sentiment/Note..." : "Feeling/Note...";
+      });
+      
       // Mettre à jour les graphiques
       if (capitalChart) {
         capitalChart.options.plugins.title.text = translations[currentLanguage].capitalEvolution;
@@ -2086,7 +2360,10 @@
       
       if (pieChart) {
         pieChart.options.plugins.title.text = translations[currentLanguage].tradesPerformance;
-        pieChart.data.labels = [translations[currentLanguage].winningTrades, translations[currentLanguage].winningTrades.replace('Winning', 'Losing')];
+        pieChart.data.labels = [
+          translations[currentLanguage].winningTrades, 
+          translations[currentLanguage].winningTrades.replace('Winning', 'Losing')
+        ];
         pieChart.update();
       }
       
@@ -2102,7 +2379,10 @@
       
       if (perfPieChart) {
         perfPieChart.options.plugins.title.text = translations[currentLanguage].tradesPerformance;
-        perfPieChart.data.labels = [translations[currentLanguage].winningTrades, translations[currentLanguage].winningTrades.replace('Winning', 'Losing')];
+        perfPieChart.data.labels = [
+          translations[currentLanguage].winningTrades, 
+          translations[currentLanguage].winningTrades.replace('Winning', 'Losing')
+        ];
         perfPieChart.update();
       }
       
@@ -2135,7 +2415,7 @@
       document.getElementById(id).style.display = 'none';
     }
 
-    // Fonction de connexion (version simplifiée sans Firebase)
+    // Fonction de connexion
     function login() {
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
@@ -2143,18 +2423,36 @@
       
       errorElement.textContent = '';
       
-      // Validation simple
-      if (!email || !password) {
-        errorElement.textContent = currentLanguage === 'fr' ? 'Email et mot de passe requis' : 'Email and password required';
-        return;
-      }
-      
-      // Simuler une connexion réussie
-      closeModal('login-modal');
-      alert(currentLanguage === 'fr' ? 'Connexion simulée (sans Firebase)' : 'Simulated login (no Firebase)');
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Connexion réussie
+          closeModal('login-modal');
+          alert(currentLanguage === 'fr' ? 'Connexion réussie!' : 'Login successful!');
+        })
+        .catch((error) => {
+          // Gestion des erreurs
+          let errorMessage;
+          switch(error.code) {
+            case 'auth/invalid-email':
+              errorMessage = currentLanguage === 'fr' ? 'Email invalide' : 'Invalid email';
+              break;
+            case 'auth/user-disabled':
+              errorMessage = currentLanguage === 'fr' ? 'Compte désactivé' : 'Account disabled';
+              break;
+            case 'auth/user-not-found':
+              errorMessage = currentLanguage === 'fr' ? 'Utilisateur non trouvé' : 'User not found';
+              break;
+            case 'auth/wrong-password':
+              errorMessage = currentLanguage === 'fr' ? 'Mot de passe incorrect' : 'Wrong password';
+              break;
+            default:
+              errorMessage = currentLanguage === 'fr' ? 'Erreur de connexion' : 'Login error';
+          }
+          errorElement.textContent = errorMessage;
+        });
     }
 
-    // Fonction d'inscription (version simplifiée sans Firebase)
+    // Fonction d'inscription
     function signup() {
       const name = document.getElementById('signup-name').value;
       const email = document.getElementById('signup-email').value;
@@ -2165,11 +2463,6 @@
       errorElement.textContent = '';
       
       // Validation simple
-      if (!name || !email || !password || !confirmPassword) {
-        errorElement.textContent = currentLanguage === 'fr' ? 'Tous les champs sont requis' : 'All fields are required';
-        return;
-      }
-      
       if (password !== confirmPassword) {
         errorElement.textContent = currentLanguage === 'fr' ? 'Les mots de passe ne correspondent pas' : 'Passwords do not match';
         return;
@@ -2180,9 +2473,35 @@
         return;
       }
       
-      // Simuler une inscription réussie
-      closeModal('signup-modal');
-      alert(currentLanguage === 'fr' ? 'Inscription simulée (sans Firebase)' : 'Simulated signup (no Firebase)');
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // Inscription réussie
+          return userCredential.user.updateProfile({
+            displayName: name
+          });
+        })
+        .then(() => {
+          closeModal('signup-modal');
+          alert(currentLanguage === 'fr' ? 'Inscription réussie!' : 'Signup successful!');
+        })
+        .catch((error) => {
+          // Gestion des erreurs
+          let errorMessage;
+          switch(error.code) {
+            case 'auth/email-already-in-use':
+              errorMessage = currentLanguage === 'fr' ? 'Email déjà utilisé' : 'Email already in use';
+              break;
+            case 'auth/invalid-email':
+              errorMessage = currentLanguage === 'fr' ? 'Email invalide' : 'Invalid email';
+              break;
+            case 'auth/weak-password':
+              errorMessage = currentLanguage === 'fr' ? 'Mot de passe trop faible' : 'Password is too weak';
+              break;
+            default:
+              errorMessage = currentLanguage === 'fr' ? 'Erreur d\'inscription' : 'Signup error';
+          }
+          errorElement.textContent = errorMessage;
+        });
     }
 
     // Initialisation
@@ -2194,6 +2513,12 @@
       
       // Mettre à jour les statistiques initiales
       updateStats();
+      
+      // Afficher le conseil du jour
+      showDailyTip();
+      
+      // Mettre à jour le feedback journalier
+      updateDailyFeedback();
       
       // Configurer les écouteurs d'événements pour la navigation
       document.querySelectorAll('.nav-menu a, .dropdown-menu a').forEach(link => {
@@ -2254,6 +2579,17 @@
       
       // Animer le titre initial
       animateTitle();
+      
+      // Vérifier l'état d'authentification
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // Utilisateur connecté
+          console.log('User logged in:', user.displayName);
+        } else {
+          // Utilisateur non connecté
+          console.log('User not logged in');
+        }
+      });
     });
   </script>
 </body>
