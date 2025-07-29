@@ -9,6 +9,56 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <style>
+    /* Splash Screen Styles */
+    #splash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0a1930;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    #splash h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease;
+    }
+
+    #splash p {
+      font-size: 1.25rem;
+      opacity: 0.8;
+    }
+
+    #enterBtn {
+      margin-top: 40px;
+      padding: 12px 25px;
+      font-size: 1rem;
+      background-color: #4cc9f0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    #enterBtn.show {
+      opacity: 1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
     :root {
       --primary-color: #4361ee;
       --primary-light: #3a86ff;
@@ -844,371 +894,339 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <!-- Menu de navigation -->
-  <nav>
-    <div class="nav-container">
-      <a href="#" class="nav-brand">
-        <i class="fas fa-chart-line"></i>
-        <span>EOC Pro</span>
-      </a>
-      
-      <button class="menu-button" onclick="toggleMenu()">
-        <i class="fas fa-bars"></i>
-      </button>
-      
-      <ul class="nav-menu">
-        <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> <span class="nav-text">Dashboard</span></a></li>
-        <li><a href="#" data-section="performance"><i class="fas fa-chart-bar"></i> <span class="nav-text">Performance</span></a></li>
-        <li><a href="#" data-section="journal"><i class="fas fa-book"></i> <span class="nav-text">Journal</span></a></li>
-        <li><a href="#" data-section="brokers"><i class="fas fa-building"></i> <span class="nav-text">Brokers</span></a></li>
-        <li><a href="#" data-section="calendar"><i class="fas fa-calendar-alt"></i> <span class="nav-text">Calendar</span></a></li>
-        <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> <span class="nav-text">Settings</span></a></li>
-      </ul>
-      
-      <div class="dropdown-menu" id="dropdownMenu">
-        <a href="#" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> <span class="nav-text">Dashboard</span></a>
-        <a href="#" data-section="performance"><i class="fas fa-chart-bar"></i> <span class="nav-text">Performance</span></a>
-        <a href="#" data-section="journal"><i class="fas fa-book"></i> <span class="nav-text">Journal</span></a>
-        <a href="#" data-section="brokers"><i class="fas fa-building"></i> <span class="nav-text">Brokers</span></a>
-        <a href="#" data-section="calendar"><i class="fas fa-calendar-alt"></i> <span class="nav-text">Calendar</span></a>
-        <hr style="border-color: var(--border-color); margin: 0.5rem 0;">
-        <a href="#" id="login-link"><i class="fas fa-sign-in-alt"></i> <span class="nav-text">Login</span></a>
-        <a href="#" id="signup-link"><i class="fas fa-user-plus"></i> <span class="nav-text">Sign Up</span></a>
-      </div>
-    </div>
-  </nav>
+  <!-- Splash Screen -->
+  <div id="splash">
+    <h1>EOC</h1>
+    <p>Bienvenue dans ton Journal de Trading</p>
+    <button id="enterBtn">Welcome</button>
+  </div>
 
-  <div class="container">
-    <!-- Section Dashboard -->
-    <section id="dashboard-section" class="section active">
-      <div class="page-header">
-        <h1 id="animated-title"><i class="fas fa-tachometer-alt"></i> <span class="section-title">TRADING DASHBOARD</span></h1>
-        <button onclick="addTrade()" class="secondary"><i class="fas fa-plus"></i> <span class="btn-text">New Trade</span></button>
-      </div>
-
-      <div class="conseil-card" id="conseilDuJour">
-        <i class="fas fa-lightbulb"></i> Chargement du conseil...
-      </div>
-
-      <div class="filter-container fade-in">
-        <div class="filter-group">
-          <label for="initialCapital"><i class="fas fa-wallet"></i> <span class="filter-text">Initial Capital:</span></label>
-          <input type="number" id="initialCapital" value="1000" onchange="updateStats()" />
-        </div>
+  <!-- Main Application -->
+  <div id="mainApp" style="display: none;">
+    <!-- Menu de navigation -->
+    <nav>
+      <div class="nav-container">
+        <a href="#" class="nav-brand">
+          <i class="fas fa-chart-line"></i>
+          <span>EOC Pro</span>
+        </a>
         
-        <div class="filter-group">
-          <label for="symbolFilter"><i class="fas fa-filter"></i> <span class="filter-text">Symbol:</span></label>
-          <input type="text" id="symbolFilter" placeholder="Filter by symbol" oninput="updateStats()">
-        </div>
+        <button class="menu-button" onclick="toggleMenu()">
+          <i class="fas fa-bars"></i>
+        </button>
         
-        <div class="filter-group">
-          <label for="dateFromFilter"><i class="fas fa-calendar"></i> <span class="filter-text">From:</span></label>
-          <input type="date" id="dateFromFilter" onchange="updateStats()">
-        </div>
+        <ul class="nav-menu">
+          <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> <span class="nav-text">Dashboard</span></a></li>
+          <li><a href="#" data-section="performance"><i class="fas fa-chart-bar"></i> <span class="nav-text">Performance</span></a></li>
+          <li><a href="#" data-section="brokers"><i class="fas fa-building"></i> <span class="nav-text">Brokers</span></a></li>
+          <li><a href="#" data-section="calendar"><i class="fas fa-calendar-alt"></i> <span class="nav-text">Calendar</span></a></li>
+          <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> <span class="nav-text">Settings</span></a></li>
+        </ul>
         
-        <div class="filter-group">
-          <label for="dateToFilter"><i class="fas fa-calendar"></i> <span class="filter-text">To:</span></label>
-          <input type="date" id="dateToFilter" onchange="updateStats()">
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="#" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> <span class="nav-text">Dashboard</span></a>
+          <a href="#" data-section="performance"><i class="fas fa-chart-bar"></i> <span class="nav-text">Performance</span></a>
+          <a href="#" data-section="brokers"><i class="fas fa-building"></i> <span class="nav-text">Brokers</span></a>
+          <a href="#" data-section="calendar"><i class="fas fa-calendar-alt"></i> <span class="nav-text">Calendar</span></a>
+          <hr style="border-color: var(--border-color); margin: 0.5rem 0;">
+          <a href="#" id="login-link"><i class="fas fa-sign-in-alt"></i> <span class="nav-text">Login</span></a>
+          <a href="#" id="signup-link"><i class="fas fa-user-plus"></i> <span class="nav-text">Sign Up</span></a>
         </div>
-        
-        <button onclick="resetFilters()"><i class="fas fa-sync-alt"></i> <span class="btn-text">Reset</span></button>
       </div>
+    </nav>
 
-      <div class="button-group">
-        <button onclick="downloadJSON()"><i class="fas fa-save"></i> <span class="btn-text">Save</span></button>
-        <button onclick="downloadCSV()"><i class="fas fa-file-csv"></i> <span class="btn-text">Export CSV</span></button>
-        <input type="file" id="fileInput" accept="application/json" style="display: none;" />
-        <button onclick="document.getElementById('fileInput').click()" class="secondary"><i class="fas fa-folder-open"></i> <span class="btn-text">Load</span></button>
-      </div>
+    <div class="container">
+      <!-- Section Dashboard -->
+      <section id="dashboard-section" class="section active">
+        <div class="page-header">
+          <h1 id="animated-title"><i class="fas fa-tachometer-alt"></i> <span class="section-title">TRADING DASHBOARD</span></h1>
+          <button onclick="addTrade()" class="secondary"><i class="fas fa-plus"></i> <span class="btn-text">New Trade</span></button>
+        </div>
 
-      <div style="overflow-x: auto;">
-        <table id="tradeTable">
-          <thead>
-            <tr>
-              <th class="table-header">Date</th>
-              <th class="table-header">Symbol</th>
-              <th class="table-header">Lot</th>
-              <th class="table-header">Type</th>
-              <th class="table-header">Entry</th>
-              <th class="table-header">Exit</th>
-              <th class="table-header">Result</th>
-              <th class="table-header">P/L ($)</th>
-              <th class="table-header">RR</th>
-              <th class="table-header">Notes</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+        <div class="conseil-card" id="conseilDuJour">
+          <i class="fas fa-lightbulb"></i> Chargement du conseil...
+        </div>
 
-      <div id="stats" class="fade-in">
-        <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Performance Statistics</span></h2>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <h3 class="stat-title">Total P/L</h3>
-            <div class="value" id="totalGain">0 $</div>
-            <div class="description stat-desc">Cumulative P/L</div>
+        <div class="filter-container fade-in">
+          <div class="filter-group">
+            <label for="initialCapital"><i class="fas fa-wallet"></i> <span class="filter-text">Initial Capital:</span></label>
+            <input type="number" id="initialCapital" value="1000" onchange="updateStats()" />
           </div>
-          <div class="stat-card">
-            <h3 class="stat-title">Win Rate</h3>
-            <div class="value" id="winRate">0%</div>
-            <div class="description stat-desc">Winning trades</div>
+          
+          <div class="filter-group">
+            <label for="symbolFilter"><i class="fas fa-filter"></i> <span class="filter-text">Symbol:</span></label>
+            <input type="text" id="symbolFilter" placeholder="Filter by symbol" oninput="updateStats()">
           </div>
-          <div class="stat-card">
-            <h3 class="stat-title">Avg. Profit</h3>
-            <div class="value" id="averageProfit">0 $</div>
-            <div class="description stat-desc">Per trade</div>
+          
+          <div class="filter-group">
+            <label for="dateFromFilter"><i class="fas fa-calendar"></i> <span class="filter-text">From:</span></label>
+            <input type="date" id="dateFromFilter" onchange="updateStats()">
           </div>
-          <div class="stat-card">
-            <h3 class="stat-title">Avg. RR</h3>
-            <div class="value" id="averageRRR">0</div>
-            <div class="description stat-desc">Risk-Reward Ratio</div>
+          
+          <div class="filter-group">
+            <label for="dateToFilter"><i class="fas fa-calendar"></i> <span class="filter-text">To:</span></label>
+            <input type="date" id="dateToFilter" onchange="updateStats()">
           </div>
-          <div class="stat-card">
-            <h3 class="stat-title">Profit Factor</h3>
-            <div class="value" id="profitFactor">0</div>
-            <div class="description stat-desc">Gains/Losses ratio</div>
-          </div>
-          <div class="stat-card">
-            <h3 class="stat-title">Total Trades</h3>
-            <div class="value" id="totalTrades">0</div>
-            <div class="description stat-desc">Executed trades</div>
-          </div>
+          
+          <button onclick="resetFilters()"><i class="fas fa-sync-alt"></i> <span class="btn-text">Reset</span></button>
         </div>
-      </div>
 
-      <div class="ia-feedback">
-        <h2><i class="fas fa-robot"></i> <span class="section-title">Daily Feedback</span></h2>
-        <div class="feedback-content" id="dailyFeedback">
-          Loading daily analysis...
-        </div>
-      </div>
-
-      <div class="chart-container">
-        <div class="chart-wrapper fade-in">
-          <h2><i class="fas fa-chart-line"></i> <span class="section-title">Capital Evolution</span></h2>
-          <canvas id="capitalChart" width="800" height="400"></canvas>
-        </div>
-        
-        <div class="chart-wrapper fade-in">
-          <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Trades Performance</span></h2>
-          <canvas id="pieChart" width="300" height="300"></canvas>
-        </div>
-      </div>
-
-      <div class="chart-container">
-        <div class="chart-wrapper fade-in">
-          <h2><i class="fas fa-chart-bar"></i> <span class="section-title">Daily Performance</span></h2>
-          <canvas id="dailyChart" width="800" height="400"></canvas>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section Performance -->
-    <section id="performance-section" class="section">
-      <div class="page-header">
-        <h1><i class="fas fa-chart-bar"></i> <span class="section-title">Performance</span></h1>
-      </div>
-
-      <div class="stats">
-        <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Performance Statistics</span></h2>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <h3 class="stat-title">Total P/L</h3>
-            <div class="value" id="perf-totalGain">0 $</div>
-            <div class="description stat-desc">Cumulative P/L</div>
-          </div>
-          <div class="stat-card">
-            <h3 class="stat-title">Win Rate</h3>
-            <div class="value" id="perf-winRate">0%</div>
-            <div class="description stat-desc">Winning trades</div>
-          </div>
-          <div class="stat-card">
-            <h3 class="stat-title">Avg. Profit</h3>
-            <div class="value" id="perf-averageProfit">0 $</div>
-            <div class="description stat-desc">Per trade</div>
-          </div>
-          <div class="stat-card">
-            <h3 class="stat-title">Avg. RR</h3>
-            <div class="value" id="perf-averageRRR">0</div>
-            <div class="description stat-desc">Risk-Reward Ratio</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="chart-container">
-        <div class="chart-wrapper">
-          <h2><i class="fas fa-chart-line"></i> <span class="section-title">Capital Evolution</span></h2>
-          <canvas id="perf-capitalChart" width="800" height="400"></canvas>
-        </div>
-        
-        <div class="chart-wrapper">
-          <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Trades Performance</span></h2>
-          <canvas id="perf-pieChart" width="300" height="300"></canvas>
-        </div>
-      </div>
-
-      <div class="chart-container">
-        <div class="chart-wrapper">
-          <h2><i class="fas fa-chart-bar"></i> <span class="section-title">Daily Performance</span></h2>
-          <canvas id="perf-dailyChart" width="800" height="400"></canvas>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section Journal -->
-    <section id="journal-section" class="section">
-      <div class="page-header">
-        <h1><i class="fas fa-book"></i> <span class="section-title">Trading Journal</span></h1>
-        <button onclick="addTrade()"><i class="fas fa-plus"></i> <span class="btn-text">New Trade</span></button>
-      </div>
-
-      <div class="filter-container">
-        <div class="filter-group">
-          <label for="journal-capital"><i class="fas fa-wallet"></i> <span class="filter-text">Initial Capital:</span></label>
-          <input type="number" id="journal-capital" value="1000">
-        </div>
-      </div>
-
-      <div style="overflow-x: auto;">
-        <table id="journal-table">
-          <thead>
-            <tr>
-              <th class="table-header">Date</th>
-              <th class="table-header">Symbol</th>
-              <th class="table-header">Lot</th>
-              <th class="table-header">Type</th>
-              <th class="table-header">Entry</th>
-              <th class="table-header">Exit</th>
-              <th class="table-header">Result</th>
-              <th class="table-header">P/L ($)</th>
-              <th class="table-header">RR</th>
-              <th class="table-header">Notes</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <div class="button-group">
-        <button onclick="saveJournal()"><i class="fas fa-save"></i> <span class="btn-text">Save</span></button>
-        <button onclick="addTrade()" class="secondary"><i class="fas fa-plus"></i> <span class="btn-text">Add Trade</span></button>
-      </div>
-    </section>
-
-    <!-- Section Brokers -->
-    <section id="brokers-section" class="section">
-      <div class="page-header">
-        <h1><i class="fas fa-building"></i> <span class="section-title">Recommended Brokers</span></h1>
-      </div>
-
-      <div class="brokers-container">
-        <div class="broker-card">
-          <h3><i class="fas fa-check-circle"></i> EXNESS</h3>
-          <p class="broker-desc">Trade with tight spreads and instant execution on one of the most trusted brokers in the industry.</p>
-          <a href="https://one.exnesstrack.org/intl/fr/a/i911hyordj" target="_blank" class="broker-link">Open Account</a>
-        </div>
-        
-        <div class="broker-card">
-          <h3><i class="fas fa-check-circle"></i> HEADWAY</h3>
-          <p class="broker-desc">Start your trading journey with Headway and enjoy competitive trading conditions.</p>
-          <a href="https://headway.partners/user/signup?hwp=2107f0" target="_blank" class="broker-link">Open Account</a>
-        </div>
-        
-        <div class="broker-card">
-          <h3><i class="fas fa-check-circle"></i> FBS</h3>
-          <p class="broker-desc">Join FBS broker and trade with leverage up to 1:3000 on various financial instruments.</p>
-          <a href="https://fbs.partners?ibl=891392&ibp=25515221" target="_blank" class="broker-link">Open Account</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section Calendar -->
-    <section id="calendar-section" class="section">
-      <div class="page-header">
-        <h1><i class="fas fa-calendar-alt"></i> <span class="section-title">Economic Calendar</span></h1>
-      </div>
-      
-      <div class="calendar-container">
-        <iframe src="https://www.forexfactory.com/calendar" 
-                class="economic-calendar"
-                allowfullscreen></iframe>
-      </div>
-    </section>
-
-    <!-- Section Paramètres -->
-    <section id="settings-section" class="section">
-      <div class="page-header">
-        <h1><i class="fas fa-cog"></i> <span class="section-title">Settings</span></h1>
-      </div>
-
-      <div class="settings-option">
-        <h3><i class="fas fa-language"></i> <span class="settings-title">Language</span></h3>
-        <div class="option-group">
-          <div class="option-item active" data-lang="en">
-            <i class="fas fa-check"></i> English
-          </div>
-          <div class="option-item" data-lang="fr">
-            Français
-          </div>
-        </div>
-      </div>
-
-      <div class="settings-option">
-        <h3><i class="fas fa-moon"></i> <span class="settings-title">Display Mode</span></h3>
-        <div class="option-group">
-          <div class="option-item active" data-theme="dark">
-            <i class="fas fa-check"></i> Dark
-          </div>
-          <div class="option-item" data-theme="light">
-            Light
-          </div>
-        </div>
-      </div>
-
-      <div class="settings-option">
-        <h3><i class="fas fa-file-export"></i> <span class="settings-title">Export</span></h3>
         <div class="button-group">
+          <button onclick="downloadJSON()"><i class="fas fa-save"></i> <span class="btn-text">Save</span></button>
           <button onclick="downloadCSV()"><i class="fas fa-file-csv"></i> <span class="btn-text">Export CSV</span></button>
-          <button onclick="downloadExcel()" class="secondary"><i class="fas fa-file-excel"></i> <span class="btn-text">Export Excel</span></button>
+          <input type="file" id="fileInput" accept="application/json" style="display: none;" />
+          <button onclick="document.getElementById('fileInput').click()" class="secondary"><i class="fas fa-folder-open"></i> <span class="btn-text">Load</span></button>
         </div>
-      </div>
-    </section>
-  </div>
 
-  <!-- Auth Modals -->
-  <div class="modal" id="login-modal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeModal('login-modal')">&times;</button>
-      <div class="auth-form">
-        <h2 class="auth-title">Login</h2>
-        <input type="email" id="login-email" placeholder="Email">
-        <input type="password" id="login-password" placeholder="Password">
-        <button onclick="login()" class="auth-btn">Login</button>
-        <div class="auth-switch">
-          <span class="auth-switch-text">Don't have an account? </span>
-          <a onclick="showSignup()" class="auth-switch-link">Sign up</a>
+        <div style="overflow-x: auto;">
+          <table id="tradeTable">
+            <thead>
+              <tr>
+                <th class="table-header">Date</th>
+                <th class="table-header">Symbol</th>
+                <th class="table-header">Lot</th>
+                <th class="table-header">Type</th>
+                <th class="table-header">Entry</th>
+                <th class="table-header">Exit</th>
+                <th class="table-header">Result</th>
+                <th class="table-header">P/L ($)</th>
+                <th class="table-header">RR</th>
+                <th class="table-header">Notes</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
-        <div class="auth-error" id="login-error"></div>
+
+        <div id="stats" class="fade-in">
+          <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Performance Statistics</span></h2>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h3 class="stat-title">Total P/L</h3>
+              <div class="value" id="totalGain">0 $</div>
+              <div class="description stat-desc">Cumulative P/L</div>
+            </div>
+            <div class="stat-card">
+              <h3 class="stat-title">Win Rate</h3>
+              <div class="value" id="winRate">0%</div>
+              <div class="description stat-desc">Winning trades</div>
+            </div>
+            <div class="stat-card">
+              <h3 class="stat-title">Avg. Profit</h3>
+              <div class="value" id="averageProfit">0 $</div>
+              <div class="description stat-desc">Per trade</div>
+            </div>
+            <div class="stat-card">
+              <h3 class="stat-title">Avg. RR</h3>
+              <div class="value" id="averageRRR">0</div>
+              <div class="description stat-desc">Risk-Reward Ratio</div>
+            </div>
+            <div class="stat-card">
+              <h3 class="stat-title">Profit Factor</h3>
+              <div class="value" id="profitFactor">0</div>
+              <div class="description stat-desc">Gains/Losses ratio</div>
+            </div>
+            <div class="stat-card">
+              <h3 class="stat-title">Total Trades</h3>
+              <div class="value" id="totalTrades">0</div>
+              <div class="description stat-desc">Executed trades</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ia-feedback">
+          <h2><i class="fas fa-robot"></i> <span class="section-title">Daily Feedback</span></h2>
+          <div class="feedback-content" id="dailyFeedback">
+            Loading daily analysis...
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-wrapper fade-in">
+            <h2><i class="fas fa-chart-line"></i> <span class="section-title">Capital Evolution</span></h2>
+            <canvas id="capitalChart" width="800" height="400"></canvas>
+          </div>
+          
+          <div class="chart-wrapper fade-in">
+            <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Trades Performance</span></h2>
+            <canvas id="pieChart" width="300" height="300"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-wrapper fade-in">
+            <h2><i class="fas fa-chart-bar"></i> <span class="section-title">Daily Performance</span></h2>
+            <canvas id="dailyChart" width="800" height="400"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Performance -->
+      <section id="performance-section" class="section">
+        <div class="page-header">
+          <h1><i class="fas fa-chart-bar"></i> <span class="section-title">Performance</span></h1>
+        </div>
+
+        <div class="stats">
+          <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Performance Statistics</span></h2>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h3 class="stat-title">Total P/L</h3>
+              <div class="value" id="perf-totalGain">0 $</div>
+              <div class="description stat-desc">Cumulative P/L</div>
+            </div>
+            <div class="stat-card">
+              <h3 class="stat-title">Win Rate</h3>
+              <div class="value" id="perf-winRate">0%</div>
+              <div class="description stat-desc">Winning trades</div>
+            </div>
+            <div class="stat-card">
+              <h3 class="stat-title">Avg. Profit</h3>
+              <div class="value" id="perf-averageProfit">0 $</div>
+              <div class="description stat-desc">Per trade</div>
+            </div>
+            <div class="stat-card">
+              <h3 class="stat-title">Avg. RR</h3>
+              <div class="value" id="perf-averageRRR">0</div>
+              <div class="description stat-desc">Risk-Reward Ratio</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-wrapper">
+            <h2><i class="fas fa-chart-line"></i> <span class="section-title">Capital Evolution</span></h2>
+            <canvas id="perf-capitalChart" width="800" height="400"></canvas>
+          </div>
+          
+          <div class="chart-wrapper">
+            <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Trades Performance</span></h2>
+            <canvas id="perf-pieChart" width="300" height="300"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-wrapper">
+            <h2><i class="fas fa-chart-bar"></i> <span class="section-title">Daily Performance</span></h2>
+            <canvas id="perf-dailyChart" width="800" height="400"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Brokers -->
+      <section id="brokers-section" class="section">
+        <div class="page-header">
+          <h1><i class="fas fa-building"></i> <span class="section-title">Recommended Brokers</span></h1>
+        </div>
+
+        <div class="brokers-container">
+          <div class="broker-card">
+            <h3><i class="fas fa-check-circle"></i> EXNESS</h3>
+            <p class="broker-desc">Trade with tight spreads and instant execution on one of the most trusted brokers in the industry.</p>
+            <a href="https://one.exnesstrack.org/intl/fr/a/i911hyordj" target="_blank" class="broker-link">Open Account</a>
+          </div>
+          
+          <div class="broker-card">
+            <h3><i class="fas fa-check-circle"></i> HEADWAY</h3>
+            <p class="broker-desc">Start your trading journey with Headway and enjoy competitive trading conditions.</p>
+            <a href="https://headway.partners/user/signup?hwp=2107f0" target="_blank" class="broker-link">Open Account</a>
+          </div>
+          
+          <div class="broker-card">
+            <h3><i class="fas fa-check-circle"></i> FBS</h3>
+            <p class="broker-desc">Join FBS broker and trade with leverage up to 1:3000 on various financial instruments.</p>
+            <a href="https://fbs.partners?ibl=891392&ibp=25515221" target="_blank" class="broker-link">Open Account</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Calendar -->
+      <section id="calendar-section" class="section">
+        <div class="page-header">
+          <h1><i class="fas fa-calendar-alt"></i> <span class="section-title">Economic Calendar</span></h1>
+        </div>
+        
+        <div class="calendar-container">
+          <iframe src="https://www.forexfactory.com/calendar" 
+                  class="economic-calendar"
+                  allowfullscreen></iframe>
+        </div>
+      </section>
+
+      <!-- Section Paramètres -->
+      <section id="settings-section" class="section">
+        <div class="page-header">
+          <h1><i class="fas fa-cog"></i> <span class="section-title">Settings</span></h1>
+        </div>
+
+        <div class="settings-option">
+          <h3><i class="fas fa-language"></i> <span class="settings-title">Language</span></h3>
+          <div class="option-group">
+            <div class="option-item active" data-lang="en">
+              <i class="fas fa-check"></i> English
+            </div>
+            <div class="option-item" data-lang="fr">
+              Français
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-option">
+          <h3><i class="fas fa-moon"></i> <span class="settings-title">Display Mode</span></h3>
+          <div class="option-group">
+            <div class="option-item active" data-theme="dark">
+              <i class="fas fa-check"></i> Dark
+            </div>
+            <div class="option-item" data-theme="light">
+              Light
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-option">
+          <h3><i class="fas fa-file-export"></i> <span class="settings-title">Export</span></h3>
+          <div class="button-group">
+            <button onclick="downloadCSV()"><i class="fas fa-file-csv"></i> <span class="btn-text">Export CSV</span></button>
+            <button onclick="downloadExcel()" class="secondary"><i class="fas fa-file-excel"></i> <span class="btn-text">Export Excel</span></button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Auth Modals -->
+    <div class="modal" id="login-modal">
+      <div class="modal-content">
+        <button class="close-modal" onclick="closeModal('login-modal')">&times;</button>
+        <div class="auth-form">
+          <h2 class="auth-title">Login</h2>
+          <input type="email" id="login-email" placeholder="Email">
+          <input type="password" id="login-password" placeholder="Password">
+          <button onclick="login()" class="auth-btn">Login</button>
+          <div class="auth-switch">
+            <span class="auth-switch-text">Don't have an account? </span>
+            <a onclick="showSignup()" class="auth-switch-link">Sign up</a>
+          </div>
+          <div class="auth-error" id="login-error"></div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="modal" id="signup-modal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="closeModal('signup-modal')">&times;</button>
-      <div class="auth-form">
-        <h2 class="auth-title">Sign Up</h2>
-        <input type="text" id="signup-name" placeholder="Full Name">
-        <input type="email" id="signup-email" placeholder="Email">
-        <input type="password" id="signup-password" placeholder="Password">
-        <input type="password" id="signup-confirm" placeholder="Confirm Password">
-        <button onclick="signup()" class="auth-btn">Sign Up</button>
-        <div class="auth-switch">
-          <span class="auth-switch-text">Already have an account? </span>
-          <a onclick="showLogin()" class="auth-switch-link">Login</a>
+    <div class="modal" id="signup-modal">
+      <div class="modal-content">
+        <button class="close-modal" onclick="closeModal('signup-modal')">&times;</button>
+        <div class="auth-form">
+          <h2 class="auth-title">Sign Up</h2>
+          <input type="text" id="signup-name" placeholder="Full Name">
+          <input type="email" id="signup-email" placeholder="Email">
+          <input type="password" id="signup-password" placeholder="Password">
+          <input type="password" id="signup-confirm" placeholder="Confirm Password">
+          <button onclick="signup()" class="auth-btn">Sign Up</button>
+          <div class="auth-switch">
+            <span class="auth-switch-text">Already have an account? </span>
+            <a onclick="showLogin()" class="auth-switch-link">Login</a>
+          </div>
+          <div class="auth-error" id="signup-error"></div>
         </div>
-        <div class="auth-error" id="signup-error"></div>
       </div>
     </div>
   </div>
@@ -1234,7 +1252,6 @@
       en: {
         dashboard: "TRADING DASHBOARD",
         performance: "Performance",
-        journal: "Trading Journal",
         brokers: "Recommended Brokers",
         settings: "Settings",
         calendar: "Economic Calendar",
@@ -1292,7 +1309,6 @@
       fr: {
         dashboard: "TABLEAU DE BORD TRADING",
         performance: "Performance",
-        journal: "Journal de Trading",
         brokers: "Brokers Recommandés",
         settings: "Paramètres",
         calendar: "Calendrier Économique",
@@ -1402,7 +1418,7 @@
           },
           elements: {
             line: {
-              borderColor: '#4ade80', // Vert constant
+              borderColor: '#4ade80',
               backgroundColor: 'rgba(74, 222, 128, 0.1)',
               tension: 0.1,
               fill: true
@@ -1481,7 +1497,7 @@
           },
           elements: {
             line: {
-              borderColor: '#4ade80', // Vert constant
+              borderColor: '#4ade80',
               backgroundColor: 'rgba(74, 222, 128, 0.1)',
               tension: 0.1,
               fill: true
@@ -1567,11 +1583,6 @@
         updatePerformanceCharts();
       }
       
-      // Si c'est la section Journal, charger les données
-      if (sectionId === 'journal') {
-        loadJournalData();
-      }
-      
       // Animer le titre si c'est la section dashboard
       if (sectionId === 'dashboard') {
         animateTitle();
@@ -1581,12 +1592,7 @@
 
     // Fonction pour ajouter un trade
     function addTrade() {
-      let table;
-      if (currentSection === 'journal') {
-        table = document.querySelector("#journal-table tbody");
-      } else {
-        table = document.querySelector("#tradeTable tbody");
-      }
+      let table = document.querySelector("#tradeTable tbody");
       
       const row = document.createElement("tr");
 
@@ -1960,9 +1966,9 @@
 
     // Fonction pour sauvegarder le journal
     function saveJournal() {
-      const rows = document.querySelectorAll("#journal-table tbody tr");
+      const rows = document.querySelectorAll("#tradeTable tbody tr");
       const journalTrades = [];
-      const capital = parseFloat(document.getElementById("journal-capital").value) || 0;
+      const capital = parseFloat(document.getElementById("initialCapital").value) || 0;
       
       rows.forEach(row => {
         const cells = row.querySelectorAll("td");
@@ -2004,44 +2010,6 @@
       updateStats();
       
       alert("Journal saved successfully!");
-    }
-
-    // Fonction pour charger les données du journal
-    function loadJournalData() {
-      const savedData = localStorage.getItem('tradingJournal');
-      const savedCapital = localStorage.getItem('tradingCapital') || 1000;
-      
-      document.getElementById("journal-capital").value = savedCapital;
-      
-      const tbody = document.querySelector("#journal-table tbody");
-      tbody.innerHTML = "";
-      
-      if (savedData) {
-        try {
-          const data = JSON.parse(savedData);
-          data.forEach(item => {
-            addTrade();
-            const lastRow = tbody.lastChild.querySelectorAll("td");
-            lastRow[0].querySelector("input").value = item.date;
-            lastRow[1].querySelector("input").value = item.symbole;
-            lastRow[2].querySelector("input").value = item.lot;
-            lastRow[3].querySelector("select").value = item.direction;
-            lastRow[4].querySelector("input").value = item.entry;
-            lastRow[5].querySelector("input").value = item.exit;
-            lastRow[6].querySelector("select").value = item.result;
-            lastRow[7].querySelector("input").value = (item.gain >= 0 ? "+" : "") + item.gain.toFixed(2);
-            lastRow[8].querySelector("input").value = item.rrr.toFixed(2);
-            if (lastRow[9].querySelector("textarea")) {
-              lastRow[9].querySelector("textarea").value = item.notes || "";
-            }
-            
-            // Formater le champ Gain
-            formatGainField(lastRow[7].querySelector("input"));
-          });
-        } catch (error) {
-          console.error("Error loading journal:", error);
-        }
-      }
     }
 
     // Fonction pour exporter en JSON
@@ -2506,89 +2474,97 @@
 
     // Initialisation
     document.addEventListener('DOMContentLoaded', () => {
-      initCharts();
-      
-      // Ajouter 3 trades d'exemple
-      for (let i = 0; i < 3; i++) addTrade();
-      
-      // Mettre à jour les statistiques initiales
-      updateStats();
-      
-      // Afficher le conseil du jour
-      showDailyTip();
-      
-      // Mettre à jour le feedback journalier
-      updateDailyFeedback();
-      
-      // Configurer les écouteurs d'événements pour la navigation
-      document.querySelectorAll('.nav-menu a, .dropdown-menu a').forEach(link => {
-        link.addEventListener('click', function(e) {
+      // Splash screen
+      const splash = document.getElementById('splash');
+      const btn = document.getElementById('enterBtn');
+      const app = document.getElementById('mainApp');
+
+      setTimeout(() => btn.classList.add('show'), 3000);
+
+      btn.addEventListener('click', () => {
+        splash.style.display = 'none';
+        app.style.display = 'block';
+        
+        // Initialize the app after splash screen
+        initCharts();
+        
+        // Ajouter 3 trades d'exemple
+        for (let i = 0; i < 3; i++) addTrade();
+        
+        // Mettre à jour les statistiques initiales
+        updateStats();
+        
+        // Afficher le conseil du jour
+        showDailyTip();
+        
+        // Mettre à jour le feedback journalier
+        updateDailyFeedback();
+        
+        // Configurer les écouteurs d'événements pour la navigation
+        document.querySelectorAll('.nav-menu a, .dropdown-menu a').forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.getAttribute('data-section');
+            if (section) {
+              showSection(section);
+            }
+            
+            // Fermer le menu déroulant si ouvert
+            document.getElementById('dropdownMenu').classList.remove('show');
+            
+            // Animer le titre si c'est la section dashboard
+            if (section === 'dashboard') {
+              animateTitle();
+            }
+          });
+        });
+        
+        // Configurer les écouteurs d'événements pour les paramètres
+        document.querySelectorAll('.option-item[data-theme]').forEach(item => {
+          item.addEventListener('click', function() {
+            const theme = this.getAttribute('data-theme');
+            toggleTheme(theme);
+          });
+        });
+        
+        document.querySelectorAll('.option-item[data-lang]').forEach(item => {
+          item.addEventListener('click', function() {
+            const lang = this.getAttribute('data-lang');
+            changeLanguage(lang);
+          });
+        });
+        
+        // Configurer les écouteurs pour l'authentification
+        document.getElementById('login-link').addEventListener('click', function(e) {
           e.preventDefault();
-          const section = this.getAttribute('data-section');
-          if (section) {
-            showSection(section);
+          showLogin();
+        });
+        
+        document.getElementById('signup-link').addEventListener('click', function(e) {
+          e.preventDefault();
+          showSignup();
+        });
+        
+        // Charger le thème et la langue sauvegardés
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        toggleTheme(savedTheme);
+        
+        const savedLang = localStorage.getItem('language') || 'en';
+        changeLanguage(savedLang);
+        
+        // Animer le titre initial
+        animateTitle();
+        
+        // Vérifier l'état d'authentification
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            // Utilisateur connecté
+            console.log('User logged in:', user.displayName);
+          } else {
+            // Utilisateur non connecté
+            console.log('User not logged in');
           }
-          
-          // Fermer le menu déroulant si ouvert
-          document.getElementById('dropdownMenu').classList.remove('show');
-          
-          // Animer le titre si c'est la section dashboard
-          if (section === 'dashboard') {
-            animateTitle();
-          }
         });
-      });
-      
-      // Configurer les écouteurs d'événements pour les paramètres
-      document.querySelectorAll('.option-item[data-theme]').forEach(item => {
-        item.addEventListener('click', function() {
-          const theme = this.getAttribute('data-theme');
-          toggleTheme(theme);
-        });
-      });
-      
-      document.querySelectorAll('.option-item[data-lang]').forEach(item => {
-        item.addEventListener('click', function() {
-          const lang = this.getAttribute('data-lang');
-          changeLanguage(lang);
-        });
-      });
-      
-      // Configurer l'écouteur d'événements pour le capital initial dans le journal
-      document.getElementById('journal-capital').addEventListener('change', function() {
-        localStorage.setItem('tradingCapital', this.value);
-      });
-      
-      // Configurer les écouteurs pour l'authentification
-      document.getElementById('login-link').addEventListener('click', function(e) {
-        e.preventDefault();
-        showLogin();
-      });
-      
-      document.getElementById('signup-link').addEventListener('click', function(e) {
-        e.preventDefault();
-        showSignup();
-      });
-      
-      // Charger le thème et la langue sauvegardés
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      toggleTheme(savedTheme);
-      
-      const savedLang = localStorage.getItem('language') || 'en';
-      changeLanguage(savedLang);
-      
-      // Animer le titre initial
-      animateTitle();
-      
-      // Vérifier l'état d'authentification
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          // Utilisateur connecté
-          console.log('User logged in:', user.displayName);
-        } else {
-          // Utilisateur non connecté
-          console.log('User not logged in');
-        }
       });
     });
   </script>
