@@ -3,62 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trading Journal - EOC Pro</title>
+  <title>Journal de Trading - EOC Pro</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* Splash Screen Styles */
-    #splash {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #0a1930;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      text-align: center;
-    }
-
-    #splash h1 {
-      font-size: 4rem;
-      margin-bottom: 20px;
-      animation: fadeIn 2s ease;
-    }
-
-    #splash p {
-      font-size: 1.25rem;
-      opacity: 0.8;
-    }
-
-    #enterBtn {
-      margin-top: 40px;
-      padding: 12px 25px;
-      font-size: 1rem;
-      background-color: #4cc9f0;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity 1s ease;
-    }
-
-    #enterBtn.show {
-      opacity: 1;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
     :root {
       --primary-color: #4361ee;
       --primary-light: #3a86ff;
@@ -77,9 +26,45 @@
       --light-card: #ffffff;
       --light-border: #e9ecef;
     }
-    
+
+    body.light-mode {
+      background: var(--light-bg);
+      color: var(--light-text);
+      --card-bg: var(--light-card);
+      --border-color: var(--light-border);
+      --bg-dark: var(--light-bg);
+      --bg-darker: #e9ecef;
+    }
+
+    body.light-mode nav {
+      background-color: var(--light-card);
+      border-bottom: 1px solid var(--light-border);
+    }
+
+    body.light-mode .nav-brand {
+      color: var(--light-text);
+    }
+
+    body.light-mode .nav-menu a {
+      color: var(--light-text);
+    }
+
+    body.light-mode input,
+    body.light-mode select,
+    body.light-mode textarea {
+      background-color: white;
+      color: var(--light-text);
+      border-color: var(--light-border);
+    }
+
+    body.light-mode .stat-card {
+      color: white;
+    }
+
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
     
     body {
@@ -90,44 +75,58 @@
       color: var(--text-light);
       line-height: 1.6;
       min-height: 100vh;
-      transition: background 0.3s ease;
+      transition: background 0.3s ease, color 0.3s ease;
     }
     
-    body.light-mode {
-      background: var(--light-bg);
-      color: var(--light-text);
-      --card-bg: var(--light-card);
-      --border-color: var(--light-border);
+    #splash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0a1930;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      text-align: center;
     }
     
-    h1, h2, h3 {
-      font-weight: 600;
-      color: var(--text-light);
-      margin-top: 0;
+    #splash h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease;
     }
     
-    body.light-mode h1,
-    body.light-mode h2,
-    body.light-mode h3 {
-      color: var(--light-text);
+    #splash p {
+      font-size: 1.25rem;
+      opacity: 0.8;
     }
     
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-      background: linear-gradient(90deg, var(--primary-light), var(--accent-color));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: inline-block;
-      animation: fadeInScale 1s ease-in-out;
+    #enterBtn {
+      margin-top: 40px;
+      padding: 12px 25px;
+      font-size: 1rem;
+      background-color: #4cc9f0;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 1s ease;
     }
     
-    @keyframes fadeInScale {
-      0% { opacity: 0; transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1); }
+    #enterBtn.show {
+      opacity: 1;
     }
     
-    /* Menu de navigation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
     nav {
       background-color: var(--bg-darker);
       padding: 1rem 0;
@@ -137,11 +136,6 @@
       z-index: 100;
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border-color);
-    }
-    
-    body.light-mode nav {
-      background-color: white;
-      border-bottom: 1px solid #e9ecef;
     }
     
     .nav-container {
@@ -161,10 +155,6 @@
       font-size: 1.25rem;
       color: var(--text-light);
       text-decoration: none;
-    }
-    
-    body.light-mode .nav-brand {
-      color: var(--light-text);
     }
     
     .nav-brand i {
@@ -193,10 +183,6 @@
       gap: 0.5rem;
     }
     
-    body.light-mode .nav-menu a {
-      color: var(--light-text);
-    }
-    
     .nav-menu a:hover, .nav-menu a.active {
       background-color: rgba(67, 97, 238, 0.2);
       color: var(--primary-light);
@@ -216,10 +202,6 @@
       cursor: pointer;
     }
     
-    body.light-mode .menu-button {
-      color: var(--light-text);
-    }
-    
     .dropdown-menu {
       position: absolute;
       right: 2rem;
@@ -232,11 +214,6 @@
       border: 1px solid var(--border-color);
       display: none;
       z-index: 1000;
-    }
-    
-    body.light-mode .dropdown-menu {
-      background-color: white;
-      border: 1px solid #e9ecef;
     }
     
     .dropdown-menu.show {
@@ -252,15 +229,10 @@
       transition: background-color 0.2s;
     }
     
-    body.light-mode .dropdown-menu a {
-      color: var(--light-text);
-    }
-    
     .dropdown-menu a:hover {
       background-color: rgba(67, 97, 238, 0.2);
     }
     
-    /* Conteneur principal */
     .container {
       max-width: 1200px;
       margin: 2rem auto;
@@ -274,7 +246,21 @@
       margin-bottom: 2rem;
     }
     
-    /* Sections */
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(90deg, var(--primary-light), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      animation: fadeInScale 1s ease-in-out;
+    }
+    
+    @keyframes fadeInScale {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
     .section {
       display: none;
       animation: fadeIn 0.5s ease-out;
@@ -289,66 +275,147 @@
       to { opacity: 1; transform: translateY(0); }
     }
     
-    /* Tableau des trades */
-    table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      margin: 2rem 0;
-      background-color: var(--card-bg);
+    .stat-card {
+      padding: 1.5rem;
       border-radius: 0.75rem;
-      overflow: hidden;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       border: 1px solid var(--border-color);
     }
     
-    body.light-mode table {
-      background-color: white;
-      border: 1px solid #e9ecef;
+    .stat-card.gradient-blue {
+      background: linear-gradient(135deg, #4361ee 0%, #3a86ff 100%);
+      color: white;
+    }
+    
+    .stat-card.gradient-teal {
+      background: linear-gradient(135deg, #4895ef 0%, #4cc9f0 100%);
+      color: white;
+    }
+    
+    .stat-card.gradient-aqua {
+      background: linear-gradient(135deg, #4cc9f0 0%, #4895ef 100%);
+      color: white;
+    }
+    
+    .stat-card.gradient-darkblue {
+      background: linear-gradient(135deg, #3a86ff 0%, #4361ee 100%);
+      color: white;
+    }
+    
+    .stat-card h3 {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .stat-card .value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+    }
+    
+    .stats-grid {
+      display: grid;
+      gap: 1rem;
+      margin: 1rem 0 2rem;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      background-color: var(--card-bg);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
     th, td {
-      padding: 1rem;
+      padding: 0.75rem;
       text-align: center;
       border-bottom: 1px solid var(--border-color);
-    }
-    
-    body.light-mode th,
-    body.light-mode td {
-      border-bottom: 1px solid #e9ecef;
     }
     
     th {
       background-color: var(--bg-darker);
       font-weight: 600;
+      color: var(--primary-light);
       text-transform: uppercase;
       font-size: 0.8rem;
-      letter-spacing: 0.5px;
-      color: var(--primary-light);
     }
     
-    body.light-mode th {
-      background-color: #f8f9fa;
-    }
-    
-    tr:last-child td {
-      border-bottom: none;
-    }
-    
-    tr:hover td {
+    tr:hover {
       background-color: rgba(67, 97, 238, 0.1);
     }
     
-    body.light-mode tr:hover td {
-      background-color: rgba(67, 97, 238, 0.05);
+    .chart-container {
+      display: grid;
+      gap: 1.5rem;
+      margin: 2rem 0;
     }
     
-    td.symbol-cell {
-      font-weight: 600;
-      color: var(--accent-color);
+    .chart-wrapper {
+      background-color: var(--card-bg);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border-color);
     }
     
-    /* Boutons */
+    .chart-wrapper h2 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .filter-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      align-items: center;
+      background-color: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+    }
+    
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .filter-group label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    
+    input, select, textarea {
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      padding: 0.65rem 0.75rem;
+      background-color: var(--bg-darker);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      transition: all 0.2s ease-in-out;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+    }
+    
     .button-group {
       display: flex;
       flex-wrap: wrap;
@@ -385,248 +452,27 @@
       color: var(--text-light);
     }
     
-    body.light-mode button.secondary {
-      color: var(--light-text);
-      border: 1px solid #e9ecef;
-    }
-    
     button.secondary:hover {
       background-color: rgba(255, 255, 255, 0.05);
       border-color: var(--primary-light);
-    }
-    
-    body.light-mode button.secondary:hover {
-      background-color: rgba(0, 0, 0, 0.02);
     }
     
     button i {
       font-size: 1rem;
     }
     
-    /* Statistiques */
-    .stats {
-      margin: 2rem 0;
-      padding: 1.5rem;
+    .conseil-card {
       background-color: var(--card-bg);
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      border: 1px solid var(--border-color);
-    }
-    
-    body.light-mode .stats {
-      background-color: white;
-      border: 1px solid #e9ecef;
-    }
-    
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    
-    .stat-card {
-      background-color: var(--bg-darker);
-      padding: 1.25rem;
+      padding: 1rem;
       border-radius: 0.5rem;
-      text-align: center;
-      border: 1px solid var(--border-color);
-      transition: all 0.2s ease-in-out;
-    }
-    
-    body.light-mode .stat-card {
-      background-color: #f8f9fa;
-      border: 1px solid #e9ecef;
-    }
-    
-    .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    }
-    
-    .stat-card h3 {
-      margin-top: 0;
-      font-size: 0.9rem;
-      color: var(--primary-light);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .stat-card .value {
-      font-size: 1.75rem;
-      font-weight: 700;
-      margin: 0.5rem 0;
-    }
-    
-    .stat-card .description {
-      font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.7);
-    }
-    
-    body.light-mode .stat-card .description {
-      color: rgba(0, 0, 0, 0.6);
-    }
-    
-    /* Graphiques */
-    .chart-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-      gap: 1.5rem;
-      margin: 2.5rem 0;
-    }
-    
-    .chart-wrapper {
-      background-color: var(--card-bg);
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      border: 1px solid var(--border-color);
-    }
-    
-    body.light-mode .chart-wrapper {
-      background-color: white;
-      border: 1px solid #e9ecef;
-    }
-    
-    .chart-wrapper h2 {
-      margin-bottom: 1.5rem;
-      font-size: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    canvas {
-      width: 100% !important;
-      height: auto !important;
-      max-height: 400px;
-    }
-    
-    /* Filtres */
-    .filter-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
       margin: 1.5rem 0;
-      align-items: center;
-      background-color: var(--card-bg);
-      padding: 1.25rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      border: 1px solid var(--border-color);
-    }
-    
-    body.light-mode .filter-container {
-      background-color: white;
-      border: 1px solid #e9ecef;
-    }
-    
-    .filter-group {
+      border-left: 4px solid var(--primary-color);
+      font-style: italic;
       display: flex;
       align-items: center;
       gap: 0.75rem;
     }
     
-    .filter-group label {
-      font-weight: 500;
-      font-size: 0.9rem;
-      white-space: nowrap;
-    }
-    
-    input, select, textarea {
-      border: 1px solid var(--border-color);
-      border-radius: 0.5rem;
-      padding: 0.65rem 0.75rem;
-      background-color: var(--bg-darker);
-      font-family: 'Inter', sans-serif;
-      color: var(--text-light);
-      font-size: 0.9rem;
-      transition: all 0.2s ease-in-out;
-    }
-    
-    body.light-mode input,
-    body.light-mode select,
-    body.light-mode textarea {
-      background-color: white;
-      color: var(--light-text);
-      border: 1px solid #e9ecef;
-    }
-    
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
-    }
-    
-    /* Badges */
-    .badge {
-      display: inline-block;
-      padding: 0.25rem 0.5rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .badge-win {
-      background-color: rgba(74, 222, 128, 0.2);
-      color: var(--win-color);
-    }
-    
-    .badge-loss {
-      background-color: rgba(248, 113, 113, 0.2);
-      color: var(--loss-color);
-    }
-    
-    /* Paramètres */
-    .settings-option {
-      margin-bottom: 1.5rem;
-    }
-    
-    .settings-option h3 {
-      margin-bottom: 0.75rem;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .settings-option .option-group {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    
-    .settings-option .option-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      background-color: var(--bg-darker);
-      border: 1px solid var(--border-color);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    
-    body.light-mode .settings-option .option-item {
-      background-color: #f8f9fa;
-      border: 1px solid #e9ecef;
-    }
-    
-    .settings-option .option-item:hover {
-      background-color: rgba(67, 97, 238, 0.2);
-      border-color: var(--primary-light);
-    }
-    
-    .settings-option .option-item.active {
-      background-color: var(--primary-color);
-      color: white;
-      border-color: var(--primary-color);
-    }
-    
-    /* Broker Section */
     .brokers-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -661,10 +507,6 @@
       color: rgba(255, 255, 255, 0.7);
     }
     
-    body.light-mode .broker-card p {
-      color: rgba(0, 0, 0, 0.6);
-    }
-    
     .broker-card a {
       display: inline-block;
       padding: 0.5rem 1rem;
@@ -678,141 +520,6 @@
     
     .broker-card a:hover {
       background-color: var(--primary-light);
-    }
-    
-    /* Auth Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-    
-    .modal-content {
-      background-color: var(--card-bg);
-      border-radius: 0.75rem;
-      padding: 2rem;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      position: relative;
-    }
-    
-    body.light-mode .modal-content {
-      background-color: white;
-    }
-    
-    .close-modal {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--text-light);
-    }
-    
-    body.light-mode .close-modal {
-      color: var(--light-text);
-    }
-    
-    .auth-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    
-    .auth-form h2 {
-      margin-top: 0;
-      text-align: center;
-    }
-    
-    .auth-form input {
-      width: 100%;
-      padding: 0.75rem;
-      border-radius: 0.5rem;
-      border: 1px solid var(--border-color);
-      background-color: var(--bg-darker);
-      color: var(--text-light);
-    }
-    
-    body.light-mode .auth-form input {
-      background-color: white;
-      color: var(--light-text);
-      border: 1px solid #e9ecef;
-    }
-    
-    .auth-form button {
-      width: 100%;
-      padding: 0.75rem;
-      border-radius: 0.5rem;
-    }
-    
-    .auth-switch {
-      text-align: center;
-      margin-top: 1rem;
-    }
-    
-    .auth-switch a {
-      color: var(--primary-light);
-      cursor: pointer;
-      text-decoration: none;
-    }
-    
-    .auth-switch a:hover {
-      text-decoration: underline;
-    }
-    
-    .auth-error {
-      color: var(--loss-color);
-      font-size: 0.9rem;
-      text-align: center;
-      margin-top: 0.5rem;
-    }
-    
-    /* Nouveaux styles */
-    .ia-feedback {
-      background-color: var(--card-bg);
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-      margin: 2rem 0;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-    
-    .ia-feedback h2 {
-      margin-top: 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .feedback-content {
-      font-style: italic;
-      line-height: 1.6;
-    }
-    
-    .conseil-card {
-      background-color: var(--card-bg);
-      padding: 1rem;
-      border-radius: 0.5rem;
-      margin: 1.5rem 0;
-      border-left: 4px solid var(--primary-color);
-      font-style: italic;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    
-    body.light-mode .conseil-card {
-      background-color: var(--light-card);
     }
     
     .calendar-container {
@@ -830,7 +537,47 @@
       border-radius: 0.5rem;
     }
     
-    /* Responsive */
+    .settings-option {
+      margin-bottom: 1.5rem;
+    }
+    
+    .settings-option h3 {
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .settings-option .option-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .settings-option .option-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      background-color: var(--bg-darker);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .settings-option .option-item:hover {
+      background-color: rgba(67, 97, 238, 0.2);
+      border-color: var(--primary-light);
+    }
+    
+    .settings-option .option-item.active {
+      background-color: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+    
     @media (max-width: 768px) {
       .nav-container {
         flex-direction: column;
@@ -867,10 +614,6 @@
       .stats-grid {
         grid-template-columns: 1fr 1fr;
       }
-      
-      .brokers-container {
-        grid-template-columns: 1fr;
-      }
     }
     
     @media (max-width: 480px) {
@@ -891,19 +634,15 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <!-- Splash Screen -->
   <div id="splash">
     <h1>EOC</h1>
     <p>Bienvenue dans ton Journal de Trading</p>
     <button id="enterBtn">Welcome</button>
   </div>
 
-  <!-- Main Application -->
   <div id="mainApp" style="display: none;">
-    <!-- Menu de navigation -->
     <nav>
       <div class="nav-container">
         <a href="#" class="nav-brand">
@@ -936,35 +675,140 @@
     </nav>
 
     <div class="container">
-      <!-- Section Dashboard -->
       <section id="dashboard-section" class="section active">
         <div class="page-header">
-          <h1 id="animated-title"><i class="fas fa-tachometer-alt"></i> <span class="section-title">TRADING DASHBOARD</span></h1>
-          <button onclick="addTrade()" class="secondary"><i class="fas fa-plus"></i> <span class="btn-text">New Trade</span></button>
+          <h1 id="animated-title"><i class="fas fa-tachometer-alt"></i> <span class="section-title">TABLEAU DE BORD</span></h1>
+          <button onclick="addTrade()" class="secondary"><i class="fas fa-plus"></i> <span class="btn-text">Nouveau Trade</span></button>
         </div>
 
         <div class="conseil-card" id="conseilDuJour">
           <i class="fas fa-lightbulb"></i> Chargement du conseil...
         </div>
 
+        <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="stat-card gradient-blue">
+            <h3 class="stat-title">PROFIT/PERTE</h3>
+            <div class="value" id="totalGain">0%</div>
+          </div>
+          <div class="stat-card gradient-teal">
+            <h3 class="stat-title">RISK/REWARD</h3>
+            <div class="value" id="averageRRR">0</div>
+          </div>
+          <div class="stat-card gradient-aqua">
+            <h3 class="stat-title">RATIO MOYEN</h3>
+            <div class="value" id="profitFactor">0</div>
+          </div>
+          <div class="stat-card gradient-darkblue">
+            <h3 class="stat-title">WIN RATE</h3>
+            <div class="value" id="winRate">0%</div>
+          </div>
+        </div>
+
+        <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="stat-card">
+            <h3 class="stat-title">DRAWDOWN</h3>
+            <div class="value" id="drawdown">0%</div>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-title">PERTES MAX JOURNALIERES</h3>
+            <div class="value">0.00% / 1%</div>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-title">PERTES MAX HEBDOMADAIRES</h3>
+            <div class="value">0.00% / 3%</div>
+          </div>
+        </div>
+
+        <div class="chart-wrapper" style="margin-bottom: 2rem;">
+          <h2><i class="fas fa-calendar-alt"></i> PERFORMANCE MENSUELLE</h2>
+          <div style="overflow-x: auto;">
+            <table id="monthlyTable">
+              <thead>
+                <tr>
+                  <th>Mois</th>
+                  <th>Janvier</th>
+                  <th>Février</th>
+                  <th>Mars</th>
+                  <th>Avril</th>
+                  <th>Mai</th>
+                  <th>Juin</th>
+                  <th>Juillet</th>
+                  <th>Août</th>
+                  <th>Septembre</th>
+                  <th>Octobre</th>
+                  <th>Novembre</th>
+                  <th>Décembre</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2024</td>
+                  <td id="jan-profit">0%</td>
+                  <td id="feb-profit">0%</td>
+                  <td id="mar-profit">0%</td>
+                  <td id="apr-profit">0%</td>
+                  <td id="may-profit">0%</td>
+                  <td id="jun-profit">0%</td>
+                  <td id="jul-profit">0%</td>
+                  <td id="aug-profit">0%</td>
+                  <td id="sep-profit">0%</td>
+                  <td id="oct-profit">0%</td>
+                  <td id="nov-profit">0%</td>
+                  <td id="dec-profit">0%</td>
+                  <td id="year-profit">0%</td>
+                </tr>
+                <tr>
+                  <td>Risk/Reward</td>
+                  <td id="jan-rr">0</td>
+                  <td id="feb-rr">0</td>
+                  <td id="mar-rr">0</td>
+                  <td id="apr-rr">0</td>
+                  <td id="may-rr">0</td>
+                  <td id="jun-rr">0</td>
+                  <td id="jul-rr">0</td>
+                  <td id="aug-rr">0</td>
+                  <td id="sep-rr">0</td>
+                  <td id="oct-rr">0</td>
+                  <td id="nov-rr">0</td>
+                  <td id="dec-rr">0</td>
+                  <td id="year-rr">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="chart-container" style="grid-template-columns: 1fr 2fr; gap: 1.5rem;">
+          <div class="chart-wrapper">
+            <h2><i class="fas fa-chart-line"></i> EVOLUTION DU CAPITAL</h2>
+            <canvas id="capitalChart" width="400" height="500"></canvas>
+          </div>
+          
+          <div class="chart-wrapper">
+            <h2><i class="fas fa-chart-pie"></i> PERFORMANCE DES TRADES</h2>
+            <canvas id="pieChart" width="400" height="400"></canvas>
+          </div>
+        </div>
+
         <div class="filter-container fade-in">
           <div class="filter-group">
-            <label for="initialCapital"><i class="fas fa-wallet"></i> <span class="filter-text">Initial Capital:</span></label>
+            <label for="initialCapital"><i class="fas fa-wallet"></i> CAPITAL INITIAL:</label>
             <input type="number" id="initialCapital" value="1000" onchange="updateStats()" />
           </div>
           
           <div class="filter-group">
-            <label for="symbolFilter"><i class="fas fa-filter"></i> <span class="filter-text">Symbol:</span></label>
-            <input type="text" id="symbolFilter" placeholder="Filter by symbol" oninput="updateStats()">
+            <label for="symbolFilter"><i class="fas fa-filter"></i> SYMBOLE:</label>
+            <input type="text" id="symbolFilter" placeholder="Filtrer par symbole" oninput="updateStats()">
           </div>
           
           <div class="filter-group">
-            <label for="dateFromFilter"><i class="fas fa-calendar"></i> <span class="filter-text">From:</span></label>
+            <label for="dateFromFilter"><i class="fas fa-calendar"></i> DE:</label>
             <input type="date" id="dateFromFilter" onchange="updateStats()">
           </div>
           
           <div class="filter-group">
-            <label for="dateToFilter"><i class="fas fa-calendar"></i> <span class="filter-text">To:</span></label>
+            <label for="dateToFilter"><i class="fas fa-calendar"></i> À:</label>
             <input type="date" id="dateToFilter" onchange="updateStats()">
           </div>
           
@@ -972,178 +816,99 @@
         </div>
 
         <div class="button-group">
-          <button onclick="downloadJSON()"><i class="fas fa-save"></i> <span class="btn-text">Save</span></button>
-          <button onclick="downloadCSV()"><i class="fas fa-file-csv"></i> <span class="btn-text">Export CSV</span></button>
+          <button onclick="downloadJSON()"><i class="fas fa-save"></i> <span class="btn-text">Sauvegarder</span></button>
+          <button onclick="downloadCSV()"><i class="fas fa-file-csv"></i> <span class="btn-text">Exporter CSV</span></button>
           <input type="file" id="fileInput" accept="application/json" style="display: none;" />
-          <button onclick="document.getElementById('fileInput').click()" class="secondary"><i class="fas fa-folder-open"></i> <span class="btn-text">Load</span></button>
+          <button onclick="document.getElementById('fileInput').click()" class="secondary"><i class="fas fa-folder-open"></i> <span class="btn-text">Charger</span></button>
         </div>
 
         <div style="overflow-x: auto;">
           <table id="tradeTable">
             <thead>
               <tr>
-                <th class="table-header">Date</th>
-                <th class="table-header">Symbol</th>
-                <th class="table-header">Lot</th>
-                <th class="table-header">Type</th>
-                <th class="table-header">Entry</th>
-                <th class="table-header">Exit</th>
-                <th class="table-header">Result</th>
+                <th class="table-header">DATE</th>
+                <th class="table-header">SYMBOLE</th>
+                <th class="table-header">LOT</th>
+                <th class="table-header">TYPE</th>
+                <th class="table-header">ENTRÉE</th>
+                <th class="table-header">SORTIE</th>
+                <th class="table-header">RÉSULTAT</th>
                 <th class="table-header">P/L ($)</th>
                 <th class="table-header">RR</th>
-                <th class="table-header">Notes</th>
+                <th class="table-header">NOTES</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
         </div>
-
-        <div id="stats" class="fade-in">
-          <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Performance Statistics</span></h2>
-          <div class="stats-grid">
-            <div class="stat-card">
-              <h3 class="stat-title">Total P/L</h3>
-              <div class="value" id="totalGain">0 $</div>
-              <div class="description stat-desc">Cumulative P/L</div>
-            </div>
-            <div class="stat-card">
-              <h3 class="stat-title">Win Rate</h3>
-              <div class="value" id="winRate">0%</div>
-              <div class="description stat-desc">Winning trades</div>
-            </div>
-            <div class="stat-card">
-              <h3 class="stat-title">Avg. Profit</h3>
-              <div class="value" id="averageProfit">0 $</div>
-              <div class="description stat-desc">Per trade</div>
-            </div>
-            <div class="stat-card">
-              <h3 class="stat-title">Avg. RR</h3>
-              <div class="value" id="averageRRR">0</div>
-              <div class="description stat-desc">Risk-Reward Ratio</div>
-            </div>
-            <div class="stat-card">
-              <h3 class="stat-title">Profit Factor</h3>
-              <div class="value" id="profitFactor">0</div>
-              <div class="description stat-desc">Gains/Losses ratio</div>
-            </div>
-            <div class="stat-card">
-              <h3 class="stat-title">Total Trades</h3>
-              <div class="value" id="totalTrades">0</div>
-              <div class="description stat-desc">Executed trades</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="ia-feedback">
-          <h2><i class="fas fa-robot"></i> <span class="section-title">Daily Feedback</span></h2>
-          <div class="feedback-content" id="dailyFeedback">
-            Loading daily analysis...
-          </div>
-        </div>
-
-        <div class="chart-container">
-          <div class="chart-wrapper fade-in">
-            <h2><i class="fas fa-chart-line"></i> <span class="section-title">Capital Evolution</span></h2>
-            <canvas id="capitalChart" width="800" height="400"></canvas>
-          </div>
-          
-          <div class="chart-wrapper fade-in">
-            <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Trades Performance</span></h2>
-            <canvas id="pieChart" width="300" height="300"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-container">
-          <div class="chart-wrapper fade-in">
-            <h2><i class="fas fa-chart-bar"></i> <span class="section-title">Daily Performance</span></h2>
-            <canvas id="dailyChart" width="800" height="400"></canvas>
-          </div>
-        </div>
       </section>
 
-      <!-- Section Performance -->
       <section id="performance-section" class="section">
         <div class="page-header">
-          <h1><i class="fas fa-chart-bar"></i> <span class="section-title">Performance</span></h1>
-        </div>
-
-        <div class="stats">
-          <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Performance Statistics</span></h2>
-          <div class="stats-grid">
-            <div class="stat-card">
-              <h3 class="stat-title">Total P/L</h3>
-              <div class="value" id="perf-totalGain">0 $</div>
-              <div class="description stat-desc">Cumulative P/L</div>
-            </div>
-            <div class="stat-card">
-              <h3 class="stat-title">Win Rate</h3>
-              <div class="value" id="perf-winRate">0%</div>
-              <div class="description stat-desc">Winning trades</div>
-            </div>
-            <div class="stat-card">
-              <h3 class="stat-title">Avg. Profit</h3>
-              <div class="value" id="perf-averageProfit">0 $</div>
-              <div class="description stat-desc">Per trade</div>
-            </div>
-            <div class="stat-card">
-              <h3 class="stat-title">Avg. RR</h3>
-              <div class="value" id="perf-averageRRR">0</div>
-              <div class="description stat-desc">Risk-Reward Ratio</div>
-            </div>
-          </div>
+          <h1><i class="fas fa-chart-bar"></i> PERFORMANCE</h1>
         </div>
 
         <div class="chart-container">
           <div class="chart-wrapper">
-            <h2><i class="fas fa-chart-line"></i> <span class="section-title">Capital Evolution</span></h2>
+            <h2><i class="fas fa-chart-line"></i> ÉVOLUTION DU CAPITAL</h2>
             <canvas id="perf-capitalChart" width="800" height="400"></canvas>
           </div>
           
           <div class="chart-wrapper">
-            <h2><i class="fas fa-chart-pie"></i> <span class="section-title">Trades Performance</span></h2>
+            <h2><i class="fas fa-chart-pie"></i> PERFORMANCE DES TRADES</h2>
             <canvas id="perf-pieChart" width="300" height="300"></canvas>
           </div>
         </div>
 
         <div class="chart-container">
           <div class="chart-wrapper">
-            <h2><i class="fas fa-chart-bar"></i> <span class="section-title">Daily Performance</span></h2>
+            <h2><i class="fas fa-chart-bar"></i> PERFORMANCE JOURNALIÈRE</h2>
             <canvas id="perf-dailyChart" width="800" height="400"></canvas>
           </div>
         </div>
       </section>
 
-      <!-- Section Brokers -->
       <section id="brokers-section" class="section">
         <div class="page-header">
-          <h1><i class="fas fa-building"></i> <span class="section-title">Recommended Brokers</span></h1>
+          <h1><i class="fas fa-building"></i> BROKERS RECOMMANDÉS</h1>
         </div>
 
         <div class="brokers-container">
           <div class="broker-card">
             <h3><i class="fas fa-check-circle"></i> EXNESS</h3>
-            <p class="broker-desc">Trade with tight spreads and instant execution on one of the most trusted brokers in the industry.</p>
-            <a href="https://one.exnesstrack.org/intl/fr/a/i911hyordj" target="_blank" class="broker-link">Open Account</a>
+            <p>Trade with tight spreads and instant execution on one of the most trusted brokers in the industry.</p>
+            <a href="https://one.exnesstrack.org/intl/fr/a/i911hyordj" target="_blank" class="broker-link">Ouvrir un compte</a>
           </div>
           
           <div class="broker-card">
             <h3><i class="fas fa-check-circle"></i> HEADWAY</h3>
-            <p class="broker-desc">Start your trading journey with Headway and enjoy competitive trading conditions.</p>
-            <a href="https://headway.partners/user/signup?hwp=2107f0" target="_blank" class="broker-link">Open Account</a>
+            <p>Start your trading journey with Headway and enjoy competitive trading conditions.</p>
+            <a href="https://headway.partners/user/signup?hwp=2107f0" target="_blank" class="broker-link">Ouvrir un compte</a>
           </div>
           
           <div class="broker-card">
             <h3><i class="fas fa-check-circle"></i> FBS</h3>
-            <p class="broker-desc">Join FBS broker and trade with leverage up to 1:3000 on various financial instruments.</p>
-            <a href="https://fbs.partners?ibl=891392&ibp=25515221" target="_blank" class="broker-link">Open Account</a>
+            <p>Join FBS broker and trade with leverage up to 1:3000 on various financial instruments.</p>
+            <a href="https://fbs.partners?ibl=891392&ibp=25515221" target="_blank" class="broker-link">Ouvrir un compte</a>
+          </div>
+          
+          <div class="broker-card">
+            <h3><i class="fas fa-check-circle"></i> JUSTMARKETS</h3>
+            <p>Broker fiable avec des conditions de trading compétitives et une plateforme facile à utiliser.</p>
+            <a href="https://one.justmarkets.link/a/2oozd0s1d1" target="_blank" class="broker-link">Ouvrir un compte</a>
+          </div>
+          
+          <div class="broker-card">
+            <h3><i class="fas fa-check-circle"></i> LITE FINANCE</h3>
+            <p>Broker régulé offrant des spreads serrés et une exécution rapide des ordres.</p>
+            <a href="https://www.litefinance.org/?uid=114959820" target="_blank" class="broker-link">Ouvrir un compte</a>
           </div>
         </div>
       </section>
 
-      <!-- Section Calendar -->
       <section id="calendar-section" class="section">
         <div class="page-header">
-          <h1><i class="fas fa-calendar-alt"></i> <span class="section-title">Economic Calendar</span></h1>
+          <h1><i class="fas fa-calendar-alt"></i> CALENDRIER ÉCONOMIQUE</h1>
         </div>
         
         <div class="calendar-container">
@@ -1153,238 +918,59 @@
         </div>
       </section>
 
-      <!-- Section Paramètres -->
       <section id="settings-section" class="section">
         <div class="page-header">
-          <h1><i class="fas fa-cog"></i> <span class="section-title">Settings</span></h1>
+          <h1><i class="fas fa-cog"></i> PARAMÈTRES</h1>
         </div>
 
         <div class="settings-option">
-          <h3><i class="fas fa-language"></i> <span class="settings-title">Language</span></h3>
+          <h3><i class="fas fa-language"></i> Langue</h3>
           <div class="option-group">
-            <div class="option-item active" data-lang="en">
-              <i class="fas fa-check"></i> English
+            <div class="option-item active" data-lang="fr" onclick="changeLanguage('fr')">
+              <i class="fas fa-check"></i> Français
             </div>
-            <div class="option-item" data-lang="fr">
-              Français
+            <div class="option-item" data-lang="en" onclick="changeLanguage('en')">
+              English
             </div>
           </div>
         </div>
 
         <div class="settings-option">
-          <h3><i class="fas fa-moon"></i> <span class="settings-title">Display Mode</span></h3>
+          <h3><i class="fas fa-moon"></i> Mode d'affichage</h3>
           <div class="option-group">
-            <div class="option-item active" data-theme="dark">
-              <i class="fas fa-check"></i> Dark
+            <div class="option-item active" data-theme="dark" onclick="toggleTheme('dark')">
+              <i class="fas fa-check"></i> Sombre
             </div>
-            <div class="option-item" data-theme="light">
-              Light
+            <div class="option-item" data-theme="light" onclick="toggleTheme('light')">
+              Clair
             </div>
           </div>
         </div>
 
         <div class="settings-option">
-          <h3><i class="fas fa-file-export"></i> <span class="settings-title">Export</span></h3>
+          <h3><i class="fas fa-file-export"></i> Exportation</h3>
           <div class="button-group">
-            <button onclick="downloadCSV()"><i class="fas fa-file-csv"></i> <span class="btn-text">Export CSV</span></button>
-            <button onclick="downloadExcel()" class="secondary"><i class="fas fa-file-excel"></i> <span class="btn-text">Export Excel</span></button>
+            <button onclick="downloadCSV()"><i class="fas fa-file-csv"></i> <span class="btn-text">Exporter CSV</span></button>
+            <button onclick="downloadExcel()" class="secondary"><i class="fas fa-file-excel"></i> <span class="btn-text">Exporter Excel</span></button>
           </div>
         </div>
       </section>
     </div>
-
-    <!-- Auth Modals -->
-    <div class="modal" id="login-modal">
-      <div class="modal-content">
-        <button class="close-modal" onclick="closeModal('login-modal')">&times;</button>
-        <div class="auth-form">
-          <h2 class="auth-title">Login</h2>
-          <input type="email" id="login-email" placeholder="Email">
-          <input type="password" id="login-password" placeholder="Password">
-          <button onclick="login()" class="auth-btn">Login</button>
-          <div class="auth-switch">
-            <span class="auth-switch-text">Don't have an account? </span>
-            <a onclick="showSignup()" class="auth-switch-link">Sign up</a>
-          </div>
-          <div class="auth-error" id="login-error"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal" id="signup-modal">
-      <div class="modal-content">
-        <button class="close-modal" onclick="closeModal('signup-modal')">&times;</button>
-        <div class="auth-form">
-          <h2 class="auth-title">Sign Up</h2>
-          <input type="text" id="signup-name" placeholder="Full Name">
-          <input type="email" id="signup-email" placeholder="Email">
-          <input type="password" id="signup-password" placeholder="Password">
-          <input type="password" id="signup-confirm" placeholder="Confirm Password">
-          <button onclick="signup()" class="auth-btn">Sign Up</button>
-          <div class="auth-switch">
-            <span class="auth-switch-text">Already have an account? </span>
-            <a onclick="showLogin()" class="auth-switch-link">Login</a>
-          </div>
-          <div class="auth-error" id="signup-error"></div>
-        </div>
-      </div>
-    </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD5XqZ5J5Z5J5J5J5J5J5J5J5J5J5J5J5",
-      authDomain: "eoc-pro-trading.firebaseapp.com",
-      projectId: "eoc-pro-trading",
-      storageBucket: "eoc-pro-trading.appspot.com",
-      messagingSenderId: "1234567890",
-      appId: "1:1234567890:web:1234567890abcdef"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    // Language translations
-    const translations = {
-      en: {
-        dashboard: "TRADING DASHBOARD",
-        performance: "Performance",
-        brokers: "Recommended Brokers",
-        settings: "Settings",
-        calendar: "Economic Calendar",
-        newTrade: "New Trade",
-        initialCapital: "Initial Capital",
-        symbol: "Symbol",
-        from: "From",
-        to: "To",
-        reset: "Reset",
-        save: "Save",
-        exportCSV: "Export CSV",
-        load: "Load",
-        date: "Date",
-        lot: "Lot",
-        type: "Type",
-        entry: "Entry",
-        exit: "Exit",
-        result: "Result",
-        pl: "P/L ($)",
-        rr: "RR",
-        notes: "Notes",
-        totalPL: "Total P/L",
-        winRate: "Win Rate",
-        avgProfit: "Avg. Profit",
-        avgRR: "Avg. RR",
-        profitFactor: "Profit Factor",
-        totalTrades: "Total Trades",
-        cumulativePL: "Cumulative P/L",
-        winningTrades: "Winning trades",
-        perTrade: "Per trade",
-        riskReward: "Risk-Reward Ratio",
-        gainsLosses: "Gains/Losses ratio",
-        executedTrades: "Executed trades",
-        capitalEvolution: "Capital Evolution",
-        tradesPerformance: "Trades Performance",
-        dailyPerformance: "Daily Performance",
-        performanceStats: "Performance Statistics",
-        language: "Language",
-        displayMode: "Display Mode",
-        dark: "Dark",
-        light: "Light",
-        export: "Export",
-        exportExcel: "Export Excel",
-        login: "Login",
-        signup: "Sign Up",
-        fullName: "Full Name",
-        email: "Email",
-        password: "Password",
-        confirmPassword: "Confirm Password",
-        noAccount: "Don't have an account?",
-        haveAccount: "Already have an account?",
-        dailyFeedback: "Daily Feedback",
-        conseilDuJour: "Tip of the day"
-      },
-      fr: {
-        dashboard: "TABLEAU DE BORD TRADING",
-        performance: "Performance",
-        brokers: "Brokers Recommandés",
-        settings: "Paramètres",
-        calendar: "Calendrier Économique",
-        newTrade: "Nouveau Trade",
-        initialCapital: "Capital Initial",
-        symbol: "Symbole",
-        from: "De",
-        to: "À",
-        reset: "Réinitialiser",
-        save: "Sauvegarder",
-        exportCSV: "Exporter CSV",
-        load: "Charger",
-        date: "Date",
-        lot: "Lot",
-        type: "Type",
-        entry: "Entrée",
-        exit: "Sortie",
-        result: "Résultat",
-        pl: "G/P ($)",
-        rr: "RR",
-        notes: "Notes",
-        totalPL: "Gain Total",
-        winRate: "Taux de Réussite",
-        avgProfit: "Profit Moyen",
-        avgRR: "RR Moyen",
-        profitFactor: "Facteur de Profit",
-        totalTrades: "Nombre de Trades",
-        cumulativePL: "Cumul des gains/pertes",
-        winningTrades: "Trades gagnants",
-        perTrade: "Par trade",
-        riskReward: "Ratio Risk-Reward",
-        gainsLosses: "Ratio gains/pertes",
-        executedTrades: "Total exécutés",
-        capitalEvolution: "Évolution du Capital",
-        tradesPerformance: "Performance des Trades",
-        dailyPerformance: "Performance Journalière",
-        performanceStats: "Statistiques de Performance",
-        language: "Langue",
-        displayMode: "Mode d'Affichage",
-        dark: "Sombre",
-        light: "Clair",
-        export: "Exportation",
-        exportExcel: "Exporter Excel",
-        login: "Connexion",
-        signup: "Inscription",
-        fullName: "Nom Complet",
-        email: "Email",
-        password: "Mot de Passe",
-        confirmPassword: "Confirmer Mot de Passe",
-        noAccount: "Pas de compte?",
-        haveAccount: "Déjà un compte?",
-        dailyFeedback: "Feedback Journalier",
-        conseilDuJour: "Conseil du jour"
-      }
-    };
-
     // Variables globales
     let trades = [];
     let allTrades = [];
-    let capitalChart, pieChart, dailyChart;
+    let capitalChart, pieChart;
     let perfCapitalChart, perfPieChart, perfDailyChart;
     let currentSection = 'dashboard';
     let savedCapital = localStorage.getItem('tradingCapital') || 1000;
-    let currentLanguage = 'en';
+    let currentLanguage = localStorage.getItem('language') || 'fr';
+    let currentTheme = localStorage.getItem('theme') || 'dark';
 
     // Conseils du jour
     const conseils = {
-      en: [
-        "Remember: your capital is your oxygen. Protect it.",
-        "If you're not sure, don't trade. Inaction is sometimes the best decision.",
-        "3 losses in a row? Take a break. Come back with a clear mind.",
-        "Aim to be good today, not perfect.",
-        "Note your feeling before each trade, you'll see emotional patterns.",
-        "Patience pays. Don't chase the market.",
-        "Your journal is your mirror: it reveals the truth."
-      ],
       fr: [
         "N'oublie pas : ton capital, c'est ton oxygène. Protège-le.",
         "Si tu n'es pas sûr, ne trade pas. L'inaction est parfois la meilleure décision.",
@@ -1393,62 +979,82 @@
         "Note ton ressenti avant chaque trade, tu verras les patterns émotionnels.",
         "La patience paie. Ne cours pas après le marché.",
         "Le journal est ton miroir : il révèle la vérité."
+      ],
+      en: [
+        "Remember: your capital is your oxygen. Protect it.",
+        "If you're not sure, don't trade. Inaction is sometimes the best decision.",
+        "3 losses in a row? Take a break. Come back with a clear mind.",
+        "You want to be good today, not perfect.",
+        "Write down your feelings before each trade, you'll see emotional patterns.",
+        "Patience pays. Don't chase the market.",
+        "The journal is your mirror: it reveals the truth."
       ]
     };
 
     // Initialisation des graphiques
     function initCharts() {
-      // Graphiques pour la section Dashboard
+      // Graphique d'évolution du capital (vertical)
       const capitalCtx = document.getElementById('capitalChart').getContext('2d');
-      const pieCtx = document.getElementById('pieChart').getContext('2d');
-      const dailyCtx = document.getElementById('dailyChart').getContext('2d');
-      
       capitalChart = new Chart(capitalCtx, {
-        type: 'line',
-        data: { labels: [], datasets: [] },
+        type: 'bar',
+        data: { 
+          labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
+          datasets: [{
+            label: 'Capital',
+            data: Array(12).fill(0),
+            backgroundColor: '#4361ee',
+            borderColor: '#4361ee',
+            borderWidth: 1
+          }]
+        },
         options: {
+          indexAxis: 'y',
           responsive: true,
           plugins: {
             title: {
               display: true,
-              text: translations[currentLanguage].capitalEvolution,
+              text: 'EVOLUTION DU CAPITAL',
               font: { size: 16 }
             },
             legend: { display: false }
           },
-          elements: {
-            line: {
-              borderColor: '#4ade80',
-              backgroundColor: 'rgba(74, 222, 128, 0.1)',
-              tension: 0.1,
-              fill: true
-            },
-            point: {
-              radius: 5,
-              hoverRadius: 7
-            }
-          },
           scales: {
-            y: { beginAtZero: false }
+            x: { 
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Capital ($)'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Mois'
+              }
+            }
           }
         }
       });
       
+      // Graphique de performance des trades
+      const pieCtx = document.getElementById('pieChart').getContext('2d');
       pieChart = new Chart(pieCtx, {
         type: 'doughnut',
         data: { 
-          labels: [
-            translations[currentLanguage].winningTrades, 
-            translations[currentLanguage].winningTrades.replace('Winning', 'Losing')
-          ], 
-          datasets: [] 
+          labels: ['Gagnants', 'Perdants'], 
+          datasets: [{
+            data: [0, 0],
+            backgroundColor: ['#4ade80', '#f87171'],
+            borderColor: ['rgba(255,255,255,0.8)', 'rgba(255,255,255,0.8)'],
+            borderWidth: 1
+          }]
         },
         options: {
           responsive: true,
           plugins: {
             title: {
               display: true,
-              text: translations[currentLanguage].tradesPerformance,
+              text: 'PERFORMANCE DES TRADES',
               font: { size: 16 }
             },
             legend: { position: 'bottom' }
@@ -1457,31 +1063,9 @@
           maintainAspectRatio: false
         }
       });
-      
-      dailyChart = new Chart(dailyCtx, {
-        type: 'bar',
-        data: { labels: [], datasets: [] },
-        options: {
-          responsive: true,
-          plugins: {
-            title: {
-              display: true,
-              text: translations[currentLanguage].dailyPerformance,
-              font: { size: 16 }
-            },
-            legend: { display: false }
-          },
-          scales: {
-            y: { beginAtZero: false }
-          }
-        }
-      });
 
       // Graphiques pour la section Performance
       const perfCapitalCtx = document.getElementById('perf-capitalChart').getContext('2d');
-      const perfPieCtx = document.getElementById('perf-pieChart').getContext('2d');
-      const perfDailyCtx = document.getElementById('perf-dailyChart').getContext('2d');
-      
       perfCapitalChart = new Chart(perfCapitalCtx, {
         type: 'line',
         data: { labels: [], datasets: [] },
@@ -1490,7 +1074,7 @@
           plugins: {
             title: {
               display: true,
-              text: translations[currentLanguage].capitalEvolution,
+              text: 'ÉVOLUTION DU CAPITAL',
               font: { size: 16 }
             },
             legend: { display: false }
@@ -1513,13 +1097,11 @@
         }
       });
       
+      const perfPieCtx = document.getElementById('perf-pieChart').getContext('2d');
       perfPieChart = new Chart(perfPieCtx, {
         type: 'doughnut',
         data: { 
-          labels: [
-            translations[currentLanguage].winningTrades, 
-            translations[currentLanguage].winningTrades.replace('Winning', 'Losing')
-          ], 
+          labels: ['Gagnants', 'Perdants'], 
           datasets: [] 
         },
         options: {
@@ -1527,7 +1109,7 @@
           plugins: {
             title: {
               display: true,
-              text: translations[currentLanguage].tradesPerformance,
+              text: 'PERFORMANCE DES TRADES',
               font: { size: 16 }
             },
             legend: { position: 'bottom' }
@@ -1537,6 +1119,7 @@
         }
       });
       
+      const perfDailyCtx = document.getElementById('perf-dailyChart').getContext('2d');
       perfDailyChart = new Chart(perfDailyCtx, {
         type: 'bar',
         data: { labels: [], datasets: [] },
@@ -1545,7 +1128,7 @@
           plugins: {
             title: {
               display: true,
-              text: translations[currentLanguage].dailyPerformance,
+              text: 'PERFORMANCE JOURNALIÈRE',
               font: { size: 16 }
             },
             legend: { display: false }
@@ -1557,17 +1140,46 @@
       });
     }
 
+    // Sauvegarde automatique des données
+    function saveData() {
+      localStorage.setItem('tradingJournal', JSON.stringify(allTrades));
+      localStorage.setItem('tradingCapital', document.getElementById("initialCapital").value);
+    }
+
+    // Chargement des données sauvegardées
+    function loadSavedData() {
+      const savedData = localStorage.getItem('tradingJournal');
+      const savedCapital = localStorage.getItem('tradingCapital');
+      
+      if (savedCapital) {
+        document.getElementById("initialCapital").value = savedCapital;
+      }
+      
+      if (savedData) {
+        try {
+          const data = JSON.parse(savedData);
+          const tbody = document.querySelector("#tradeTable tbody");
+          tbody.innerHTML = "";
+          
+          data.forEach(item => {
+            addTrade(item);
+          });
+          
+          updateStats();
+        } catch (error) {
+          console.error("Erreur lors du chargement des données:", error);
+        }
+      }
+    }
+
     // Fonction pour basculer entre les sections
     function showSection(sectionId) {
-      // Masquer toutes les sections
       document.querySelectorAll('.section').forEach(section => {
         section.classList.remove('active');
       });
       
-      // Afficher la section sélectionnée
       document.getElementById(sectionId + '-section').classList.add('active');
       
-      // Mettre à jour le menu de navigation
       document.querySelectorAll('.nav-menu a, .dropdown-menu a').forEach(link => {
         link.classList.remove('active');
         if (link.getAttribute('data-section') === sectionId) {
@@ -1575,25 +1187,34 @@
         }
       });
       
-      // Mettre à jour la section courante
       currentSection = sectionId;
       
-      // Si c'est la section Performance, mettre à jour les graphiques
       if (sectionId === 'performance') {
         updatePerformanceCharts();
       }
       
-      // Animer le titre si c'est la section dashboard
       if (sectionId === 'dashboard') {
         animateTitle();
-        updateDailyFeedback();
       }
     }
 
-    // Fonction pour ajouter un trade
-    function addTrade() {
+    // Animation du titre
+    function animateTitle() {
+      const title = document.getElementById('animated-title');
+      title.style.animation = 'none';
+      void title.offsetWidth;
+      title.style.animation = 'fadeInScale 1s ease-in-out';
+    }
+
+    // Menu mobile
+    function toggleMenu() {
+      const dropdown = document.getElementById("dropdownMenu");
+      dropdown.classList.toggle("show");
+    }
+
+    // Ajout d'un trade
+    function addTrade(tradeData = null) {
       let table = document.querySelector("#tradeTable tbody");
-      
       const row = document.createElement("tr");
 
       const fields = [
@@ -1621,25 +1242,21 @@
             option.textContent = opt;
             input.appendChild(option);
           });
-          
-          // Ajouter un écouteur pour le champ Résultat
-          if (i === 6) {
-            input.addEventListener('change', function() {
-              updateGainField(this);
-              calculateRRForRow(this.closest('tr'));
-            });
-          }
         } else {
           input = document.createElement("input");
           input.type = field.type;
           if (field.placeholder) input.placeholder = field.placeholder;
           if (field.step) input.step = field.step;
-          
-          // Ajouter un écouteur pour le champ Gain
-          if (i === 7) {
-            input.addEventListener('input', function() {
-              formatGainField(this);
-            });
+        }
+        
+        if (tradeData) {
+          const fieldNames = ["date", "symbole", "lot", "direction", "entry", "exit", "result", "gain", "rrr"];
+          if (fieldNames[i]) {
+            if (field.type === "select") {
+              input.value = tradeData[fieldNames[i]];
+            } else {
+              input.value = tradeData[fieldNames[i]];
+            }
           }
         }
         
@@ -1653,76 +1270,98 @@
       notesInput.placeholder = "Sentiment/Note...";
       notesInput.style.width = "100%";
       notesInput.style.minHeight = "50px";
+      
+      if (tradeData && tradeData.notes) {
+        notesInput.value = tradeData.notes;
+      }
+      
       notesCell.appendChild(notesInput);
       row.appendChild(notesCell);
 
-      // Ajouter des écouteurs pour calculer automatiquement le RR
+      // Configuration des événements
       const entryInput = row.querySelectorAll("td")[4].querySelector("input");
       const exitInput = row.querySelectorAll("td")[5].querySelector("input");
       const directionSelect = row.querySelectorAll("td")[3].querySelector("select");
-      const rrCell = row.querySelectorAll("td")[8].querySelector("input");
-      
-      const calculateRRForRow = () => {
-        const entry = entryInput.value;
-        const exit = exitInput.value;
+      const resultSelect = row.querySelectorAll("td")[6].querySelector("select");
+      const gainInput = row.querySelectorAll("td")[7].querySelector("input");
+      const rrInput = row.querySelectorAll("td")[8].querySelector("input");
+
+      const calculateRR = () => {
+        const entry = parseFloat(entryInput.value);
+        const exit = parseFloat(exitInput.value);
         const direction = directionSelect.value;
         
-        if (entry && exit) {
-          const rr = calculateRRR(entry, exit, direction);
-          rrCell.value = rr;
+        if (!isNaN(entry) && !isNaN(exit)) {
+          const rr = direction === "Buy" 
+            ? ((exit - entry) / entry * 100).toFixed(2)
+            : ((entry - exit) / entry * 100).toFixed(2);
+          rrInput.value = rr;
         }
       };
+
+      const formatGain = () => {
+        const value = parseFloat(gainInput.value) || 0;
+        const isWin = resultSelect.value === "WIN";
+        
+        gainInput.style.backgroundColor = isWin ? "rgba(74, 222, 128, 0.2)" : "rgba(248, 113, 113, 0.2)";
+        gainInput.style.color = isWin ? "var(--win-color)" : "var(--loss-color)";
+        gainInput.style.fontWeight = "bold";
+        gainInput.style.borderRadius = "9999px";
+        gainInput.style.textAlign = "center";
+      };
+
+      const updateGain = () => {
+        const currentValue = parseFloat(gainInput.value) || 0;
+        gainInput.value = resultSelect.value === "WIN" 
+          ? Math.abs(currentValue) 
+          : -Math.abs(currentValue);
+        formatGain();
+      };
+
+      // Ajout des écouteurs d'événements
+      entryInput.addEventListener('input', () => {
+        calculateRR();
+        updateStats();
+        saveData();
+      });
       
-      entryInput.addEventListener('input', calculateRRForRow);
-      exitInput.addEventListener('input', calculateRRForRow);
-      directionSelect.addEventListener('change', calculateRRForRow);
+      exitInput.addEventListener('input', () => {
+        calculateRR();
+        updateStats();
+        saveData();
+      });
+      
+      directionSelect.addEventListener('change', () => {
+        calculateRR();
+        updateStats();
+        saveData();
+      });
+      
+      resultSelect.addEventListener('change', () => {
+        updateGain();
+        updateStats();
+        saveData();
+      });
+      
+      gainInput.addEventListener('input', () => {
+        formatGain();
+        updateStats();
+        saveData();
+      });
+      
+      notesCell.querySelector("textarea").addEventListener('input', saveData);
+
+      // Calcul initial si des données sont fournies
+      if (tradeData) {
+        calculateRR();
+        formatGain();
+      }
 
       table.appendChild(row);
+      return row;
     }
 
-    // Fonction pour mettre à jour le champ Gain en fonction du résultat
-    function updateGainField(selectElement) {
-      const row = selectElement.closest("tr");
-      const gainInput = row.querySelectorAll("td")[7].querySelector("input");
-      const currentValue = parseFloat(gainInput.value) || 0;
-      
-      if (selectElement.value === "WIN") {
-        gainInput.value = Math.abs(currentValue);
-      } else {
-        gainInput.value = -Math.abs(currentValue);
-      }
-      
-      formatGainField(gainInput);
-    }
-
-    // Fonction pour formater le champ Gain
-    function formatGainField(inputElement) {
-      const value = parseFloat(inputElement.value) || 0;
-      const row = inputElement.closest("tr");
-      const resultSelect = row.querySelectorAll("td")[6].querySelector("select");
-      const isWin = resultSelect.value === "WIN";
-      
-      inputElement.style.backgroundColor = isWin ? "rgba(74, 222, 128, 0.2)" : "rgba(248, 113, 113, 0.2)";
-      inputElement.style.color = isWin ? "var(--win-color)" : "var(--loss-color)";
-      inputElement.style.fontWeight = "bold";
-      inputElement.style.borderRadius = "9999px";
-      inputElement.style.textAlign = "center";
-    }
-
-    // Fonction pour calculer le RRR
-    function calculateRRR(entry, exit, direction) {
-      if (!entry || !exit) return 0;
-      const entryVal = parseFloat(entry);
-      const exitVal = parseFloat(exit);
-      
-      if (direction === "Buy") {
-        return ((exitVal - entryVal) / entryVal * 100).toFixed(2);
-      } else {
-        return ((entryVal - exitVal) / entryVal * 100).toFixed(2);
-      }
-    }
-
-    // Fonction pour mettre à jour les statistiques
+    // Mise à jour des statistiques
     function updateStats() {
       const rows = document.querySelectorAll("#tradeTable tbody tr");
       trades = [];
@@ -1731,36 +1370,24 @@
       let totalRRR = 0;
       let totalProfit = 0;
       let totalLoss = 0;
+      const initialCapital = parseFloat(document.getElementById("initialCapital").value) || 1000;
 
       rows.forEach(row => {
         const cells = row.querySelectorAll("td");
         if (cells.length >= 10) {
-          const gainField = cells[7].querySelector("input");
-          const gainRaw = parseFloat(gainField?.value?.replace(/[^0-9.-]/g, '')) || 0;
-          const result = cells[6].querySelector("select").value;
-          const gain = result === "WIN" ? Math.abs(gainRaw) : -Math.abs(gainRaw);
-          
-          if (gainField) {
-            gainField.value = (gain >= 0 ? "+" : "") + gain.toFixed(2);
-            formatGainField(gainField);
-          }
-
+          const date = cells[0].querySelector("input").value;
+          const symbole = cells[1].querySelector("input").value;
+          const lot = cells[2].querySelector("input").value;
           const direction = cells[3].querySelector("select").value;
           const entry = cells[4].querySelector("input").value;
           const exit = cells[5].querySelector("input").value;
+          const result = cells[6].querySelector("select").value;
+          const gain = parseFloat(cells[7].querySelector("input").value) || 0;
           const rrr = parseFloat(cells[8].querySelector("input").value) || 0;
-          
+          const notes = cells[9].querySelector("textarea")?.value || "";
+
           const trade = {
-            date: cells[0].querySelector("input").value,
-            symbole: cells[1].querySelector("input").value,
-            lot: cells[2].querySelector("input").value,
-            direction: direction,
-            entry: entry,
-            exit: exit,
-            result: result,
-            gain: gain,
-            rrr: rrr,
-            notes: cells[9].querySelector("textarea")?.value || ""
+            date, symbole, lot, direction, entry, exit, result, gain, rrr, notes
           };
 
           trades.push(trade);
@@ -1777,25 +1404,114 @@
       });
 
       allTrades = [...trades];
-      applyFilters();
-      updateCharts();
       
-      const avg = trades.length ? totalGain / trades.length : 0;
-      const winRate = trades.length ? (wins / trades.length) * 100 : 0;
+      // Calcul du drawdown
+      let maxCapital = initialCapital;
+      let maxDrawdown = 0;
+      let currentCapital = initialCapital;
+      
+      trades.forEach(trade => {
+        currentCapital += trade.gain;
+        if (currentCapital > maxCapital) {
+          maxCapital = currentCapital;
+        }
+        const drawdown = ((maxCapital - currentCapital) / maxCapital) * 100;
+        if (drawdown > maxDrawdown) {
+          maxDrawdown = drawdown;
+        }
+      });
+
+      // Calcul des performances mensuelles
+      const monthlyData = {};
+      trades.forEach(trade => {
+        const date = new Date(trade.date);
+        const month = date.getMonth();
+        const year = date.getFullYear();
+        
+        if (year === 2024) {
+          if (!monthlyData[month]) {
+            monthlyData[month] = { profit: 0, rr: 0, count: 0 };
+          }
+          monthlyData[month].profit += trade.gain;
+          monthlyData[month].rr += trade.rrr;
+          monthlyData[month].count++;
+        }
+      });
+
+      // Mise à jour des statistiques
       const avgRRR = trades.length ? totalRRR / trades.length : 0;
+      const winRate = trades.length ? (wins / trades.length) * 100 : 0;
       const profitFactor = totalLoss > 0 ? totalProfit / totalLoss : totalProfit > 0 ? Infinity : 0;
 
-      document.getElementById("totalGain").textContent = `${totalGain >= 0 ? "+" : ""}${totalGain.toFixed(2)} $`;
-      document.getElementById("averageProfit").textContent = `${avg >= 0 ? "+" : ""}${avg.toFixed(2)} $`;
-      document.getElementById("winRate").textContent = `${winRate.toFixed(1)}%`;
+      document.getElementById("totalGain").textContent = `${((totalGain / initialCapital) * 100).toFixed(1)}%`;
       document.getElementById("averageRRR").textContent = avgRRR.toFixed(2);
       document.getElementById("profitFactor").textContent = profitFactor === Infinity ? "∞" : profitFactor.toFixed(2);
-      document.getElementById("totalTrades").textContent = trades.length;
+      document.getElementById("winRate").textContent = `${winRate.toFixed(1)}%`;
+      document.getElementById("drawdown").textContent = `${maxDrawdown.toFixed(2)}%`;
+
+      // Mise à jour du tableau mensuel
+      const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+      months.forEach((month, index) => {
+        const monthData = monthlyData[index] || { profit: 0, rr: 0, count: 1 };
+        document.getElementById(`${month}-profit`).textContent = 
+          `${((monthData.profit / initialCapital) * 100).toFixed(2)}%`;
+        document.getElementById(`${month}-rr`).textContent = 
+          monthData.count > 0 ? (monthData.rr / monthData.count).toFixed(2) : '0';
+      });
+
+      // Calcul du total annuel
+      const totalYearProfit = Object.values(monthlyData).reduce((sum, month) => sum + month.profit, 0);
+      const totalYearRR = Object.values(monthlyData).reduce((sum, month) => sum + month.rr, 0);
+      const totalYearCount = Object.values(monthlyData).reduce((sum, month) => sum + month.count, 0);
+      
+      document.getElementById("year-profit").textContent = 
+        `${((totalYearProfit / initialCapital) * 100).toFixed(2)}%`;
+      document.getElementById("year-rr").textContent = 
+        totalYearCount > 0 ? (totalYearRR / totalYearCount).toFixed(2) : '0';
+
+      // Mise à jour des graphiques
+      updateCharts();
     }
 
-    // Fonction pour mettre à jour les graphiques de performance
+    // Mise à jour des graphiques
+    function updateCharts() {
+      updateCapitalChart();
+      updatePieChart();
+    }
+
+    function updateCapitalChart() {
+      const initialCapital = parseFloat(document.getElementById("initialCapital").value) || 1000;
+      const monthlyData = Array(12).fill(initialCapital);
+      
+      trades.forEach(trade => {
+        const date = new Date(trade.date);
+        const month = date.getMonth();
+        if (date.getFullYear() === 2024) {
+          monthlyData[month] += trade.gain;
+        }
+      });
+
+      capitalChart.data.datasets[0].data = monthlyData;
+      capitalChart.update();
+    }
+
+    function updatePieChart() {
+      const wins = trades.filter(t => t.result === "WIN").length;
+      const losses = trades.length - wins;
+      
+      pieChart.data.datasets = [{
+        data: [wins, losses],
+        backgroundColor: ['#4ade80', '#f87171'],
+        borderColor: ['rgba(255,255,255,0.8)', 'rgba(255,255,255,0.8)'],
+        borderWidth: 1
+      }];
+      
+      pieChart.update();
+    }
+
+    // Mise à jour des graphiques de performance
     function updatePerformanceCharts() {
-      const initialCapital = parseFloat(document.getElementById("initialCapital").value) || 0;
+      const initialCapital = parseFloat(document.getElementById('initialCapital').value) || 0;
       let capitalData = [initialCapital];
       const labels = ['Initial'];
       
@@ -1804,7 +1520,7 @@
         labels.push(`Trade ${i+1}`);
       });
 
-      // Mettre à jour le graphique d'évolution du capital
+      // Graphique d'évolution du capital
       perfCapitalChart.data.labels = labels;
       perfCapitalChart.data.datasets = [{
         label: 'Capital ($)',
@@ -1819,7 +1535,7 @@
       
       perfCapitalChart.update();
 
-      // Mettre à jour le graphique de performance des trades
+      // Graphique de performance des trades
       const wins = trades.filter(t => t.result === "WIN").length;
       const losses = trades.length - wins;
       
@@ -1832,7 +1548,7 @@
       
       perfPieChart.update();
 
-      // Mettre à jour le graphique de performance journalière
+      // Graphique de performance journalière
       const dailyData = {};
       trades.forEach(trade => {
         if (!dailyData[trade.date]) {
@@ -1854,95 +1570,9 @@
       }];
       
       perfDailyChart.update();
-      
-      // Mettre à jour les statistiques de performance
-      const totalGain = capitalData.length > 1 ? capitalData[capitalData.length - 1] - initialCapital : 0;
-      const avg = trades.length ? totalGain / trades.length : 0;
-      const winRate = trades.length ? (wins / trades.length) * 100 : 0;
-      const avgRRR = trades.length ? trades.reduce((sum, trade) => sum + trade.rrr, 0) / trades.length : 0;
-      
-      document.getElementById("perf-totalGain").textContent = `${totalGain >= 0 ? "+" : ""}${totalGain.toFixed(2)} $`;
-      document.getElementById("perf-averageProfit").textContent = `${avg >= 0 ? "+" : ""}${avg.toFixed(2)} $`;
-      document.getElementById("perf-winRate").textContent = `${winRate.toFixed(1)}%`;
-      document.getElementById("perf-averageRRR").textContent = avgRRR.toFixed(2);
     }
 
-    // Fonction pour mettre à jour les graphiques
-    function updateCharts() {
-      updateCapitalChart();
-      updatePieChart();
-      updateDailyChart();
-    }
-
-    function updateCapitalChart() {
-      const initialCapital = parseFloat(document.getElementById("initialCapital").value) || 0;
-      let capitalData = [initialCapital];
-      const labels = ['Initial'];
-      
-      trades.forEach((trade, i) => {
-        capitalData.push(capitalData[i] + trade.gain);
-        labels.push(`Trade ${i+1}`);
-      });
-
-      capitalChart.data.labels = labels;
-      capitalChart.data.datasets = [{
-        label: 'Capital ($)',
-        data: capitalData,
-        borderColor: '#4ade80',
-        backgroundColor: 'rgba(74, 222, 128, 0.1)',
-        tension: 0.1,
-        fill: true,
-        pointBackgroundColor: capitalData.map((val, i) => i === 0 ? 'gray' : val > capitalData[i-1] ? '#4ade80' : '#f87171'),
-        pointRadius: capitalData.map((val, i) => i === 0 ? 3 : 5)
-      }];
-      
-      capitalChart.update();
-    }
-
-    function updatePieChart() {
-      const wins = trades.filter(t => t.result === "WIN").length;
-      const losses = trades.length - wins;
-      
-      pieChart.data.labels = [
-        translations[currentLanguage].winningTrades, 
-        translations[currentLanguage].winningTrades.replace('Winning', 'Losing')
-      ];
-      pieChart.data.datasets = [{
-        data: [wins, losses],
-        backgroundColor: ['#4ade80', '#f87171'],
-        borderColor: ['rgba(255,255,255,0.8)', 'rgba(255,255,255,0.8)'],
-        borderWidth: 1
-      }];
-      
-      pieChart.update();
-    }
-
-    function updateDailyChart() {
-      // Group trades by date
-      const dailyData = {};
-      trades.forEach(trade => {
-        if (!dailyData[trade.date]) {
-          dailyData[trade.date] = 0;
-        }
-        dailyData[trade.date] += trade.gain;
-      });
-      
-      const dates = Object.keys(dailyData).sort();
-      const gains = dates.map(date => dailyData[date]);
-      
-      dailyChart.data.labels = dates;
-      dailyChart.data.datasets = [{
-        label: 'Daily P/L ($)',
-        data: gains,
-        backgroundColor: gains.map(g => g >= 0 ? '#4ade80' : '#f87171'),
-        borderColor: gains.map(g => g >= 0 ? 'rgba(74, 222, 128, 0.8)' : 'rgba(248, 113, 113, 0.8)'),
-        borderWidth: 1
-      }];
-      
-      dailyChart.update();
-    }
-
-    // Fonction pour appliquer les filtres
+    // Application des filtres
     function applyFilters() {
       const symbolFilter = document.getElementById("symbolFilter").value.toLowerCase();
       const dateFrom = document.getElementById("dateFromFilter").value;
@@ -1954,65 +1584,19 @@
         const dateToMatch = !dateTo || trade.date <= dateTo;
         return symbolMatch && dateFromMatch && dateToMatch;
       });
+
+      updateStats();
     }
 
-    // Fonction pour réinitialiser les filtres
+    // Réinitialisation des filtres
     function resetFilters() {
       document.getElementById("symbolFilter").value = "";
       document.getElementById("dateFromFilter").value = "";
       document.getElementById("dateToFilter").value = "";
-      updateStats();
+      applyFilters();
     }
 
-    // Fonction pour sauvegarder le journal
-    function saveJournal() {
-      const rows = document.querySelectorAll("#tradeTable tbody tr");
-      const journalTrades = [];
-      const capital = parseFloat(document.getElementById("initialCapital").value) || 0;
-      
-      rows.forEach(row => {
-        const cells = row.querySelectorAll("td");
-        if (cells.length >= 10) {
-          const gainField = cells[7].querySelector("input");
-          const gainRaw = parseFloat(gainField?.value?.replace(/[^0-9.-]/g, '')) || 0;
-          const result = cells[6].querySelector("select").value;
-          const gain = result === "WIN" ? Math.abs(gainRaw) : -Math.abs(gainRaw);
-
-          const direction = cells[3].querySelector("select").value;
-          const entry = cells[4].querySelector("input").value;
-          const exit = cells[5].querySelector("input").value;
-          const rrr = parseFloat(cells[8].querySelector("input").value) || 0;
-
-          const trade = {
-            date: cells[0].querySelector("input").value,
-            symbole: cells[1].querySelector("input").value,
-            lot: cells[2].querySelector("input").value,
-            direction: direction,
-            entry: entry,
-            exit: exit,
-            result: result,
-            gain: gain,
-            rrr: rrr,
-            notes: cells[9].querySelector("textarea")?.value || ""
-          };
-
-          journalTrades.push(trade);
-        }
-      });
-
-      // Sauvegarder dans localStorage
-      localStorage.setItem('tradingJournal', JSON.stringify(journalTrades));
-      localStorage.setItem('tradingCapital', capital);
-      
-      // Mettre à jour le tableau de bord
-      allTrades = [...journalTrades];
-      trades = [...journalTrades];
-      updateStats();
-      
-      alert("Journal saved successfully!");
-    }
-
-    // Fonction pour exporter en JSON
+    // Export en JSON
     function downloadJSON() {
       const data = JSON.stringify(allTrades, null, 2);
       const blob = new Blob([data], { type: "application/json" });
@@ -2022,7 +1606,7 @@
       link.click();
     }
 
-    // Fonction pour exporter en CSV
+    // Export en CSV
     function downloadCSV() {
       const headers = ["Date", "Symbol", "Lot", "Direction", "Entry", "Exit", "Result", "P/L", "RR", "Notes"];
       const csvRows = [
@@ -2044,14 +1628,12 @@
       link.click();
     }
 
-    // Fonction pour exporter en Excel
+    // Export en Excel
     function downloadExcel() {
-      // Pour simplifier, nous allons générer un CSV avec une extension .xlsx
-      // Dans une application réelle, vous pourriez utiliser une bibliothèque comme SheetJS
       downloadCSV();
     }
 
-    // Fonction pour charger un fichier
+    // Chargement de fichier
     document.getElementById("fileInput").addEventListener("change", function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -2061,93 +1643,21 @@
           const data = JSON.parse(event.target.result);
           const tbody = document.querySelector("#tradeTable tbody");
           tbody.innerHTML = "";
+          
           data.forEach(item => {
-            addTrade();
-            const lastRow = tbody.lastChild.querySelectorAll("td");
-            lastRow[0].querySelector("input").value = item.date;
-            lastRow[1].querySelector("input").value = item.symbole;
-            lastRow[2].querySelector("input").value = item.lot;
-            lastRow[3].querySelector("select").value = item.direction;
-            lastRow[4].querySelector("input").value = item.entry || item.tp || "";
-            lastRow[5].querySelector("input").value = item.exit || item.sl || "";
-            lastRow[6].querySelector("select").value = item.result;
-            const gainValue = typeof item.gain === 'number' ? item.gain : parseFloat(item.gain.replace(/[^0-9.-]/g, ''));
-            lastRow[7].querySelector("input").value = (gainValue >= 0 ? "+" : "") + gainValue.toFixed(2);
-            lastRow[8].querySelector("input").value = item.rrr?.toFixed(2) || "0";
-            if (lastRow[9] && lastRow[9].querySelector("textarea")) {
-              lastRow[9].querySelector("textarea").value = item.notes || "";
-            }
+            addTrade(item);
           });
+          
           updateStats();
+          saveData();
         } catch (error) {
-          alert("Error loading file: " + error.message);
+          alert("Erreur lors du chargement du fichier: " + error.message);
         }
       };
       reader.readAsText(file);
     });
 
-    // Fonction pour basculer le menu mobile
-    function toggleMenu() {
-      const dropdown = document.getElementById("dropdownMenu");
-      dropdown.classList.toggle("show");
-    }
-
-    // Fonction pour basculer le thème
-    function toggleTheme(theme) {
-      if (theme === 'light') {
-        document.body.classList.add('light-mode');
-      } else {
-        document.body.classList.remove('light-mode');
-      }
-      
-      // Mettre à jour les options
-      document.querySelectorAll('.option-item[data-theme]').forEach(item => {
-        item.classList.remove('active');
-        item.innerHTML = item.innerHTML.replace('<i class="fas fa-check"></i>', '');
-      });
-      
-      document.querySelector(`.option-item[data-theme="${theme}"]`).classList.add('active');
-      document.querySelector(`.option-item[data-theme="${theme}"]`).innerHTML = '<i class="fas fa-check"></i> ' + document.querySelector(`.option-item[data-theme="${theme}"]`).textContent.trim();
-      
-      // Mettre à jour les graphiques
-      if (capitalChart) capitalChart.update();
-      if (pieChart) pieChart.update();
-      if (dailyChart) dailyChart.update();
-      if (perfCapitalChart) perfCapitalChart.update();
-      if (perfPieChart) perfPieChart.update();
-      if (perfDailyChart) perfDailyChart.update();
-      
-      // Sauvegarder le thème
-      localStorage.setItem('theme', theme);
-    }
-
-    // Fonction pour changer la langue
-    function changeLanguage(lang) {
-      currentLanguage = lang;
-      
-      // Mettre à jour les options
-      document.querySelectorAll('.option-item[data-lang]').forEach(item => {
-        item.classList.remove('active');
-        item.innerHTML = item.innerHTML.replace('<i class="fas fa-check"></i>', '');
-      });
-      
-      document.querySelector(`.option-item[data-lang="${lang}"]`).classList.add('active');
-      document.querySelector(`.option-item[data-lang="${lang}"]`).innerHTML = '<i class="fas fa-check"></i> ' + document.querySelector(`.option-item[data-lang="${lang}"]`).textContent.trim();
-      
-      // Mettre à jour toutes les traductions
-      updateTranslations();
-      
-      // Mettre à jour le conseil du jour
-      showDailyTip();
-      
-      // Mettre à jour le feedback
-      updateDailyFeedback();
-      
-      // Sauvegarder la langue
-      localStorage.setItem('language', lang);
-    }
-
-    // Fonction pour afficher le conseil du jour
+    // Affichage du conseil du jour
     function showDailyTip() {
       const randomTip = conseils[currentLanguage][Math.floor(Math.random() * conseils[currentLanguage].length)];
       document.getElementById("conseilDuJour").innerHTML = `
@@ -2155,350 +1665,83 @@
       `;
     }
 
-    // Fonction pour générer le feedback journalier
-    function updateDailyFeedback() {
-      const today = new Date().toISOString().split('T')[0];
-      const todayTrades = allTrades.filter(t => t.date === today);
+    // Changement de langue
+    function changeLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('language', lang);
       
-      if (todayTrades.length === 0) {
-        document.getElementById("dailyFeedback").textContent = 
-          currentLanguage === 'fr' 
-            ? "Aucun trade enregistré aujourd'hui." 
-            : "No trades recorded today.";
-        return;
-      }
-      
-      const wins = todayTrades.filter(t => t.result === "WIN").length;
-      const losses = todayTrades.length - wins;
-      const winRate = (wins / todayTrades.length * 100).toFixed(0);
-      
-      // Trouver l'heure avec le plus de trades gagnants
-      const hours = {};
-      todayTrades.forEach(trade => {
-        if (trade.result === "WIN") {
-          const hour = trade.date.split('T')[1]?.split(':')[0] || 'unknown';
-          hours[hour] = (hours[hour] || 0) + 1;
+      document.querySelectorAll('.option-item[data-lang]').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-lang') === lang) {
+          item.classList.add('active');
+          item.innerHTML = `<i class="fas fa-check"></i> ${item.textContent}`;
+        } else {
+          item.innerHTML = item.textContent;
         }
       });
       
-      let bestHour = null;
-      let maxWins = 0;
-      for (const [hour, count] of Object.entries(hours)) {
-        if (count > maxWins) {
-          maxWins = count;
-          bestHour = hour;
-        }
-      }
+      showDailyTip();
+    }
+
+    // Changement de thème
+    function toggleTheme(theme) {
+      currentTheme = theme;
+      localStorage.setItem('theme', theme);
       
-      // Générer le feedback
-      let feedback = currentLanguage === 'fr' 
-        ? `Tu as fait ${todayTrades.length} trades aujourd'hui, ${wins} gagnants (${winRate}% de réussite). `
-        : `You made ${todayTrades.length} trades today, ${wins} winners (${winRate}% win rate). `;
-      
-      if (bestHour) {
-        feedback += currentLanguage === 'fr' 
-          ? `Ton meilleur moment était à ${bestHour}h. `
-          : `Your best time was at ${bestHour}h. `;
-      }
-      
-      // Ajouter un conseil basé sur la performance
-      if (winRate >= 70) {
-        feedback += currentLanguage === 'fr' 
-          ? "Excellent journée ! Continue comme ça en respectant ta stratégie."
-          : "Excellent day! Keep it up by sticking to your strategy.";
-      } else if (winRate >= 50) {
-        feedback += currentLanguage === 'fr' 
-          ? "Journée correcte. Analyse tes trades pour identifier les points d'amélioration."
-          : "Good day. Analyze your trades to identify areas for improvement.";
+      if (theme === 'light') {
+        document.body.classList.add('light-mode');
       } else {
-        feedback += currentLanguage === 'fr' 
-          ? "Journée difficile. Prends du recul et analyse ce qui n'a pas fonctionné."
-          : "Tough day. Step back and analyze what didn't work.";
+        document.body.classList.remove('light-mode');
       }
       
-      document.getElementById("dailyFeedback").textContent = feedback;
-    }
-
-    // Fonction pour mettre à jour toutes les traductions
-    function updateTranslations() {
-      // Mettre à jour les textes avec la classe spécifique
-      document.querySelectorAll('.section-title').forEach(el => {
-        const key = el.textContent.trim().toLowerCase().replace(' ', '');
-        if (translations[currentLanguage][key]) {
-          el.textContent = translations[currentLanguage][key];
+      document.querySelectorAll('.option-item[data-theme]').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-theme') === theme) {
+          item.classList.add('active');
+          item.innerHTML = `<i class="fas fa-check"></i> ${item.textContent}`;
+        } else {
+          item.innerHTML = item.textContent;
         }
       });
-      
-      document.querySelectorAll('.nav-text').forEach(el => {
-        const key = el.textContent.trim().toLowerCase().replace(' ', '');
-        if (translations[currentLanguage][key]) {
-          el.textContent = translations[currentLanguage][key];
-        }
-      });
-      
-      document.querySelectorAll('.btn-text').forEach(el => {
-        const key = el.textContent.trim().toLowerCase().replace(' ', '');
-        if (translations[currentLanguage][key]) {
-          el.textContent = translations[currentLanguage][key];
-        }
-      });
-      
-      document.querySelectorAll('.filter-text').forEach(el => {
-        const key = el.textContent.trim().toLowerCase().replace(' ', '');
-        if (translations[currentLanguage][key]) {
-          el.textContent = translations[currentLanguage][key];
-        }
-      });
-      
-      document.querySelectorAll('.table-header').forEach(el => {
-        const key = el.textContent.trim().toLowerCase().replace('/', '').replace(' ', '');
-        if (translations[currentLanguage][key]) {
-          el.textContent = translations[currentLanguage][key];
-        }
-      });
-      
-      document.querySelectorAll('.stat-title').forEach(el => {
-        const key = el.textContent.trim().toLowerCase().replace('.', '').replace(' ', '');
-        if (translations[currentLanguage][key]) {
-          el.textContent = translations[currentLanguage][key];
-        }
-      });
-      
-      document.querySelectorAll('.stat-desc').forEach(el => {
-        const key = el.textContent.trim().toLowerCase().replace('/', '').replace(' ', '');
-        if (translations[currentLanguage][key]) {
-          el.textContent = translations[currentLanguage][key];
-        }
-      });
-      
-      document.querySelectorAll('.settings-title').forEach(el => {
-        const key = el.textContent.trim().toLowerCase().replace(' ', '');
-        if (translations[currentLanguage][key]) {
-          el.textContent = translations[currentLanguage][key];
-        }
-      });
-      
-      document.querySelectorAll('.auth-title').forEach(el => {
-        const key = el.textContent.trim().toLowerCase();
-        if (translations[currentLanguage][key]) {
-          el.textContent = translations[currentLanguage][key];
-        }
-      });
-      
-      document.querySelectorAll('.auth-switch-text').forEach(el => {
-        const key = el.textContent.trim().toLowerCase().replace('?', '').replace("'", '');
-        if (translations[currentLanguage][key]) {
-          el.textContent = translations[currentLanguage][key];
-        }
-      });
-      
-      document.querySelectorAll('.auth-switch-link').forEach(el => {
-        const key = el.textContent.trim().toLowerCase();
-        if (translations[currentLanguage][key]) {
-          el.textContent = translations[currentLanguage][key];
-        }
-      });
-      
-      // Mettre à jour les placeholders
-      document.querySelectorAll('input[placeholder="Email"]').forEach(el => {
-        el.placeholder = translations[currentLanguage].email;
-      });
-      
-      document.querySelectorAll('input[placeholder="Password"]').forEach(el => {
-        el.placeholder = translations[currentLanguage].password;
-      });
-      
-      document.querySelectorAll('input[placeholder="Full Name"]').forEach(el => {
-        el.placeholder = translations[currentLanguage].fullName;
-      });
-      
-      document.querySelectorAll('input[placeholder="Confirm Password"]').forEach(el => {
-        el.placeholder = translations[currentLanguage].confirmPassword;
-      });
-      
-      document.querySelectorAll('textarea[placeholder="Sentiment/Note..."]').forEach(el => {
-        el.placeholder = currentLanguage === 'fr' ? "Sentiment/Note..." : "Feeling/Note...";
-      });
-      
-      // Mettre à jour les graphiques
-      if (capitalChart) {
-        capitalChart.options.plugins.title.text = translations[currentLanguage].capitalEvolution;
-        capitalChart.update();
-      }
-      
-      if (pieChart) {
-        pieChart.options.plugins.title.text = translations[currentLanguage].tradesPerformance;
-        pieChart.data.labels = [
-          translations[currentLanguage].winningTrades, 
-          translations[currentLanguage].winningTrades.replace('Winning', 'Losing')
-        ];
-        pieChart.update();
-      }
-      
-      if (dailyChart) {
-        dailyChart.options.plugins.title.text = translations[currentLanguage].dailyPerformance;
-        dailyChart.update();
-      }
-      
-      if (perfCapitalChart) {
-        perfCapitalChart.options.plugins.title.text = translations[currentLanguage].capitalEvolution;
-        perfCapitalChart.update();
-      }
-      
-      if (perfPieChart) {
-        perfPieChart.options.plugins.title.text = translations[currentLanguage].tradesPerformance;
-        perfPieChart.data.labels = [
-          translations[currentLanguage].winningTrades, 
-          translations[currentLanguage].winningTrades.replace('Winning', 'Losing')
-        ];
-        perfPieChart.update();
-      }
-      
-      if (perfDailyChart) {
-        perfDailyChart.options.plugins.title.text = translations[currentLanguage].dailyPerformance;
-        perfDailyChart.update();
-      }
-    }
-
-    // Fonction pour animer le titre
-    function animateTitle() {
-      const title = document.getElementById('animated-title');
-      title.style.animation = 'none';
-      void title.offsetWidth; // Trigger reflow
-      title.style.animation = 'fadeInScale 1s ease-in-out';
-    }
-
-    // Fonctions pour la modal d'authentification
-    function showLogin() {
-      document.getElementById('login-modal').style.display = 'flex';
-      document.getElementById('signup-modal').style.display = 'none';
-    }
-
-    function showSignup() {
-      document.getElementById('signup-modal').style.display = 'flex';
-      document.getElementById('login-modal').style.display = 'none';
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
-    }
-
-    // Fonction de connexion
-    function login() {
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      const errorElement = document.getElementById('login-error');
-      
-      errorElement.textContent = '';
-      
-      auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          // Connexion réussie
-          closeModal('login-modal');
-          alert(currentLanguage === 'fr' ? 'Connexion réussie!' : 'Login successful!');
-        })
-        .catch((error) => {
-          // Gestion des erreurs
-          let errorMessage;
-          switch(error.code) {
-            case 'auth/invalid-email':
-              errorMessage = currentLanguage === 'fr' ? 'Email invalide' : 'Invalid email';
-              break;
-            case 'auth/user-disabled':
-              errorMessage = currentLanguage === 'fr' ? 'Compte désactivé' : 'Account disabled';
-              break;
-            case 'auth/user-not-found':
-              errorMessage = currentLanguage === 'fr' ? 'Utilisateur non trouvé' : 'User not found';
-              break;
-            case 'auth/wrong-password':
-              errorMessage = currentLanguage === 'fr' ? 'Mot de passe incorrect' : 'Wrong password';
-              break;
-            default:
-              errorMessage = currentLanguage === 'fr' ? 'Erreur de connexion' : 'Login error';
-          }
-          errorElement.textContent = errorMessage;
-        });
-    }
-
-    // Fonction d'inscription
-    function signup() {
-      const name = document.getElementById('signup-name').value;
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
-      const confirmPassword = document.getElementById('signup-confirm').value;
-      const errorElement = document.getElementById('signup-error');
-      
-      errorElement.textContent = '';
-      
-      // Validation simple
-      if (password !== confirmPassword) {
-        errorElement.textContent = currentLanguage === 'fr' ? 'Les mots de passe ne correspondent pas' : 'Passwords do not match';
-        return;
-      }
-      
-      if (password.length < 6) {
-        errorElement.textContent = currentLanguage === 'fr' ? 'Le mot de passe doit contenir au moins 6 caractères' : 'Password must be at least 6 characters';
-        return;
-      }
-      
-      auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          // Inscription réussie
-          return userCredential.user.updateProfile({
-            displayName: name
-          });
-        })
-        .then(() => {
-          closeModal('signup-modal');
-          alert(currentLanguage === 'fr' ? 'Inscription réussie!' : 'Signup successful!');
-        })
-        .catch((error) => {
-          // Gestion des erreurs
-          let errorMessage;
-          switch(error.code) {
-            case 'auth/email-already-in-use':
-              errorMessage = currentLanguage === 'fr' ? 'Email déjà utilisé' : 'Email already in use';
-              break;
-            case 'auth/invalid-email':
-              errorMessage = currentLanguage === 'fr' ? 'Email invalide' : 'Invalid email';
-              break;
-            case 'auth/weak-password':
-              errorMessage = currentLanguage === 'fr' ? 'Mot de passe trop faible' : 'Password is too weak';
-              break;
-            default:
-              errorMessage = currentLanguage === 'fr' ? 'Erreur d\'inscription' : 'Signup error';
-          }
-          errorElement.textContent = errorMessage;
-        });
     }
 
     // Initialisation
     document.addEventListener('DOMContentLoaded', () => {
+      // Appliquer le thème sauvegardé
+      if (currentTheme === 'light') {
+        document.body.classList.add('light-mode');
+      }
+      
+      // Appliquer la langue sauvegardée
+      changeLanguage(currentLanguage);
+      
       // Splash screen
       const splash = document.getElementById('splash');
       const btn = document.getElementById('enterBtn');
       const app = document.getElementById('mainApp');
 
-      setTimeout(() => btn.classList.add('show'), 3000);
+      setTimeout(() => btn.classList.add('show'), 1000);
 
       btn.addEventListener('click', () => {
         splash.style.display = 'none';
         app.style.display = 'block';
         
-        // Initialize the app after splash screen
+        // Initialiser les graphiques
         initCharts();
         
-        // Ajouter 3 trades d'exemple
-        for (let i = 0; i < 3; i++) addTrade();
+        // Charger les données sauvegardées
+        loadSavedData();
+        
+        // Si aucune donnée sauvegardée, ajouter 3 trades d'exemple
+        if (allTrades.length === 0) {
+          for (let i = 0; i < 3; i++) addTrade();
+        }
         
         // Mettre à jour les statistiques initiales
         updateStats();
         
         // Afficher le conseil du jour
         showDailyTip();
-        
-        // Mettre à jour le feedback journalier
-        updateDailyFeedback();
         
         // Configurer les écouteurs d'événements pour la navigation
         document.querySelectorAll('.nav-menu a, .dropdown-menu a').forEach(link => {
@@ -2511,59 +1754,13 @@
             
             // Fermer le menu déroulant si ouvert
             document.getElementById('dropdownMenu').classList.remove('show');
-            
-            // Animer le titre si c'est la section dashboard
-            if (section === 'dashboard') {
-              animateTitle();
-            }
           });
         });
         
-        // Configurer les écouteurs d'événements pour les paramètres
-        document.querySelectorAll('.option-item[data-theme]').forEach(item => {
-          item.addEventListener('click', function() {
-            const theme = this.getAttribute('data-theme');
-            toggleTheme(theme);
-          });
-        });
-        
-        document.querySelectorAll('.option-item[data-lang]').forEach(item => {
-          item.addEventListener('click', function() {
-            const lang = this.getAttribute('data-lang');
-            changeLanguage(lang);
-          });
-        });
-        
-        // Configurer les écouteurs pour l'authentification
-        document.getElementById('login-link').addEventListener('click', function(e) {
-          e.preventDefault();
-          showLogin();
-        });
-        
-        document.getElementById('signup-link').addEventListener('click', function(e) {
-          e.preventDefault();
-          showSignup();
-        });
-        
-        // Charger le thème et la langue sauvegardés
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        toggleTheme(savedTheme);
-        
-        const savedLang = localStorage.getItem('language') || 'en';
-        changeLanguage(savedLang);
-        
-        // Animer le titre initial
-        animateTitle();
-        
-        // Vérifier l'état d'authentification
-        auth.onAuthStateChanged((user) => {
-          if (user) {
-            // Utilisateur connecté
-            console.log('User logged in:', user.displayName);
-          } else {
-            // Utilisateur non connecté
-            console.log('User not logged in');
-          }
+        // Sauvegarder automatiquement quand le capital change
+        document.getElementById("initialCapital").addEventListener('change', function() {
+          saveData();
+          updateStats();
         });
       });
     });
