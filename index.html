@@ -1196,7 +1196,7 @@
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
   <script>
     // Firebase configuration
@@ -1212,7 +1212,7 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const database = firebase.database();
+    const db = firebase.firestore();
 
     // Variables globales
     let trades = [];
@@ -1278,13 +1278,14 @@
           // User registered successfully
           currentUser = userCredential.user;
           
-          // Create user data in database
-          return database.ref('users/' + userCredential.user.uid).set({
+          // Create user data in Firestore
+          return db.collection('users').doc(userCredential.user.uid).set({
             email: userCredential.user.email,
-            createdAt: firebase.database.ServerValue.TIMESTAMP,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             initialCapital: 1000,
             darkMode: true,
-            currentLanguage: 'fr'
+            currentLanguage: 'fr',
+            lastDailyFeedbackDate: null
           });
         })
         .then(() => {
@@ -1366,12 +1367,14 @@
       document.getElementById('userEmail').textContent = currentUser.email;
       toggleLoggedUI(true);
       
-      // Load user's trading journal data from Firebase
-      const userRef = database.ref('users/' + currentUser.uid);
-      userRef.once('value').then((snapshot) => {
-        const userData = snapshot.val();
-        
-        if (userData) {
+      // Load user's trading journal data from Firestore
+      const userRef = db.collection('users').doc(currentUser.uid);
+      
+      // Load user settings
+      userRef.get().then((doc) => {
+        if (doc.exists) {
+          const userData = doc.data();
+          
           initialCapital = userData.initialCapital || 1000;
           lastDailyFeedbackDate = userData.lastDailyFeedbackDate || null;
           darkMode = userData.darkMode !== false;
@@ -1389,64 +1392,79 @@
             }
           });
           
-          // Load trades
-          const table = document.querySelector("#tradeTable tbody");
-          table.innerHTML = '';
-          
-          if (userData.trades) {
-            Object.values(userData.trades).forEach(trade => {
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                <td>${trade.date}</td>
-                <td>${trade.symbol}</td>
-                <td><span class="badge ${trade.type.toLowerCase()}">${trade.type}</span></td>
-                <td>${trade.entry.toFixed(4)}</td>
-                <td>${trade.exit.toFixed(4)}</td>
-                <td>${trade.lot.toFixed(2)}</td>
-                <td><span class="badge ${trade.result}">${trade.result === 'win' ? (currentLanguage === 'fr' ? 'Gagné' : 'Win') : (currentLanguage === 'fr' ? 'Perdu' : 'Loss')}</span></td>
-                <td class="${trade.result === 'win' ? 'profit' : 'loss'}">${trade.result === 'win' ? '+' : '-'}${Math.abs(trade.pl).toFixed(2)}</td>
-                <td>${trade.rrr.toFixed(2)}</td>
-                <td><i class="fas fa-trash" onclick="deleteTrade(this)" style="cursor:pointer;color:#f87171;"></i></td>
-              `;
-              table.appendChild(row);
-            });
-          }
-          
-          // Update stats
-          updateStats();
-          updatePerformanceStats();
-          generateDailyFeedback();
+          // Load trades from subcollection
+          return userRef.collection('trades').orderBy('date', 'desc').get();
+        } else {
+          // Create user document if it doesn't exist
+          return userRef.set({
+            email: currentUser.email,
+            initialCapital: 1000,
+            darkMode: true,
+            currentLanguage: 'fr',
+            lastDailyFeedbackDate: null
+          }).then(() => {
+            return userRef.collection('trades').get(); // Returns empty collection
+          });
         }
+      }).then((querySnapshot) => {
+        const table = document.querySelector("#tradeTable tbody");
+        table.innerHTML = '';
+        trades = [];
+        
+        querySnapshot.forEach((doc) => {
+          const trade = doc.data();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${trade.date}</td>
+            <td>${trade.symbol}</td>
+            <td><span class="badge ${trade.type.toLowerCase()}">${trade.type}</span></td>
+            <td>${trade.entry.toFixed(4)}</td>
+            <td>${trade.exit.toFixed(4)}</td>
+            <td>${trade.lot.toFixed(2)}</td>
+            <td><span class="badge ${trade.result}">${trade.result === 'win' ? (currentLanguage === 'fr' ? 'Gagné' : 'Win') : (currentLanguage === 'fr' ? 'Perdu' : 'Loss')}</span></td>
+            <td class="${trade.result === 'win' ? 'profit' : 'loss'}">${trade.result === 'win' ? '+' : '-'}${Math.abs(trade.pl).toFixed(2)}</td>
+            <td>${trade.rrr.toFixed(2)}</td>
+            <td><i class="fas fa-trash" onclick="deleteTrade('${doc.id}')" style="cursor:pointer;color:#f87171;"></i></td>
+          `;
+          table.appendChild(row);
+          trades.push(trade);
+        });
+        
+        allTrades = [...trades];
+        
+        // Update stats
+        updateStats();
+        updatePerformanceStats();
+        generateDailyFeedback();
+      }).catch((error) => {
+        console.error("Error loading data:", error);
       });
     }
 
     function saveUserData() {
       if (!currentUser) return;
       
-      const userRef = database.ref('users/' + currentUser.uid);
+      const userRef = db.collection('users').doc(currentUser.uid);
       
       // Prepare data to save
       const userData = {
-        trades: allTrades.reduce((acc, trade, index) => {
-          acc[index] = trade;
-          return acc;
-        }, {}),
         initialCapital: initialCapital,
         lastDailyFeedbackDate: lastDailyFeedbackDate,
         darkMode: darkMode,
         currentLanguage: currentLanguage,
-        email: currentUser.email
+        email: currentUser.email,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
       
-      userRef.set(userData)
+      userRef.set(userData, { merge: true })
         .then(() => {
           const message = currentLanguage === 'fr' 
-            ? 'Journal sauvegardé avec succès !' 
-            : 'Journal saved successfully!';
+            ? 'Préférences sauvegardées avec succès !' 
+            : 'Preferences saved successfully!';
           console.log(message);
         })
         .catch((error) => {
-          console.error("Error saving data:", error);
+          console.error("Error saving user data:", error);
           alert(currentLanguage === 'fr' 
             ? 'Erreur lors de la sauvegarde' 
             : 'Error saving data');
@@ -1469,65 +1487,6 @@
       }
     }
 
-    // Charger le journal sauvegardé
-    function loadJournal() {
-      if (currentUser) {
-        loadUserData();
-      } else {
-        // Load from local storage if not logged in
-        const savedJournal = localStorage.getItem('tradingJournalData');
-        if (savedJournal) {
-          const journalData = JSON.parse(savedJournal);
-          
-          // Restaurer les données
-          initialCapital = journalData.initialCapital || 1000;
-          lastDailyFeedbackDate = journalData.lastDailyFeedbackDate || null;
-          darkMode = journalData.darkMode !== false;
-          currentLanguage = journalData.currentLanguage || 'fr';
-          
-          // Mettre à jour l'interface
-          document.getElementById('initialCapital').value = initialCapital;
-          document.getElementById('darkModeToggle').checked = darkMode;
-          if (!darkMode) document.body.classList.add('light-mode');
-          
-          document.querySelectorAll('.language-option').forEach(opt => {
-            opt.classList.remove('active');
-            if (opt.getAttribute('data-lang') === currentLanguage) {
-              opt.classList.add('active');
-            }
-          });
-          
-          // Restaurer les trades
-          const table = document.querySelector("#tradeTable tbody");
-          table.innerHTML = '';
-          
-          if (journalData.trades && journalData.trades.length > 0) {
-            journalData.trades.forEach(trade => {
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                <td>${trade.date}</td>
-                <td>${trade.symbol}</td>
-                <td><span class="badge ${trade.type.toLowerCase()}">${trade.type}</span></td>
-                <td>${trade.entry.toFixed(4)}</td>
-                <td>${trade.exit.toFixed(4)}</td>
-                <td>${trade.lot.toFixed(2)}</td>
-                <td><span class="badge ${trade.result}">${trade.result === 'win' ? (currentLanguage === 'fr' ? 'Gagné' : 'Win') : (currentLanguage === 'fr' ? 'Perdu' : 'Loss')}</span></td>
-                <td class="${trade.result === 'win' ? 'profit' : 'loss'}">${trade.result === 'win' ? '+' : '-'}${Math.abs(trade.pl).toFixed(2)}</td>
-                <td>${trade.rrr.toFixed(2)}</td>
-                <td><i class="fas fa-trash" onclick="deleteTrade(this)" style="cursor:pointer;color:#f87171;"></i></td>
-              `;
-              table.appendChild(row);
-            });
-          }
-          
-          // Mettre à jour les statistiques
-          updateStats();
-          updatePerformanceStats();
-          generateDailyFeedback();
-        }
-      }
-    }
-
     // Réinitialiser le journal
     function resetJournal() {
       const confirmMsg = currentLanguage === 'fr' 
@@ -1543,20 +1502,42 @@
         document.getElementById('initialCapital').value = initialCapital;
         
         if (currentUser) {
-          saveUserData();
+          // Delete all trades from Firestore
+          const batch = db.batch();
+          const tradesRef = db.collection('users').doc(currentUser.uid).collection('trades');
+          
+          return tradesRef.get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              batch.delete(doc.ref);
+            });
+            return batch.commit();
+          }).then(() => {
+            // Update user settings
+            return saveUserData();
+          }).then(() => {
+            // Réinitialiser les graphiques
+            updateCharts();
+            updatePerformanceStats();
+            
+            // Afficher un message
+            const message = currentLanguage === 'fr' 
+              ? 'Journal réinitialisé avec succès !' 
+              : 'Journal reset successfully!';
+            alert(message);
+          });
         } else {
           localStorage.setItem('initialCapital', initialCapital);
+          
+          // Réinitialiser les graphiques
+          updateCharts();
+          updatePerformanceStats();
+          
+          // Afficher un message
+          const message = currentLanguage === 'fr' 
+            ? 'Journal réinitialisé avec succès !' 
+            : 'Journal reset successfully!';
+          alert(message);
         }
-        
-        // Réinitialiser les graphiques
-        updateCharts();
-        updatePerformanceStats();
-        
-        // Afficher un message
-        const message = currentLanguage === 'fr' 
-          ? 'Journal réinitialisé avec succès !' 
-          : 'Journal reset successfully!';
-        alert(message);
       }
     }
 
@@ -1722,43 +1703,64 @@
       // Calcul du R/R ratio
       const rr = calculateRR(entry, exit, result, pl);
       
-      const table = document.querySelector("#tradeTable tbody");
-      const row = document.createElement("tr");
+      const tradeData = {
+        date: date,
+        symbol: symbol,
+        type: type,
+        entry: entry,
+        exit: exit,
+        lot: lot,
+        result: result,
+        pl: result === 'win' ? pl : -pl,
+        rrr: rr,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
       
-      // Format date for display
-      const displayDate = new Date(date).toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-US');
-      
-      row.innerHTML = `
-        <td>${displayDate}</td>
-        <td>${symbol}</td>
-        <td><span class="badge ${type.toLowerCase()}">${type}</span></td>
-        <td>${entry.toFixed(4)}</td>
-        <td>${exit.toFixed(4)}</td>
-        <td>${lot.toFixed(2)}</td>
-        <td><span class="badge ${result}">${result === 'win' ? (currentLanguage === 'fr' ? 'Gagné' : 'Win') : (currentLanguage === 'fr' ? 'Perdu' : 'Loss')}</span></td>
-        <td class="${result === 'win' ? 'profit' : 'loss'}">${result === 'win' ? '+' : '-'}${Math.abs(pl).toFixed(2)}</td>
-        <td>${rr.toFixed(2)}</td>
-        <td><i class="fas fa-trash" onclick="deleteTrade(this)" style="cursor:pointer;color:#f87171;"></i></td>
-      `;
-      
-      table.appendChild(row);
-      
-      // Clear form
-      document.getElementById('tradeDate').value = '';
-      document.getElementById('tradeSymbol').value = '';
-      document.getElementById('tradeEntry').value = '';
-      document.getElementById('tradeExit').value = '';
-      document.getElementById('tradeLot').value = '';
-      document.getElementById('tradePL').value = '';
-      document.getElementById('tradeRR').value = '';
-      
-      // Update stats
-      updateStats();
-      updatePerformanceStats();
-      generateDailyFeedback();
-      
-      // Save to Firebase
-      saveUserData();
+      // Add to Firestore
+      db.collection('users').doc(currentUser.uid).collection('trades').add(tradeData)
+        .then((docRef) => {
+          // Add to table
+          const table = document.querySelector("#tradeTable tbody");
+          const row = document.createElement("tr");
+          
+          // Format date for display
+          const displayDate = new Date(date).toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-US');
+          
+          row.innerHTML = `
+            <td>${displayDate}</td>
+            <td>${symbol}</td>
+            <td><span class="badge ${type.toLowerCase()}">${type}</span></td>
+            <td>${entry.toFixed(4)}</td>
+            <td>${exit.toFixed(4)}</td>
+            <td>${lot.toFixed(2)}</td>
+            <td><span class="badge ${result}">${result === 'win' ? (currentLanguage === 'fr' ? 'Gagné' : 'Win') : (currentLanguage === 'fr' ? 'Perdu' : 'Loss')}</span></td>
+            <td class="${result === 'win' ? 'profit' : 'loss'}">${result === 'win' ? '+' : '-'}${Math.abs(pl).toFixed(2)}</td>
+            <td>${rr.toFixed(2)}</td>
+            <td><i class="fas fa-trash" onclick="deleteTrade('${docRef.id}')" style="cursor:pointer;color:#f87171;"></i></td>
+          `;
+          
+          table.appendChild(row);
+          
+          // Clear form
+          document.getElementById('tradeDate').value = '';
+          document.getElementById('tradeSymbol').value = '';
+          document.getElementById('tradeEntry').value = '';
+          document.getElementById('tradeExit').value = '';
+          document.getElementById('tradeLot').value = '';
+          document.getElementById('tradePL').value = '';
+          document.getElementById('tradeRR').value = '';
+          
+          // Update stats
+          trades.push(tradeData);
+          allTrades = [...trades];
+          updateStats();
+          updatePerformanceStats();
+          generateDailyFeedback();
+        })
+        .catch((error) => {
+          console.error("Error adding trade: ", error);
+          alert(currentLanguage === 'fr' ? 'Erreur lors de l\'ajout du trade' : 'Error adding trade');
+        });
     }
     
     // Calcul du Risk/Reward ratio
@@ -1775,18 +1777,55 @@
     }
 
     // Supprimer un trade
-    function deleteTrade(icon) {
+    function deleteTrade(tradeId) {
       const confirmMsg = currentLanguage === 'fr' ? 'Voulez-vous vraiment supprimer ce trade ?' : 'Do you really want to delete this trade?';
       if (confirm(confirmMsg)) {
-        const row = icon.closest('tr');
-        row.remove();
-        updateStats();
-        updatePerformanceStats();
-        generateDailyFeedback();
-        
-        // Save to Firebase if logged in
         if (currentUser) {
-          saveUserData();
+          // Delete from Firestore
+          db.collection('users').doc(currentUser.uid).collection('trades').doc(tradeId).delete()
+            .then(() => {
+              // Remove from table
+              const rows = document.querySelectorAll("#tradeTable tbody tr");
+              for (let i = 0; i < rows.length; i++) {
+                const trashIcon = rows[i].querySelector(".fa-trash");
+                if (trashIcon && trashIcon.getAttribute('onclick').includes(tradeId)) {
+                  rows[i].remove();
+                  break;
+                }
+              }
+              
+              // Update trades array
+              trades = trades.filter(trade => trade.id !== tradeId);
+              allTrades = [...trades];
+              
+              // Update stats
+              updateStats();
+              updatePerformanceStats();
+              generateDailyFeedback();
+            })
+            .catch((error) => {
+              console.error("Error removing trade: ", error);
+              alert(currentLanguage === 'fr' ? 'Erreur lors de la suppression' : 'Error deleting trade');
+            });
+        } else {
+          // For non-logged users, just remove from table
+          const rows = document.querySelectorAll("#tradeTable tbody tr");
+          for (let i = 0; i < rows.length; i++) {
+            const trashIcon = rows[i].querySelector(".fa-trash");
+            if (trashIcon && trashIcon.getAttribute('onclick').includes(tradeId)) {
+              rows[i].remove();
+              break;
+            }
+          }
+          
+          // Update trades array
+          trades = trades.filter(trade => trade.id !== tradeId);
+          allTrades = [...trades];
+          
+          // Update stats
+          updateStats();
+          updatePerformanceStats();
+          generateDailyFeedback();
         }
       }
     }
@@ -1794,38 +1833,16 @@
     // Mise à jour des statistiques
     function updateStats() {
       const rows = document.querySelectorAll("#tradeTable tbody tr");
-      trades = [];
       let totalGain = 0;
       let wins = 0;
       let totalRRR = 0;
 
-      rows.forEach(row => {
-        const resultText = row.querySelector("td:nth-child(7) span").textContent;
-        const result = resultText === (currentLanguage === 'fr' ? 'Gagné' : 'Win') || resultText === 'Win' ? 'win' : 'loss';
-        const plText = row.querySelector("td:nth-child(8)").textContent;
-        const pl = parseFloat(plText.replace('+', '').replace('-', '')) || 0;
-        const rrText = row.querySelector("td:nth-child(9)").textContent;
-        const rrr = parseFloat(rrText) || 0;
-
-        trades.push({ 
-          date: row.querySelector("td:nth-child(1)").textContent,
-          symbol: row.querySelector("td:nth-child(2)").textContent,
-          type: row.querySelector("td:nth-child(3) span").textContent,
-          entry: parseFloat(row.querySelector("td:nth-child(4)").textContent),
-          exit: parseFloat(row.querySelector("td:nth-child(5)").textContent),
-          lot: parseFloat(row.querySelector("td:nth-child(6)").textContent),
-          result,
-          pl: plText.startsWith('+') ? pl : -pl, 
-          rrr 
-        });
-        
-        totalGain += plText.startsWith('+') ? pl : -pl;
-        totalRRR += rrr;
-        if (result === 'win') wins++;
+      trades.forEach(trade => {
+        totalGain += trade.pl;
+        totalRRR += trade.rrr;
+        if (trade.result === 'win') wins++;
       });
 
-      allTrades = [...trades];
-      
       // Mise à jour des statistiques
       const avgRRR = trades.length ? totalRRR / trades.length : 0;
       const winRate = trades.length ? (wins / trades.length) * 100 : 0;
@@ -2110,10 +2127,10 @@
           return;
         }
         
-        // Vider le tableau actuel
-        document.querySelector("#tradeTable tbody").innerHTML = '';
+        // Batch write to Firestore
+        const batch = db.batch();
+        const tradesRef = db.collection('users').doc(currentUser.uid).collection('trades');
         
-        // Ajouter chaque trade
         jsonData.forEach(row => {
           const date = row.Date || row.DATE || row.date;
           const symbol = row.Symbole || row.SYMBOL || row.symbol;
@@ -2126,37 +2143,32 @@
           const rr = row['R/R Ratio'] || row.RR || row.rr;
           
           if (date && symbol) {
-            const table = document.querySelector("#tradeTable tbody");
-            const newRow = document.createElement("tr");
+            const tradeData = {
+              date: date,
+              symbol: symbol.toUpperCase(),
+              type: type,
+              entry: parseFloat(entry),
+              exit: parseFloat(exit),
+              lot: parseFloat(lot),
+              result: result.toLowerCase(),
+              pl: result.toLowerCase() === 'win' ? Math.abs(parseFloat(pl)) : -Math.abs(parseFloat(pl)),
+              rrr: parseFloat(rr),
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
             
-            newRow.innerHTML = `
-              <td>${date}</td>
-              <td>${symbol}</td>
-              <td><span class="badge ${type.toLowerCase()}">${type}</span></td>
-              <td>${entry}</td>
-              <td>${exit}</td>
-              <td>${lot}</td>
-              <td><span class="badge ${result.toLowerCase()}">${result}</span></td>
-              <td class="${result.toLowerCase() === 'win' ? 'profit' : 'loss'}">${result.toLowerCase() === 'win' ? '+' : '-'}${Math.abs(pl)}</td>
-              <td>${rr}</td>
-              <td><i class="fas fa-trash" onclick="deleteTrade(this)" style="cursor:pointer;color:#f87171;"></i></td>
-            `;
-            
-            table.appendChild(newRow);
+            const docRef = tradesRef.doc(); // Auto-generated ID
+            batch.set(docRef, tradeData);
           }
         });
         
-        // Mettre à jour les stats
-        updateStats();
-        updatePerformanceStats();
-        generateDailyFeedback();
-        
-        // Save to Firebase if logged in
-        if (currentUser) {
-          saveUserData();
-        }
-        
-        alert(currentLanguage === 'fr' ? `${jsonData.length} trades importés avec succès` : `${jsonData.length} trades imported successfully`);
+        return batch.commit().then(() => {
+          // Reload data after import
+          loadUserData();
+          alert(currentLanguage === 'fr' ? `${jsonData.length} trades importés avec succès` : `${jsonData.length} trades imported successfully`);
+        }).catch(error => {
+          console.error("Error importing trades: ", error);
+          alert(currentLanguage === 'fr' ? 'Erreur lors de l\'importation' : 'Error during import');
+        });
       };
       
       reader.readAsArrayBuffer(file);
@@ -2375,7 +2387,7 @@
         if (currentUser) {
           app.style.display = 'flex';
           initCharts();
-          loadJournal();
+          loadUserData();
           
           // Démarrer le carrousel de patterns émotionnels
           emotionalPatternInterval = setInterval(showNextEmotionalPattern, 60000); // 60 secondes
