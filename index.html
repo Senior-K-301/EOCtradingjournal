@@ -81,6 +81,129 @@
       to { opacity: 1; transform: scale(1); }
     }
 
+    /* Auth Modal Styles */
+    .auth-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .auth-container {
+      background-color: #1e1e2f;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    body.light-mode .auth-container {
+      background-color: #ffffff;
+    }
+
+    .auth-container h2 {
+      color: white;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    body.light-mode .auth-container h2 {
+      color: #333;
+    }
+
+    .auth-container input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background-color: rgba(30, 30, 47, 0.5);
+      color: white;
+    }
+
+    body.light-mode .auth-container input {
+      background-color: white;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+
+    .auth-container button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 5px;
+      border: none;
+      background-color: #4361ee;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .auth-container button:hover {
+      background-color: #3a56d4;
+    }
+
+    .auth-container .switch-auth {
+      color: #4361ee;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .auth-container .switch-auth:hover {
+      text-decoration: underline;
+    }
+
+    .auth-container .error-message {
+      color: #f87171;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .user-info {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      z-index: 101;
+    }
+
+    body.light-mode .user-info {
+      color: #333;
+    }
+
+    .user-info img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+
+    .user-info .user-email {
+      font-size: 14px;
+    }
+
+    .user-info .logout-btn {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .user-info .logout-btn:hover {
+      text-decoration: underline;
+    }
+
     .sidebar {
       background-color: #1e1e2f;
       color: white;
@@ -678,6 +801,16 @@
         padding: 8px 12px;
         font-size: 12px;
       }
+
+      .user-info {
+        position: static;
+        justify-content: flex-end;
+        margin-bottom: 15px;
+      }
+
+      .user-info .user-email {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -688,7 +821,37 @@
     <button id="enterBtn">Welcome</button>
   </div>
 
+  <!-- Auth Modal -->
+  <div id="authModal" class="auth-modal">
+    <div class="auth-container">
+      <div id="loginView">
+        <h2>CONNEXION</h2>
+        <div id="loginError" class="error-message"></div>
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginPassword" placeholder="Mot de passe">
+        <button id="loginBtn">Se connecter</button>
+        <button id="googleLoginBtn">Se connecter avec Google</button>
+        <div class="switch-auth" id="showRegister">Créer un compte</div>
+      </div>
+      
+      <div id="registerView" style="display: none;">
+        <h2>CRÉER UN COMPTE</h2>
+        <div id="registerError" class="error-message"></div>
+        <input type="email" id="registerEmail" placeholder="Email">
+        <input type="password" id="registerPassword" placeholder="Mot de passe (6 caractères min)">
+        <input type="password" id="registerConfirmPassword" placeholder="Confirmer le mot de passe">
+        <button id="registerBtn">S'inscrire</button>
+        <div class="switch-auth" id="showLogin">Déjà un compte ? Se connecter</div>
+      </div>
+    </div>
+  </div>
+
   <div id="mainApp" style="display: none;">
+    <div class="user-info">
+      <span class="user-email" id="userEmail"></span>
+      <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+
     <div class="sidebar">
       <i class="fas fa-tachometer-alt active" data-section="dashboard"></i>
       <i class="fas fa-chart-bar" data-section="performance"></i>
@@ -924,18 +1087,39 @@
     </div>
   </div>
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
   <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyArp7tg8vG9LALidofLGMyPLo0_kkf5Gvw",
+      authDomain: "eoc-tradingjournal.firebaseapp.com",
+      projectId: "eoc-tradingjournal",
+      storageBucket: "eoc-tradingjournal.firebasestorage.app",
+      messagingSenderId: "1040650682872",
+      appId: "1:1040650682872:web:97ec728bfee0577ce2160d"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
     // Variables globales
     let trades = [];
     let allTrades = [];
     let capitalChart, pieChart, dailyChart;
     let currentSection = 'dashboard';
-    let initialCapital = localStorage.getItem('initialCapital') || 1000;
+    let initialCapital = 1000;
     let currentLanguage = 'fr';
     let darkMode = true;
     let emotionalPatternIndex = 0;
     let emotionalPatternInterval;
-    let lastDailyFeedbackDate = localStorage.getItem('lastDailyFeedbackDate') || null;
+    let lastDailyFeedbackDate = null;
+    let currentUser = null;
 
     // Patterns émotionnels
     const emotionalPatterns = [
@@ -961,75 +1145,234 @@
       "N'oublie pas de définir ton stop loss avant chaque trade."
     ];
 
-    // Sauvegarder le journal complet
-    function saveJournal() {
-      const journalData = {
-        trades: allTrades,
+    // Auth Functions
+    function showAuthModal() {
+      document.getElementById('authModal').style.display = 'flex';
+    }
+
+    function hideAuthModal() {
+      document.getElementById('authModal').style.display = 'none';
+      document.getElementById('loginError').textContent = '';
+      document.getElementById('registerError').textContent = '';
+    }
+
+    function showLoginView() {
+      document.getElementById('loginView').style.display = 'block';
+      document.getElementById('registerView').style.display = 'none';
+    }
+
+    function showRegisterView() {
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('registerView').style.display = 'block';
+    }
+
+    function registerUser(email, password) {
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // User registered successfully
+          currentUser = userCredential.user;
+          
+          // Create user data in database
+          return database.ref('users/' + userCredential.user.uid).set({
+            email: userCredential.user.email,
+            createdAt: firebase.database.ServerValue.TIMESTAMP,
+            initialCapital: 1000,
+            darkMode: true,
+            currentLanguage: 'fr'
+          });
+        })
+        .then(() => {
+          hideAuthModal();
+          loadUserData();
+        })
+        .catch((error) => {
+          document.getElementById('registerError').textContent = error.message;
+        });
+    }
+
+    function loginUser(email, password) {
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // User logged in successfully
+          currentUser = userCredential.user;
+          hideAuthModal();
+          loadUserData();
+        })
+        .catch((error) => {
+          document.getElementById('loginError').textContent = error.message;
+        });
+    }
+
+    function logoutUser() {
+      auth.signOut().then(() => {
+        currentUser = null;
+        document.getElementById('mainApp').style.display = 'none';
+        document.getElementById('splash').style.display = 'flex';
+        showAuthModal();
+      });
+    }
+
+    function loadUserData() {
+      if (!currentUser) return;
+
+      // Update UI with user info
+      document.getElementById('userEmail').textContent = currentUser.email;
+      
+      // Load user's trading journal data from Firebase
+      const userRef = database.ref('users/' + currentUser.uid);
+      userRef.once('value').then((snapshot) => {
+        const userData = snapshot.val();
+        
+        if (userData) {
+          initialCapital = userData.initialCapital || 1000;
+          lastDailyFeedbackDate = userData.lastDailyFeedbackDate || null;
+          darkMode = userData.darkMode !== false;
+          currentLanguage = userData.currentLanguage || 'fr';
+          
+          // Update UI
+          document.getElementById('initialCapital').value = initialCapital;
+          document.getElementById('darkModeToggle').checked = darkMode;
+          if (!darkMode) document.body.classList.add('light-mode');
+          
+          document.querySelectorAll('.language-option').forEach(opt => {
+            opt.classList.remove('active');
+            if (opt.getAttribute('data-lang') === currentLanguage) {
+              opt.classList.add('active');
+            }
+          });
+          
+          // Load trades
+          const table = document.querySelector("#tradeTable tbody");
+          table.innerHTML = '';
+          
+          if (userData.trades) {
+            Object.values(userData.trades).forEach(trade => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${trade.date}</td>
+                <td>${trade.symbol}</td>
+                <td><span class="badge ${trade.type.toLowerCase()}">${trade.type}</span></td>
+                <td>${trade.entry.toFixed(4)}</td>
+                <td>${trade.exit.toFixed(4)}</td>
+                <td>${trade.lot.toFixed(2)}</td>
+                <td><span class="badge ${trade.result}">${trade.result === 'win' ? (currentLanguage === 'fr' ? 'Gagné' : 'Win') : (currentLanguage === 'fr' ? 'Perdu' : 'Loss')}</span></td>
+                <td class="${trade.result === 'win' ? 'profit' : 'loss'}">${trade.result === 'win' ? '+' : '-'}${Math.abs(trade.pl).toFixed(2)}</td>
+                <td>${trade.rrr.toFixed(2)}</td>
+                <td><i class="fas fa-trash" onclick="deleteTrade(this)" style="cursor:pointer;color:#f87171;"></i></td>
+              `;
+              table.appendChild(row);
+            });
+          }
+          
+          // Update stats
+          updateStats();
+          updatePerformanceStats();
+          generateDailyFeedback();
+        }
+      });
+    }
+
+    function saveUserData() {
+      if (!currentUser) return;
+      
+      const userRef = database.ref('users/' + currentUser.uid);
+      
+      // Prepare data to save
+      const userData = {
+        trades: allTrades.reduce((acc, trade, index) => {
+          acc[index] = trade;
+          return acc;
+        }, {}),
         initialCapital: initialCapital,
         lastDailyFeedbackDate: lastDailyFeedbackDate,
         darkMode: darkMode,
-        currentLanguage: currentLanguage
+        currentLanguage: currentLanguage,
+        email: currentUser.email
       };
       
-      localStorage.setItem('tradingJournalData', JSON.stringify(journalData));
-      
-      const message = currentLanguage === 'fr' 
-        ? 'Journal sauvegardé avec succès !' 
-        : 'Journal saved successfully!';
-      alert(message);
+      userRef.set(userData)
+        .then(() => {
+          const message = currentLanguage === 'fr' 
+            ? 'Journal sauvegardé avec succès !' 
+            : 'Journal saved successfully!';
+          alert(message);
+        })
+        .catch((error) => {
+          console.error("Error saving data:", error);
+          alert(currentLanguage === 'fr' 
+            ? 'Erreur lors de la sauvegarde' 
+            : 'Error saving data');
+        });
+    }
+
+    // Sauvegarder le journal complet
+    function saveJournal() {
+      if (currentUser) {
+        saveUserData();
+      } else {
+        const message = currentLanguage === 'fr' 
+          ? 'Veuillez vous connecter pour sauvegarder' 
+          : 'Please login to save';
+        alert(message);
+      }
     }
 
     // Charger le journal sauvegardé
     function loadJournal() {
-      const savedJournal = localStorage.getItem('tradingJournalData');
-      if (savedJournal) {
-        const journalData = JSON.parse(savedJournal);
-        
-        // Restaurer les données
-        initialCapital = journalData.initialCapital || 1000;
-        lastDailyFeedbackDate = journalData.lastDailyFeedbackDate || null;
-        darkMode = journalData.darkMode !== false;
-        currentLanguage = journalData.currentLanguage || 'fr';
-        
-        // Mettre à jour l'interface
-        document.getElementById('initialCapital').value = initialCapital;
-        document.getElementById('darkModeToggle').checked = darkMode;
-        if (!darkMode) document.body.classList.add('light-mode');
-        
-        document.querySelectorAll('.language-option').forEach(opt => {
-          opt.classList.remove('active');
-          if (opt.getAttribute('data-lang') === currentLanguage) {
-            opt.classList.add('active');
-          }
-        });
-        
-        // Restaurer les trades
-        const table = document.querySelector("#tradeTable tbody");
-        table.innerHTML = '';
-        
-        if (journalData.trades && journalData.trades.length > 0) {
-          journalData.trades.forEach(trade => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${trade.date}</td>
-              <td>${trade.symbol}</td>
-              <td><span class="badge ${trade.type.toLowerCase()}">${trade.type}</span></td>
-              <td>${trade.entry.toFixed(4)}</td>
-              <td>${trade.exit.toFixed(4)}</td>
-              <td>${trade.lot.toFixed(2)}</td>
-              <td><span class="badge ${trade.result}">${trade.result === 'win' ? (currentLanguage === 'fr' ? 'Gagné' : 'Win') : (currentLanguage === 'fr' ? 'Perdu' : 'Loss')}</span></td>
-              <td class="${trade.result === 'win' ? 'profit' : 'loss'}">${trade.result === 'win' ? '+' : '-'}${Math.abs(trade.pl).toFixed(2)}</td>
-              <td>${trade.rrr.toFixed(2)}</td>
-              <td><i class="fas fa-trash" onclick="deleteTrade(this)" style="cursor:pointer;color:#f87171;"></i></td>
-            `;
-            table.appendChild(row);
+      if (currentUser) {
+        loadUserData();
+      } else {
+        // Load from local storage if not logged in
+        const savedJournal = localStorage.getItem('tradingJournalData');
+        if (savedJournal) {
+          const journalData = JSON.parse(savedJournal);
+          
+          // Restaurer les données
+          initialCapital = journalData.initialCapital || 1000;
+          lastDailyFeedbackDate = journalData.lastDailyFeedbackDate || null;
+          darkMode = journalData.darkMode !== false;
+          currentLanguage = journalData.currentLanguage || 'fr';
+          
+          // Mettre à jour l'interface
+          document.getElementById('initialCapital').value = initialCapital;
+          document.getElementById('darkModeToggle').checked = darkMode;
+          if (!darkMode) document.body.classList.add('light-mode');
+          
+          document.querySelectorAll('.language-option').forEach(opt => {
+            opt.classList.remove('active');
+            if (opt.getAttribute('data-lang') === currentLanguage) {
+              opt.classList.add('active');
+            }
           });
+          
+          // Restaurer les trades
+          const table = document.querySelector("#tradeTable tbody");
+          table.innerHTML = '';
+          
+          if (journalData.trades && journalData.trades.length > 0) {
+            journalData.trades.forEach(trade => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${trade.date}</td>
+                <td>${trade.symbol}</td>
+                <td><span class="badge ${trade.type.toLowerCase()}">${trade.type}</span></td>
+                <td>${trade.entry.toFixed(4)}</td>
+                <td>${trade.exit.toFixed(4)}</td>
+                <td>${trade.lot.toFixed(2)}</td>
+                <td><span class="badge ${trade.result}">${trade.result === 'win' ? (currentLanguage === 'fr' ? 'Gagné' : 'Win') : (currentLanguage === 'fr' ? 'Perdu' : 'Loss')}</span></td>
+                <td class="${trade.result === 'win' ? 'profit' : 'loss'}">${trade.result === 'win' ? '+' : '-'}${Math.abs(trade.pl).toFixed(2)}</td>
+                <td>${trade.rrr.toFixed(2)}</td>
+                <td><i class="fas fa-trash" onclick="deleteTrade(this)" style="cursor:pointer;color:#f87171;"></i></td>
+              `;
+              table.appendChild(row);
+            });
+          }
+          
+          // Mettre à jour les statistiques
+          updateStats();
+          updatePerformanceStats();
+          generateDailyFeedback();
         }
-        
-        // Mettre à jour les statistiques
-        updateStats();
-        updatePerformanceStats();
-        generateDailyFeedback();
       }
     }
 
@@ -1046,7 +1389,12 @@
         // Réinitialiser les paramètres par défaut
         initialCapital = 1000;
         document.getElementById('initialCapital').value = initialCapital;
-        localStorage.setItem('initialCapital', initialCapital);
+        
+        if (currentUser) {
+          saveUserData();
+        } else {
+          localStorage.setItem('initialCapital', initialCapital);
+        }
         
         // Réinitialiser les graphiques
         updateCharts();
@@ -1074,7 +1422,12 @@
       if (lastDailyFeedbackDate === today) return;
       
       lastDailyFeedbackDate = today;
-      localStorage.setItem('lastDailyFeedbackDate', today);
+      
+      if (currentUser) {
+        saveUserData();
+      } else {
+        localStorage.setItem('lastDailyFeedbackDate', today);
+      }
       
       // Sélectionner un feedback aléatoire ou basé sur les performances
       let feedback;
@@ -1243,6 +1596,11 @@
       updateStats();
       updatePerformanceStats();
       generateDailyFeedback();
+      
+      // Save to Firebase if logged in
+      if (currentUser) {
+        saveUserData();
+      }
     }
     
     // Calcul du Risk/Reward ratio
@@ -1267,6 +1625,11 @@
         updateStats();
         updatePerformanceStats();
         generateDailyFeedback();
+        
+        // Save to Firebase if logged in
+        if (currentUser) {
+          saveUserData();
+        }
       }
     }
 
@@ -1490,7 +1853,13 @@
     function updateCapital() {
       const newCapital = parseFloat(document.getElementById('initialCapital').value) || 1000;
       initialCapital = newCapital;
-      localStorage.setItem('initialCapital', newCapital);
+      
+      if (currentUser) {
+        saveUserData();
+      } else {
+        localStorage.setItem('initialCapital', newCapital);
+      }
+      
       updateStats();
       updateCapitalChart();
       generateDailyFeedback();
@@ -1617,6 +1986,11 @@
         updatePerformanceStats();
         generateDailyFeedback();
         
+        // Save to Firebase if logged in
+        if (currentUser) {
+          saveUserData();
+        }
+        
         alert(currentLanguage === 'fr' ? `${jsonData.length} trades importés avec succès` : `${jsonData.length} trades imported successfully`);
       };
       
@@ -1632,13 +2006,23 @@
       } else {
         document.body.classList.add('light-mode');
       }
-      localStorage.setItem('darkMode', darkMode);
+      
+      if (currentUser) {
+        saveUserData();
+      } else {
+        localStorage.setItem('darkMode', darkMode);
+      }
     }
     
     // Changer la langue
     function changeLanguage(lang) {
       currentLanguage = lang;
-      localStorage.setItem('tradingLanguage', lang);
+      
+      if (currentUser) {
+        saveUserData();
+      } else {
+        localStorage.setItem('tradingLanguage', lang);
+      }
       
       // Mettre à jour l'interface
       translateUI();
@@ -1691,7 +2075,60 @@
       const btn = document.getElementById('enterBtn');
       const app = document.getElementById('mainApp');
       
-      // Charger les préférences
+      // Configurer les écouteurs d'authentification
+      document.getElementById('showRegister').addEventListener('click', showRegisterView);
+      document.getElementById('showLogin').addEventListener('click', showLoginView);
+      document.getElementById('registerBtn').addEventListener('click', () => {
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('registerConfirmPassword').value;
+        
+        if (password !== confirmPassword) {
+          document.getElementById('registerError').textContent = currentLanguage === 'fr' 
+            ? 'Les mots de passe ne correspondent pas' 
+            : 'Passwords do not match';
+          return;
+        }
+        
+        registerUser(email, password);
+      });
+      
+      document.getElementById('loginBtn').addEventListener('click', () => {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        loginUser(email, password);
+      });
+      
+      document.getElementById('logoutBtn').addEventListener('click', logoutUser);
+      
+      // Écouter les changements d'état d'authentification
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // User is signed in
+          currentUser = user;
+          document.getElementById('userEmail').textContent = user.email;
+          
+          // Hide auth modal if it's visible
+          hideAuthModal();
+          
+          // Show the main app if splash screen is not shown
+          if (splash.style.display === 'none') {
+            app.style.display = 'flex';
+          }
+        } else {
+          // User is signed out
+          currentUser = null;
+          document.getElementById('userEmail').textContent = '';
+          
+          // Show auth modal when splash screen is dismissed
+          btn.addEventListener('click', () => {
+            splash.style.display = 'none';
+            showAuthModal();
+          }, { once: true });
+        }
+      });
+      
+      // Charger les préférences locales si pas connecté
       darkMode = localStorage.getItem('darkMode') !== 'false';
       if (!darkMode) {
         document.body.classList.add('light-mode');
@@ -1731,20 +2168,23 @@
 
       btn.addEventListener('click', () => {
         splash.style.display = 'none';
-        app.style.display = 'flex';
-        initCharts();
         
-        // Charger le journal sauvegardé
-        loadJournal();
+        if (currentUser) {
+          app.style.display = 'flex';
+          initCharts();
+          loadJournal();
+          
+          // Démarrer le carrousel de patterns émotionnels
+          emotionalPatternInterval = setInterval(showNextEmotionalPattern, 60000); // 60 secondes
+          
+          // Générer le feedback quotidien
+          generateDailyFeedback();
+        } else {
+          showAuthModal();
+        }
         
-        // Démarrer le carrousel de patterns émotionnels
-        emotionalPatternInterval = setInterval(showNextEmotionalPattern, 60000); // 60 secondes
-        
-        // Générer le feedback quotidien
-        generateDailyFeedback();
-        
-        // Ajouter 3 trades d'exemple si vide
-        if (document.querySelectorAll("#tradeTable tbody tr").length === 0) {
+        // Ajouter 3 trades d'exemple si vide et non connecté
+        if (!currentUser && document.querySelectorAll("#tradeTable tbody tr").length === 0) {
           const today = new Date().toISOString().split('T')[0];
           
           // Add sample trades
