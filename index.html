@@ -7,11 +7,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/fr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -794,6 +799,77 @@
       background-color: #3a56d4;
     }
 
+    /* Calendar Styles */
+    #calendar {
+      background-color: rgba(30, 41, 59, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    body.light-mode #calendar {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .fc-event {
+      cursor: pointer;
+      font-size: 0.85em;
+      padding: 2px 4px;
+    }
+
+    .fc-event.win-event {
+      background-color: rgba(74, 222, 128, 0.7);
+      border-color: rgba(74, 222, 128, 0.9);
+    }
+
+    .fc-event.loss-event {
+      background-color: rgba(248, 113, 113, 0.7);
+      border-color: rgba(248, 113, 113, 0.9);
+    }
+
+    .fc-toolbar-title {
+      color: rgba(255,255,255,0.9);
+    }
+
+    body.light-mode .fc-toolbar-title {
+      color: #333;
+    }
+
+    .fc-col-header-cell-cushion {
+      color: rgba(255,255,255,0.9);
+    }
+
+    body.light-mode .fc-col-header-cell-cushion {
+      color: #333;
+    }
+
+    .fc-daygrid-day-number {
+      color: rgba(255,255,255,0.9);
+    }
+
+    body.light-mode .fc-daygrid-day-number {
+      color: #333;
+    }
+
+    .fc-scrollgrid {
+      border-color: rgba(255,255,255,0.1) !important;
+    }
+
+    body.light-mode .fc-scrollgrid {
+      border-color: rgba(0,0,0,0.1) !important;
+    }
+
+    .fc-daygrid-day-frame {
+      border-color: rgba(255,255,255,0.1) !important;
+    }
+
+    body.light-mode .fc-daygrid-day-frame {
+      border-color: rgba(0,0,0,0.1) !important;
+    }
+
     /* Hide sections by default */
     .section {
       display: none;
@@ -930,6 +1006,7 @@
     <div class="sidebar">
       <i class="fas fa-tachometer-alt active" data-section="dashboard"></i>
       <i class="fas fa-chart-bar" data-section="performance"></i>
+      <i class="fas fa-calendar-alt" data-section="calendar"></i>
       <i class="fas fa-building" data-section="brokers"></i>
       <i class="fas fa-cog" data-section="settings"></i>
     </div>
@@ -1090,6 +1167,20 @@
         </div>
       </section>
 
+      <!-- Calendar Section -->
+      <section id="calendar-section" class="section">
+        <div id="nonLoggedMessageCalendar" class="non-logged-message" style="display: none;">
+          <h2>Connectez-vous pour accéder au calendrier</h2>
+          <p>Veuillez vous connecter ou créer un compte pour visualiser vos trades sur le calendrier.</p>
+          <button id="loginFromCalendarBtn">Se connecter</button>
+        </div>
+
+        <div id="loggedContentCalendar" style="display: none;">
+          <h1><i class="fas fa-calendar-alt"></i> CALENDRIER DES TRADES</h1>
+          <div id="calendar"></div>
+        </div>
+      </section>
+
       <!-- Brokers Section -->
       <section id="brokers-section" class="section">
         <h1><i class="fas fa-building"></i> RECOMMANDATION DE BROKERS</h1>
@@ -1193,6 +1284,24 @@
     <button id="closeWelcomeBtn">Commencer</button>
   </div>
 
+  <!-- Trade Details Modal -->
+  <div class="modal fade" id="tradeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content" style="background-color: #1e1e2f; color: white;">
+        <div class="modal-header">
+          <h5 class="modal-title">Détails du Trade</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+        </div>
+        <div class="modal-body" id="tradeModalBody">
+          <!-- Trade details will be inserted here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -1250,6 +1359,78 @@
       "Ton capital augmente régulièrement, c'est le signe d'une bonne stratégie.",
       "N'oublie pas de définir ton stop loss avant chaque trade."
     ];
+
+    // Initialiser le calendrier
+    function initCalendar() {
+      const calendarEl = document.getElementById('calendar');
+      
+      if (!calendarEl) return;
+      
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: currentLanguage === 'fr' ? 'fr' : 'en',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: function(fetchInfo, successCallback, failureCallback) {
+          if (!currentUser) {
+            failureCallback(new Error('User not logged in'));
+            return;
+          }
+          
+          // Convert trades to calendar events
+          const events = trades.map(trade => {
+            return {
+              title: `${trade.symbol} (${trade.type}) - $${Math.abs(trade.pl).toFixed(2)}`,
+              start: trade.date,
+              allDay: true,
+              className: trade.result === 'win' ? 'win-event' : 'loss-event',
+              extendedProps: {
+                tradeData: trade
+              }
+            };
+          });
+          
+          successCallback(events);
+        },
+        eventClick: function(info) {
+          const trade = info.event.extendedProps.tradeData;
+          const resultText = trade.result === 'win' ? (currentLanguage === 'fr' ? 'Gagné' : 'Win') : (currentLanguage === 'fr' ? 'Perdu' : 'Loss');
+          
+          const content = `
+            <div style="padding: 10px;">
+              <h4>${trade.symbol} - ${trade.type}</h4>
+              <p><strong>Date:</strong> ${trade.date}</p>
+              <p><strong>Entry:</strong> ${trade.entry.toFixed(4)}</p>
+              <p><strong>Exit:</strong> ${trade.exit.toFixed(4)}</p>
+              <p><strong>Lot:</strong> ${trade.lot.toFixed(2)}</p>
+              <p><strong>Result:</strong> <span class="${trade.result}">${resultText}</span></p>
+              <p><strong>P&L:</strong> <span class="${trade.result === 'win' ? 'profit' : 'loss'}">${trade.result === 'win' ? '+' : '-'}$${Math.abs(trade.pl).toFixed(2)}</span></p>
+              <p><strong>R/R Ratio:</strong> ${trade.rrr.toFixed(2)}</p>
+            </div>
+          `;
+          
+          const modal = new bootstrap.Modal(document.getElementById('tradeModal'));
+          document.getElementById('tradeModalBody').innerHTML = content;
+          modal.show();
+        },
+        datesSet: function(dateInfo) {
+          // You could add logic here to load trades for the visible date range
+        }
+      });
+      
+      calendar.render();
+      window.tradingCalendar = calendar;
+    }
+
+    // Mettre à jour le calendrier
+    function updateCalendar() {
+      if (window.tradingCalendar) {
+        window.tradingCalendar.refetchEvents();
+      }
+    }
 
     // Auth Functions
     function showAuthModal() {
@@ -1349,12 +1530,21 @@
       document.getElementById('nonLoggedMessagePerformance').style.display = isLoggedIn ? 'none' : 'block';
       document.getElementById('loggedContentPerformance').style.display = isLoggedIn ? 'block' : 'none';
       
+      // Show/hide calendar content
+      document.getElementById('nonLoggedMessageCalendar').style.display = isLoggedIn ? 'none' : 'block';
+      document.getElementById('loggedContentCalendar').style.display = isLoggedIn ? 'block' : 'none';
+      
       // Show/hide settings content
       document.getElementById('nonLoggedMessageSettings').style.display = isLoggedIn ? 'none' : 'block';
       document.getElementById('loggedContentSettings').style.display = isLoggedIn ? 'block' : 'none';
       
       // Show/hide user info
       document.querySelector('.user-info').style.display = isLoggedIn ? 'flex' : 'none';
+      
+      // Initialize calendar if logged in
+      if (isLoggedIn) {
+        initCalendar();
+      }
     }
 
     function loadUserData() {
@@ -1436,6 +1626,7 @@
         updateStats();
         updatePerformanceStats();
         generateDailyFeedback();
+        initCalendar();
       }).catch((error) => {
         console.error("Error loading data:", error);
       });
@@ -1518,6 +1709,7 @@
             // Réinitialiser les graphiques
             updateCharts();
             updatePerformanceStats();
+            updateCalendar();
             
             // Afficher un message
             const message = currentLanguage === 'fr' 
@@ -1531,6 +1723,7 @@
           // Réinitialiser les graphiques
           updateCharts();
           updatePerformanceStats();
+          updateCalendar();
           
           // Afficher un message
           const message = currentLanguage === 'fr' 
@@ -1756,6 +1949,7 @@
           updateStats();
           updatePerformanceStats();
           generateDailyFeedback();
+          updateCalendar();
         })
         .catch((error) => {
           console.error("Error adding trade: ", error);
@@ -1802,6 +1996,7 @@
               updateStats();
               updatePerformanceStats();
               generateDailyFeedback();
+              updateCalendar();
             })
             .catch((error) => {
               console.error("Error removing trade: ", error);
@@ -1826,6 +2021,7 @@
           updateStats();
           updatePerformanceStats();
           generateDailyFeedback();
+          updateCalendar();
         }
       }
     }
@@ -2214,6 +2410,7 @@
         // Traductions françaises
         document.querySelector('#dashboard-section h3').textContent = 'AJOUTER UN TRADE';
         document.querySelector('#performance-section h1').textContent = 'ANALYSE DE PERFORMANCE';
+        document.querySelector('#calendar-section h1').innerHTML = '<i class="fas fa-calendar-alt"></i> CALENDRIER DES TRADES';
         document.querySelector('#brokers-section h1').textContent = 'RECOMMANDATION DE BROKERS';
         document.querySelector('#settings-section h1').textContent = 'PARAMÈTRES';
         
@@ -2230,6 +2427,10 @@
         document.querySelector('#nonLoggedMessagePerformance p').textContent = 'Veuillez vous connecter ou créer un compte pour visualiser vos statistiques de trading.';
         document.querySelector('#nonLoggedMessagePerformance button').textContent = 'Se connecter';
         
+        document.querySelector('#nonLoggedMessageCalendar h2').textContent = 'Connectez-vous pour accéder au calendrier';
+        document.querySelector('#nonLoggedMessageCalendar p').textContent = 'Veuillez vous connecter ou créer un compte pour visualiser vos trades sur le calendrier.';
+        document.querySelector('#nonLoggedMessageCalendar button').textContent = 'Se connecter';
+        
         document.querySelector('#nonLoggedMessageSettings h2').textContent = 'Connectez-vous pour accéder aux paramètres';
         document.querySelector('#nonLoggedMessageSettings p').textContent = 'Veuillez vous connecter ou créer un compte pour personnaliser votre expérience.';
         document.querySelector('#nonLoggedMessageSettings button').textContent = 'Se connecter';
@@ -2237,6 +2438,7 @@
         // English translations
         document.querySelector('#dashboard-section h3').textContent = 'ADD A TRADE';
         document.querySelector('#performance-section h1').textContent = 'PERFORMANCE ANALYSIS';
+        document.querySelector('#calendar-section h1').innerHTML = '<i class="fas fa-calendar-alt"></i> TRADING CALENDAR';
         document.querySelector('#brokers-section h1').textContent = 'BROKER RECOMMENDATIONS';
         document.querySelector('#settings-section h1').textContent = 'SETTINGS';
         
@@ -2253,9 +2455,18 @@
         document.querySelector('#nonLoggedMessagePerformance p').textContent = 'Please login or create an account to view your trading statistics.';
         document.querySelector('#nonLoggedMessagePerformance button').textContent = 'Login';
         
+        document.querySelector('#nonLoggedMessageCalendar h2').textContent = 'Login to access calendar';
+        document.querySelector('#nonLoggedMessageCalendar p').textContent = 'Please login or create an account to view your trades on the calendar.';
+        document.querySelector('#nonLoggedMessageCalendar button').textContent = 'Login';
+        
         document.querySelector('#nonLoggedMessageSettings h2').textContent = 'Login to access settings';
         document.querySelector('#nonLoggedMessageSettings p').textContent = 'Please login or create an account to customize your experience.';
         document.querySelector('#nonLoggedMessageSettings button').textContent = 'Login';
+      }
+      
+      // Update calendar language if it exists
+      if (window.tradingCalendar) {
+        window.tradingCalendar.setOption('locale', currentLanguage === 'fr' ? 'fr' : 'en');
       }
     }
     
@@ -2336,6 +2547,7 @@
       // Configurer les boutons de login depuis l'application
       document.getElementById('loginFromAppBtn')?.addEventListener('click', showAuthModal);
       document.getElementById('loginFromPerformanceBtn')?.addEventListener('click', showAuthModal);
+      document.getElementById('loginFromCalendarBtn')?.addEventListener('click', showAuthModal);
       document.getElementById('loginFromSettingsBtn')?.addEventListener('click', showAuthModal);
       
       // Fermer le message de bienvenue
