@@ -753,6 +753,47 @@
       color: #555;
     }
 
+    /* Welcome message */
+    .welcome-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(30, 41, 59, 0.95);
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 1000;
+      text-align: center;
+      max-width: 80%;
+      animation: fadeIn 0.5s ease;
+      border: 1px solid #4361ee;
+    }
+
+    .welcome-message h2 {
+      color: #4cc9f0;
+      margin-bottom: 10px;
+    }
+
+    .welcome-message p {
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 20px;
+    }
+
+    .welcome-message button {
+      padding: 10px 20px;
+      background-color: #4361ee;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .welcome-message button:hover {
+      background-color: #3a56d4;
+    }
+
     /* Hide sections by default */
     .section {
       display: none;
@@ -760,6 +801,40 @@
     
     .section.active {
       display: block;
+    }
+
+    /* Non-logged state */
+    .non-logged-message {
+      text-align: center;
+      padding: 40px 20px;
+      background-color: rgba(30, 41, 59, 0.8);
+      border-radius: 10px;
+      margin: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .non-logged-message h2 {
+      color: #4cc9f0;
+      margin-bottom: 15px;
+    }
+
+    .non-logged-message p {
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 20px;
+    }
+
+    .non-logged-message button {
+      padding: 12px 25px;
+      background-color: #4361ee;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .non-logged-message button:hover {
+      background-color: #3a56d4;
     }
 
     @media (max-width: 768px) {
@@ -862,140 +937,156 @@
     <div class="main">
       <!-- Dashboard Section -->
       <section id="dashboard-section" class="section active">
-        <div class="emotional-patterns">
-          <h3>PATTERN ÉMOTIONNEL</h3>
-          <p id="emotionalPatternText">Le capital c'est ton oxygène. Protège-le.</p>
+        <div id="nonLoggedMessage" class="non-logged-message" style="display: none;">
+          <h2>Connectez-vous pour accéder à votre journal</h2>
+          <p>Veuillez vous connecter ou créer un compte pour enregistrer et suivre vos trades.</p>
+          <button id="loginFromAppBtn">Se connecter</button>
         </div>
 
-        <div class="daily-feedback">
-          <h3>FEEDBACK QUOTIDIEN</h3>
-          <p id="dailyFeedbackText">Analyse de tes performances en cours...</p>
-        </div>
-
-        <div class="stats">
-          <div class="card">
-            <h4>TRADES</h4>
-            <p class="neutral" id="totalTrades">0</p>
+        <div id="loggedContent" style="display: none;">
+          <div class="emotional-patterns">
+            <h3>PATTERN ÉMOTIONNEL</h3>
+            <p id="emotionalPatternText">Le capital c'est ton oxygène. Protège-le.</p>
           </div>
-          <div class="card">
-            <h4>WIN RATE</h4>
-            <p class="profit" id="winRate">0%</p>
-          </div>
-          <div class="card">
-            <h4>PROFIT</h4>
-            <p class="profit" id="totalProfit">$0</p>
-          </div>
-          <div class="card">
-            <h4>AVG R/R RATIO</h4>
-            <p class="neutral" id="averageRRR">0</p>
-          </div>
-          <div class="card">
-            <h4>CAPITAL</h4>
-            <p class="neutral" id="currentCapital">$1000</p>
-          </div>
-        </div>
 
-        <div class="filter-container">
-          <input type="text" id="symbolFilter" placeholder="Filtrer par symbole" oninput="filterTrades()">
-          <input type="text" id="dateFromFilter" placeholder="Date de début" class="date-filter">
-          <input type="text" id="dateToFilter" placeholder="Date de fin" class="date-filter">
-          <select id="resultFilter" onchange="filterTrades()">
-            <option value="all">Tous les résultats</option>
-            <option value="win">Gagnants seulement</option>
-            <option value="loss">Perdants seulement</option>
-          </select>
-        </div>
+          <div class="daily-feedback">
+            <h3>FEEDBACK QUOTIDIEN</h3>
+            <p id="dailyFeedbackText">Analyse de tes performances en cours...</p>
+          </div>
 
-        <div class="export-buttons">
-          <button onclick="exportToCSV()"><i class="fas fa-file-csv"></i> Exporter CSV</button>
-          <button onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Exporter Excel</button>
-          <button onclick="importFromFile()"><i class="fas fa-file-import"></i> Importer</button>
-          <button class="save-btn" onclick="saveJournal()"><i class="fas fa-save"></i> Sauvegarder</button>
-          <button class="reset-btn" onclick="resetJournal()"><i class="fas fa-trash-alt"></i> Réinitialiser</button>
-          <input type="file" id="fileInput" style="display: none;" accept=".csv,.xlsx,.xls">
-        </div>
+          <div class="stats">
+            <div class="card">
+              <h4>TRADES</h4>
+              <p class="neutral" id="totalTrades">0</p>
+            </div>
+            <div class="card">
+              <h4>WIN RATE</h4>
+              <p class="profit" id="winRate">0%</p>
+            </div>
+            <div class="card">
+              <h4>PROFIT</h4>
+              <p class="profit" id="totalProfit">$0</p>
+            </div>
+            <div class="card">
+              <h4>AVG R/R RATIO</h4>
+              <p class="neutral" id="averageRRR">0</p>
+            </div>
+            <div class="card">
+              <h4>CAPITAL</h4>
+              <p class="neutral" id="currentCapital">$1000</p>
+            </div>
+          </div>
 
-        <table id="tradeTable">
-          <thead>
-            <tr>
-              <th>DATE</th>
-              <th>SYMBOLE</th>
-              <th>TYPE</th>
-              <th>ENTRY</th>
-              <th>SORTIE</th>
-              <th>LOT</th>
-              <th>RÉSULTAT</th>
-              <th>P&L</th>
-              <th>R/R</th>
-              <th>ACTIONS</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-
-        <div class="add-trade">
-          <h3>AJOUTER UN TRADE</h3>
-          <div class="form-row">
-            <input type="text" id="tradeDate" class="date-input" placeholder="Date">
-            <input type="text" id="tradeSymbol" placeholder="Symbole (ex: EURUSD)">
-            <select id="tradeType">
-              <option value="Buy">Buy</option>
-              <option value="Sell">Sell</option>
+          <div class="filter-container">
+            <input type="text" id="symbolFilter" placeholder="Filtrer par symbole" oninput="filterTrades()">
+            <input type="text" id="dateFromFilter" placeholder="Date de début" class="date-filter">
+            <input type="text" id="dateToFilter" placeholder="Date de fin" class="date-filter">
+            <select id="resultFilter" onchange="filterTrades()">
+              <option value="all">Tous les résultats</option>
+              <option value="win">Gagnants seulement</option>
+              <option value="loss">Perdants seulement</option>
             </select>
           </div>
-          <div class="form-row">
-            <input type="number" id="tradeEntry" placeholder="Prix d'entrée" step="0.0001">
-            <input type="number" id="tradeExit" placeholder="Prix de sortie" step="0.0001">
-            <input type="number" id="tradeLot" placeholder="Lot (0.01 min)" step="0.01" min="0.01">
+
+          <div class="export-buttons">
+            <button onclick="exportToCSV()"><i class="fas fa-file-csv"></i> Exporter CSV</button>
+            <button onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Exporter Excel</button>
+            <button onclick="importFromFile()"><i class="fas fa-file-import"></i> Importer</button>
+            <button class="save-btn" onclick="saveJournal()"><i class="fas fa-save"></i> Sauvegarder</button>
+            <button class="reset-btn" onclick="resetJournal()"><i class="fas fa-trash-alt"></i> Réinitialiser</button>
+            <input type="file" id="fileInput" style="display: none;" accept=".csv,.xlsx,.xls">
           </div>
-          <div class="form-row">
-            <select id="tradeResult">
-              <option value="win">Win</option>
-              <option value="loss">Loss</option>
-            </select>
-            <input type="number" id="tradePL" placeholder="Profit/Loss">
-            <input type="number" id="tradeRR" placeholder="R/R Ratio" readonly>
+
+          <table id="tradeTable">
+            <thead>
+              <tr>
+                <th>DATE</th>
+                <th>SYMBOLE</th>
+                <th>TYPE</th>
+                <th>ENTRY</th>
+                <th>SORTIE</th>
+                <th>LOT</th>
+                <th>RÉSULTAT</th>
+                <th>P&L</th>
+                <th>R/R</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <div class="add-trade">
+            <h3>AJOUTER UN TRADE</h3>
+            <div class="form-row">
+              <input type="text" id="tradeDate" class="date-input" placeholder="Date">
+              <input type="text" id="tradeSymbol" placeholder="Symbole (ex: EURUSD)">
+              <select id="tradeType">
+                <option value="Buy">Buy</option>
+                <option value="Sell">Sell</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <input type="number" id="tradeEntry" placeholder="Prix d'entrée" step="0.0001">
+              <input type="number" id="tradeExit" placeholder="Prix de sortie" step="0.0001">
+              <input type="number" id="tradeLot" placeholder="Lot (0.01 min)" step="0.01" min="0.01">
+            </div>
+            <div class="form-row">
+              <select id="tradeResult">
+                <option value="win">Win</option>
+                <option value="loss">Loss</option>
+              </select>
+              <input type="number" id="tradePL" placeholder="Profit/Loss">
+              <input type="number" id="tradeRR" placeholder="R/R Ratio" readonly>
+            </div>
+            <button type="button" onclick="saveTrade()">AJOUTER LE TRADE</button>
           </div>
-          <button type="button" onclick="saveTrade()">AJOUTER LE TRADE</button>
         </div>
       </section>
 
       <!-- Performance Section -->
       <section id="performance-section" class="section">
-        <h1><i class="fas fa-chart-bar"></i> ANALYSE DE PERFORMANCE</h1>
-        
-        <div class="stats">
-          <div class="card">
-            <h4>RISK/REWARD MOYEN</h4>
-            <p class="neutral" id="avgRiskReward">0</p>
-          </div>
-          <div class="card">
-            <h4>MAX DRAWNDOWN</h4>
-            <p class="loss" id="maxDrawdown">$0</p>
-          </div>
-          <div class="card">
-            <h4>MAX LOSS/JOUR</h4>
-            <p class="loss" id="maxDailyLoss">$0</p>
-          </div>
-          <div class="card">
-            <h4>MAX WIN/JOUR</h4>
-            <p class="profit" id="maxDailyWin">$0</p>
-          </div>
+        <div id="nonLoggedMessagePerformance" class="non-logged-message" style="display: none;">
+          <h2>Connectez-vous pour accéder à l'analyse de performance</h2>
+          <p>Veuillez vous connecter ou créer un compte pour visualiser vos statistiques de trading.</p>
+          <button id="loginFromPerformanceBtn">Se connecter</button>
         </div>
 
-        <div class="chart-container">
-          <h2><i class="fas fa-chart-line"></i> EVOLUTION DU CAPITAL</h2>
-          <canvas id="capitalChart" height="300"></canvas>
-        </div>
-        
-        <div class="chart-container">
-          <h2><i class="fas fa-chart-pie"></i> REPARTITION GAINS/PERDUS</h2>
-          <canvas id="pieChart" height="300"></canvas>
-        </div>
-        
-        <div class="chart-container">
-          <h2><i class="fas fa-chart-bar"></i> PERFORMANCE PAR JOUR</h2>
-          <canvas id="dailyChart" height="300"></canvas>
+        <div id="loggedContentPerformance" style="display: none;">
+          <h1><i class="fas fa-chart-bar"></i> ANALYSE DE PERFORMANCE</h1>
+          
+          <div class="stats">
+            <div class="card">
+              <h4>RISK/REWARD MOYEN</h4>
+              <p class="neutral" id="avgRiskReward">0</p>
+            </div>
+            <div class="card">
+              <h4>MAX DRAWNDOWN</h4>
+              <p class="loss" id="maxDrawdown">$0</p>
+            </div>
+            <div class="card">
+              <h4>MAX LOSS/JOUR</h4>
+              <p class="loss" id="maxDailyLoss">$0</p>
+            </div>
+            <div class="card">
+              <h4>MAX WIN/JOUR</h4>
+              <p class="profit" id="maxDailyWin">$0</p>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <h2><i class="fas fa-chart-line"></i> EVOLUTION DU CAPITAL</h2>
+            <canvas id="capitalChart" height="300"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2><i class="fas fa-chart-pie"></i> REPARTITION GAINS/PERDUS</h2>
+            <canvas id="pieChart" height="300"></canvas>
+          </div>
+          
+          <div class="chart-container">
+            <h2><i class="fas fa-chart-bar"></i> PERFORMANCE PAR JOUR</h2>
+            <canvas id="dailyChart" height="300"></canvas>
+          </div>
         </div>
       </section>
 
@@ -1059,32 +1150,47 @@
 
       <!-- Settings Section -->
       <section id="settings-section" class="section">
-        <h1><i class="fas fa-cog"></i> PARAMÈTRES</h1>
-        
-        <div class="settings-option">
-          <h3>APPARENCE</h3>
-          <label class="switch">
-            <input type="checkbox" id="darkModeToggle" checked>
-            <span class="slider"></span>
-          </label>
-          <span style="margin-left: 10px;">Mode sombre</span>
+        <div id="nonLoggedMessageSettings" class="non-logged-message" style="display: none;">
+          <h2>Connectez-vous pour accéder aux paramètres</h2>
+          <p>Veuillez vous connecter ou créer un compte pour personnaliser votre expérience.</p>
+          <button id="loginFromSettingsBtn">Se connecter</button>
         </div>
-        
-        <div class="settings-option">
-          <h3>LANGUE</h3>
-          <div class="language-selector">
-            <div class="language-option active" data-lang="fr">Français</div>
-            <div class="language-option" data-lang="en">English</div>
+
+        <div id="loggedContentSettings" style="display: none;">
+          <h1><i class="fas fa-cog"></i> PARAMÈTRES</h1>
+          
+          <div class="settings-option">
+            <h3>APPARENCE</h3>
+            <label class="switch">
+              <input type="checkbox" id="darkModeToggle" checked>
+              <span class="slider"></span>
+            </label>
+            <span style="margin-left: 10px;">Mode sombre</span>
           </div>
-        </div>
-        
-        <div class="settings-option">
-          <h3>CAPITAL INITIAL</h3>
-          <input type="number" id="initialCapital" value="1000" style="width: 200px; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.1); background-color: rgba(30, 30, 47, 0.5); color: white;">
-          <button onclick="updateCapital()" style="margin-left: 10px; padding: 10px 15px; border-radius: 5px; border: none; background-color: #4361ee; color: white; cursor: pointer;">Mettre à jour</button>
+          
+          <div class="settings-option">
+            <h3>LANGUE</h3>
+            <div class="language-selector">
+              <div class="language-option active" data-lang="fr">Français</div>
+              <div class="language-option" data-lang="en">English</div>
+            </div>
+          </div>
+          
+          <div class="settings-option">
+            <h3>CAPITAL INITIAL</h3>
+            <input type="number" id="initialCapital" value="1000" style="width: 200px; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.1); background-color: rgba(30, 30, 47, 0.5); color: white;">
+            <button onclick="updateCapital()" style="margin-left: 10px; padding: 10px 15px; border-radius: 5px; border: none; background-color: #4361ee; color: white; cursor: pointer;">Mettre à jour</button>
+          </div>
         </div>
       </section>
     </div>
+  </div>
+
+  <!-- Welcome Message Modal -->
+  <div id="welcomeMessage" class="welcome-message" style="display: none;">
+    <h2 id="welcomeTitle">Bienvenue !</h2>
+    <p id="welcomeText">Vous êtes maintenant connecté à votre journal de trading.</p>
+    <button id="closeWelcomeBtn">Commencer</button>
   </div>
 
   <!-- Firebase SDKs -->
@@ -1098,7 +1204,7 @@
       apiKey: "AIzaSyArp7tg8vG9LALidofLGMyPLo0_kkf5Gvw",
       authDomain: "eoc-tradingjournal.firebaseapp.com",
       projectId: "eoc-tradingjournal",
-      storageBucket: "eoc-tradingjournal.firebasestorage.app",
+      storageBucket: "eoc-tradingjournal.appspot.com",
       messagingSenderId: "1040650682872",
       appId: "1:1040650682872:web:97ec728bfee0577ce2160d"
     };
@@ -1183,6 +1289,7 @@
         })
         .then(() => {
           hideAuthModal();
+          showWelcomeMessage(currentUser.email, true);
           loadUserData();
         })
         .catch((error) => {
@@ -1196,6 +1303,7 @@
           // User logged in successfully
           currentUser = userCredential.user;
           hideAuthModal();
+          showWelcomeMessage(currentUser.email, false);
           loadUserData();
         })
         .catch((error) => {
@@ -1212,11 +1320,51 @@
       });
     }
 
+    function showWelcomeMessage(email, isNewUser) {
+      const welcomeTitle = document.getElementById('welcomeTitle');
+      const welcomeText = document.getElementById('welcomeText');
+      
+      if (isNewUser) {
+        welcomeTitle.textContent = currentLanguage === 'fr' ? 'Bienvenue !' : 'Welcome!';
+        welcomeText.textContent = currentLanguage === 'fr' 
+          ? `Votre compte a été créé avec succès. Vous êtes maintenant connecté en tant que ${email}.` 
+          : `Your account has been created successfully. You are now logged in as ${email}.`;
+      } else {
+        welcomeTitle.textContent = currentLanguage === 'fr' ? 'Content de vous revoir !' : 'Welcome back!';
+        welcomeText.textContent = currentLanguage === 'fr' 
+          ? `Vous êtes maintenant connecté en tant que ${email}.` 
+          : `You are now logged in as ${email}.`;
+      }
+      
+      document.getElementById('welcomeMessage').style.display = 'block';
+    }
+
+    function toggleLoggedUI(isLoggedIn) {
+      // Show/hide dashboard content
+      document.getElementById('nonLoggedMessage').style.display = isLoggedIn ? 'none' : 'block';
+      document.getElementById('loggedContent').style.display = isLoggedIn ? 'block' : 'none';
+      
+      // Show/hide performance content
+      document.getElementById('nonLoggedMessagePerformance').style.display = isLoggedIn ? 'none' : 'block';
+      document.getElementById('loggedContentPerformance').style.display = isLoggedIn ? 'block' : 'none';
+      
+      // Show/hide settings content
+      document.getElementById('nonLoggedMessageSettings').style.display = isLoggedIn ? 'none' : 'block';
+      document.getElementById('loggedContentSettings').style.display = isLoggedIn ? 'block' : 'none';
+      
+      // Show/hide user info
+      document.querySelector('.user-info').style.display = isLoggedIn ? 'flex' : 'none';
+    }
+
     function loadUserData() {
-      if (!currentUser) return;
+      if (!currentUser) {
+        toggleLoggedUI(false);
+        return;
+      }
 
       // Update UI with user info
       document.getElementById('userEmail').textContent = currentUser.email;
+      toggleLoggedUI(true);
       
       // Load user's trading journal data from Firebase
       const userRef = database.ref('users/' + currentUser.uid);
@@ -1295,7 +1443,7 @@
           const message = currentLanguage === 'fr' 
             ? 'Journal sauvegardé avec succès !' 
             : 'Journal saved successfully!';
-          alert(message);
+          console.log(message);
         })
         .catch((error) => {
           console.error("Error saving data:", error);
@@ -1309,11 +1457,15 @@
     function saveJournal() {
       if (currentUser) {
         saveUserData();
+        alert(currentLanguage === 'fr' 
+          ? 'Journal sauvegardé avec succès !' 
+          : 'Journal saved successfully!');
       } else {
         const message = currentLanguage === 'fr' 
           ? 'Veuillez vous connecter pour sauvegarder' 
           : 'Please login to save';
         alert(message);
+        showAuthModal();
       }
     }
 
@@ -1545,6 +1697,14 @@
 
     // Sauvegarder un trade
     function saveTrade() {
+      if (!currentUser) {
+        alert(currentLanguage === 'fr' 
+          ? 'Veuillez vous connecter pour enregistrer des trades' 
+          : 'Please login to save trades');
+        showAuthModal();
+        return;
+      }
+
       const date = document.getElementById('tradeDate').value;
       const symbol = document.getElementById('tradeSymbol').value.toUpperCase();
       const type = document.getElementById('tradeType').value;
@@ -1597,10 +1757,8 @@
       updatePerformanceStats();
       generateDailyFeedback();
       
-      // Save to Firebase if logged in
-      if (currentUser) {
-        saveUserData();
-      }
+      // Save to Firebase
+      saveUserData();
     }
     
     // Calcul du Risk/Reward ratio
@@ -1923,6 +2081,13 @@
     
     // Importer depuis un fichier
     function importFromFile() {
+      if (!currentUser) {
+        alert(currentLanguage === 'fr' 
+          ? 'Veuillez vous connecter pour importer des trades' 
+          : 'Please login to import trades');
+        showAuthModal();
+        return;
+      }
       document.getElementById('fileInput').click();
     }
     
@@ -2043,6 +2208,19 @@
         // Mettre à jour les textes des boutons, etc.
         document.querySelector('button[onclick="saveJournal()"]').innerHTML = '<i class="fas fa-save"></i> Sauvegarder';
         document.querySelector('button[onclick="resetJournal()"]').innerHTML = '<i class="fas fa-trash-alt"></i> Réinitialiser';
+        
+        // Mettre à jour les messages non connectés
+        document.querySelector('#nonLoggedMessage h2').textContent = 'Connectez-vous pour accéder à votre journal';
+        document.querySelector('#nonLoggedMessage p').textContent = 'Veuillez vous connecter ou créer un compte pour enregistrer et suivre vos trades.';
+        document.querySelector('#nonLoggedMessage button').textContent = 'Se connecter';
+        
+        document.querySelector('#nonLoggedMessagePerformance h2').textContent = 'Connectez-vous pour accéder à l\'analyse de performance';
+        document.querySelector('#nonLoggedMessagePerformance p').textContent = 'Veuillez vous connecter ou créer un compte pour visualiser vos statistiques de trading.';
+        document.querySelector('#nonLoggedMessagePerformance button').textContent = 'Se connecter';
+        
+        document.querySelector('#nonLoggedMessageSettings h2').textContent = 'Connectez-vous pour accéder aux paramètres';
+        document.querySelector('#nonLoggedMessageSettings p').textContent = 'Veuillez vous connecter ou créer un compte pour personnaliser votre expérience.';
+        document.querySelector('#nonLoggedMessageSettings button').textContent = 'Se connecter';
       } else {
         // English translations
         document.querySelector('#dashboard-section h3').textContent = 'ADD A TRADE';
@@ -2053,6 +2231,19 @@
         // Update button texts
         document.querySelector('button[onclick="saveJournal()"]').innerHTML = '<i class="fas fa-save"></i> Save';
         document.querySelector('button[onclick="resetJournal()"]').innerHTML = '<i class="fas fa-trash-alt"></i> Reset';
+        
+        // Update non-logged messages
+        document.querySelector('#nonLoggedMessage h2').textContent = 'Login to access your journal';
+        document.querySelector('#nonLoggedMessage p').textContent = 'Please login or create an account to save and track your trades.';
+        document.querySelector('#nonLoggedMessage button').textContent = 'Login';
+        
+        document.querySelector('#nonLoggedMessagePerformance h2').textContent = 'Login to access performance analysis';
+        document.querySelector('#nonLoggedMessagePerformance p').textContent = 'Please login or create an account to view your trading statistics.';
+        document.querySelector('#nonLoggedMessagePerformance button').textContent = 'Login';
+        
+        document.querySelector('#nonLoggedMessageSettings h2').textContent = 'Login to access settings';
+        document.querySelector('#nonLoggedMessageSettings p').textContent = 'Please login or create an account to customize your experience.';
+        document.querySelector('#nonLoggedMessageSettings button').textContent = 'Login';
       }
     }
     
@@ -2114,11 +2305,13 @@
           // Show the main app if splash screen is not shown
           if (splash.style.display === 'none') {
             app.style.display = 'flex';
+            loadUserData();
           }
         } else {
           // User is signed out
           currentUser = null;
           document.getElementById('userEmail').textContent = '';
+          toggleLoggedUI(false);
           
           // Show auth modal when splash screen is dismissed
           btn.addEventListener('click', () => {
@@ -2126,6 +2319,16 @@
             showAuthModal();
           }, { once: true });
         }
+      });
+      
+      // Configurer les boutons de login depuis l'application
+      document.getElementById('loginFromAppBtn')?.addEventListener('click', showAuthModal);
+      document.getElementById('loginFromPerformanceBtn')?.addEventListener('click', showAuthModal);
+      document.getElementById('loginFromSettingsBtn')?.addEventListener('click', showAuthModal);
+      
+      // Fermer le message de bienvenue
+      document.getElementById('closeWelcomeBtn')?.addEventListener('click', function() {
+        document.getElementById('welcomeMessage').style.display = 'none';
       });
       
       // Charger les préférences locales si pas connecté
@@ -2182,65 +2385,6 @@
         } else {
           showAuthModal();
         }
-        
-        // Ajouter 3 trades d'exemple si vide et non connecté
-        if (!currentUser && document.querySelectorAll("#tradeTable tbody tr").length === 0) {
-          const today = new Date().toISOString().split('T')[0];
-          
-          // Add sample trades
-          const table = document.querySelector("#tradeTable tbody");
-          
-          // Trade 1
-          const row1 = document.createElement("tr");
-          row1.innerHTML = `
-            <td>${new Date().toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-US')}</td>
-            <td>EURUSD</td>
-            <td><span class="badge buy">Buy</span></td>
-            <td>1.0850</td>
-            <td>1.0895</td>
-            <td>0.10</td>
-            <td><span class="badge win">${currentLanguage === 'fr' ? 'Gagné' : 'Win'}</span></td>
-            <td class="profit">+45.00</td>
-            <td>1.50</td>
-            <td><i class="fas fa-trash" onclick="deleteTrade(this)" style="cursor:pointer;color:#f87171;"></i></td>
-          `;
-          table.appendChild(row1);
-          
-          // Trade 2
-          const row2 = document.createElement("tr");
-          row2.innerHTML = `
-            <td>${new Date().toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-US')}</td>
-            <td>GBPUSD</td>
-            <td><span class="badge sell">Sell</span></td>
-            <td>1.2650</td>
-            <td>1.2690</td>
-            <td>0.05</td>
-            <td><span class="badge loss">${currentLanguage === 'fr' ? 'Perdu' : 'Loss'}</span></td>
-            <td class="loss">-22.00</td>
-            <td>0.80</td>
-            <td><i class="fas fa-trash" onclick="deleteTrade(this)" style="cursor:pointer;color:#f87171;"></i></td>
-          `;
-          table.appendChild(row2);
-          
-          // Trade 3
-          const row3 = document.createElement("tr");
-          row3.innerHTML = `
-            <td>${new Date().toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-US')}</td>
-            <td>USDJPY</td>
-            <td><span class="badge buy">Buy</span></td>
-            <td>151.80</td>
-            <td>152.20</td>
-            <td>0.15</td>
-            <td><span class="badge win">${currentLanguage === 'fr' ? 'Gagné' : 'Win'}</span></td>
-            <td class="profit">+68.00</td>
-            <td>2.10</td>
-            <td><i class="fas fa-trash" onclick="deleteTrade(this)" style="cursor:pointer;color:#f87171;"></i></td>
-          `;
-          table.appendChild(row3);
-        }
-        
-        updateStats();
-        updatePerformanceStats();
       });
 
       // Navigation
