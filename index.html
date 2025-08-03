@@ -37,9 +37,9 @@
       transition: all 0.3s ease;
     }
 
-    body.light-mode {
-      background-color: #f2f2f2;
-      color: #333;
+    body.dark-mode {
+      background-color: #1a1a2e;
+      color: #f0f0f0;
       background-image: none;
     }
 
@@ -283,11 +283,20 @@
       border-right: 1px solid rgba(0, 0, 0, 0.1);
     }
 
+    body.dark-mode .sidebar {
+      background-color: rgba(30, 30, 47, 0.9);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .sidebar i {
       color: rgba(0, 0, 0, 0.7);
       font-size: 20px;
       cursor: pointer;
       transition: all 0.3s;
+    }
+
+    body.dark-mode .sidebar i {
+      color: rgba(255, 255, 255, 0.7);
     }
 
     .sidebar i:hover {
@@ -329,12 +338,21 @@
       font-weight: 600;
     }
 
+    body.dark-mode #dashboard-section h3 {
+      color: #f0f0f0;
+    }
+
     .trade-form {
       background-color: rgba(255, 255, 255, 0.9);
       padding: 20px;
       border-radius: 10px;
       margin-bottom: 30px;
       border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode .trade-form {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .form-row {
@@ -356,6 +374,10 @@
       font-size: 14px;
     }
 
+    body.dark-mode .form-group label {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
     .form-group input,
     .form-group select {
       width: 100%;
@@ -364,6 +386,13 @@
       border: 1px solid #ddd;
       background-color: white;
       color: #333;
+    }
+
+    body.dark-mode .form-group input,
+    body.dark-mode .form-group select {
+      background-color: rgba(40, 40, 60, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f0f0f0;
     }
 
     .form-actions {
@@ -396,8 +425,17 @@
       color: #333;
     }
 
+    body.dark-mode #resetFormBtn {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #f0f0f0;
+    }
+
     #resetFormBtn:hover {
       background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    body.dark-mode #resetFormBtn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
     }
 
     /* Trade Table */
@@ -410,10 +448,19 @@
       overflow-x: auto;
     }
 
+    body.dark-mode .trade-table-container {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     #tradeTable {
       width: 100%;
       border-collapse: collapse;
       color: #333;
+    }
+
+    body.dark-mode #tradeTable {
+      color: #f0f0f0;
     }
 
     #tradeTable th {
@@ -423,13 +470,25 @@
       font-weight: 500;
     }
 
+    body.dark-mode #tradeTable th {
+      background-color: rgba(67, 97, 238, 0.2);
+    }
+
     #tradeTable td {
       padding: 12px 15px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 
+    body.dark-mode #tradeTable td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
     #tradeTable tr:hover {
       background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    body.dark-mode #tradeTable tr:hover {
+      background-color: rgba(255, 255, 255, 0.05);
     }
 
     .badge {
@@ -487,6 +546,10 @@
       font-size: 14px;
     }
 
+    body.dark-mode .filter-group label {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
     .filter-group input,
     .filter-group select {
       width: 100%;
@@ -495,6 +558,13 @@
       border: 1px solid #ddd;
       background-color: white;
       color: #333;
+    }
+
+    body.dark-mode .filter-group input,
+    body.dark-mode .filter-group select {
+      background-color: rgba(40, 40, 60, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f0f0f0;
     }
 
     /* Stats */
@@ -512,6 +582,11 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
+    body.dark-mode .stat-card {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .stat-card h4 {
       color: rgba(0, 0, 0, 0.7);
       font-size: 14px;
@@ -519,10 +594,18 @@
       font-weight: 500;
     }
 
+    body.dark-mode .stat-card h4 {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
     .stat-card p {
       color: #333;
       font-size: 24px;
       font-weight: 600;
+    }
+
+    body.dark-mode .stat-card p {
+      color: #f0f0f0;
     }
 
     /* Journal Actions */
@@ -603,6 +686,10 @@
       font-weight: 600;
     }
 
+    body.dark-mode #performance-section h1 {
+      color: #f0f0f0;
+    }
+
     .charts-container {
       display: grid;
       grid-template-columns: 1fr;
@@ -623,11 +710,20 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
+    body.dark-mode .chart-card {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .chart-card h2 {
       color: #333;
       margin-bottom: 20px;
       font-size: 18px;
       font-weight: 600;
+    }
+
+    body.dark-mode .chart-card h2 {
+      color: #f0f0f0;
     }
 
     .chart-container {
@@ -650,6 +746,11 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
+    body.dark-mode .performance-stat {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .performance-stat h3 {
       color: rgba(0, 0, 0, 0.7);
       font-size: 14px;
@@ -657,10 +758,18 @@
       font-weight: 500;
     }
 
+    body.dark-mode .performance-stat h3 {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
     .performance-stat p {
       color: #333;
       font-size: 24px;
       font-weight: 600;
+    }
+
+    body.dark-mode .performance-stat p {
+      color: #f0f0f0;
     }
 
     /* Emotional Patterns */
@@ -670,6 +779,11 @@
       border-radius: 10px;
       border: 1px solid rgba(0, 0, 0, 0.1);
       margin-bottom: 30px;
+    }
+
+    body.dark-mode .emotional-patterns {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .emotional-patterns h2 {
@@ -682,6 +796,10 @@
       gap: 10px;
     }
 
+    body.dark-mode .emotional-patterns h2 {
+      color: #f0f0f0;
+    }
+
     .emotional-patterns h2 i {
       color: #4cc9f0;
     }
@@ -691,6 +809,10 @@
       font-size: 16px;
       line-height: 1.6;
       margin-bottom: 15px;
+    }
+
+    body.dark-mode #emotionalPatternText {
+      color: rgba(255, 255, 255, 0.9);
     }
 
     .emotional-patterns button {
@@ -716,6 +838,11 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
+    body.dark-mode .daily-feedback {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .daily-feedback h2 {
       color: #333;
       margin-bottom: 15px;
@@ -726,6 +853,10 @@
       gap: 10px;
     }
 
+    body.dark-mode .daily-feedback h2 {
+      color: #f0f0f0;
+    }
+
     .daily-feedback h2 i {
       color: #8b5cf6;
     }
@@ -734,6 +865,10 @@
       color: rgba(0, 0, 0, 0.9);
       font-size: 16px;
       line-height: 1.6;
+    }
+
+    body.dark-mode #dailyFeedbackText {
+      color: rgba(255, 255, 255, 0.9);
     }
 
     /* Calendar Section */
@@ -749,11 +884,20 @@
       font-weight: 600;
     }
 
+    body.dark-mode #calendar-section h1 {
+      color: #f0f0f0;
+    }
+
     #calendar {
       background-color: rgba(255, 255, 255, 0.9);
       padding: 20px;
       border-radius: 10px;
       border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode #calendar {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     /* Brokers Section */
@@ -769,6 +913,10 @@
       font-weight: 600;
     }
 
+    body.dark-mode #brokers-section h1 {
+      color: #f0f0f0;
+    }
+
     .brokers-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -782,10 +930,20 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
+    body.dark-mode .broker-card {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .broker-header {
       padding: 15px 20px;
       background-color: rgba(67, 97, 238, 0.1);
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode .broker-header {
+      background-color: rgba(67, 97, 238, 0.2);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .broker-header h3 {
@@ -794,9 +952,17 @@
       margin-bottom: 5px;
     }
 
+    body.dark-mode .broker-header h3 {
+      color: #f0f0f0;
+    }
+
     .broker-header p {
       color: rgba(0, 0, 0, 0.7);
       font-size: 14px;
+    }
+
+    body.dark-mode .broker-header p {
+      color: rgba(255, 255, 255, 0.7);
     }
 
     .broker-body {
@@ -818,6 +984,10 @@
     .broker-feature p {
       color: rgba(0, 0, 0, 0.8);
       font-size: 14px;
+    }
+
+    body.dark-mode .broker-feature p {
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .broker-rating {
@@ -847,6 +1017,11 @@
       transition: all 0.3s;
     }
 
+    body.dark-mode .broker-actions a {
+      background-color: rgba(67, 97, 238, 0.3);
+      color: #f0f0f0;
+    }
+
     .broker-actions a:hover {
       background-color: rgba(67, 97, 238, 0.4);
     }
@@ -867,9 +1042,10 @@
       transition: all 0.3s ease;
     }
 
-    body.light-mode .notes-container {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0,0,0,0.1);
+    body.dark-mode .notes-container {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
     }
 
     .notes-container h2 {
@@ -878,8 +1054,8 @@
       transition: all 0.3s ease;
     }
 
-    body.light-mode .notes-container h2 {
-      color: #333;
+    body.dark-mode .notes-container h2 {
+      color: #f0f0f0;
     }
 
     #notesEditor {
@@ -896,10 +1072,10 @@
       transition: all 0.3s ease;
     }
 
-    body.light-mode #notesEditor {
-      background-color: white;
-      color: #333;
-      border: 1px solid #ddd;
+    body.dark-mode #notesEditor {
+      background-color: rgba(40, 40, 60, 0.9);
+      color: #f0f0f0;
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .notes-toolbar {
@@ -946,9 +1122,9 @@
       overflow-y: auto;
     }
 
-    body.light-mode .emoji-picker {
-      background-color: white;
-      border: 1px solid #ddd;
+    body.dark-mode .emoji-picker {
+      background-color: #1e1e2f;
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .emoji-picker span {
@@ -975,6 +1151,10 @@
       font-weight: 600;
     }
 
+    body.dark-mode #settings-section h1 {
+      color: #f0f0f0;
+    }
+
     .settings-container {
       display: grid;
       grid-template-columns: 1fr;
@@ -994,6 +1174,11 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
+    body.dark-mode .settings-card {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .settings-card h2 {
       color: #333;
       margin-bottom: 20px;
@@ -1002,6 +1187,10 @@
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    body.dark-mode .settings-card h2 {
+      color: #f0f0f0;
     }
 
     .settings-card h2 i {
@@ -1019,6 +1208,10 @@
       font-size: 14px;
     }
 
+    body.dark-mode .setting-group label {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
     .setting-group input[type="number"] {
       width: 100%;
       padding: 10px 15px;
@@ -1026,6 +1219,12 @@
       border: 1px solid #ddd;
       background-color: white;
       color: #333;
+    }
+
+    body.dark-mode .setting-group input[type="number"] {
+      background-color: rgba(40, 40, 60, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f0f0f0;
     }
 
     .toggle-switch {
@@ -1051,6 +1250,10 @@
       background-color: rgba(0, 0, 0, 0.1);
       transition: .4s;
       border-radius: 24px;
+    }
+
+    body.dark-mode .toggle-slider {
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
     .toggle-slider:before {
@@ -1087,6 +1290,11 @@
       transition: all 0.3s;
     }
 
+    body.dark-mode .language-option {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #f0f0f0;
+    }
+
     .language-option.active {
       background-color: #4361ee;
       color: white;
@@ -1094,6 +1302,10 @@
 
     .language-option:hover:not(.active) {
       background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    body.dark-mode .language-option:hover:not(.active) {
+      background-color: rgba(255, 255, 255, 0.2);
     }
 
     /* Capital Initial Form */
@@ -1108,6 +1320,12 @@
       padding: 8px 12px;
       border-radius: 5px;
       border: 1px solid #ddd;
+    }
+
+    body.dark-mode .capital-form input {
+      background-color: rgba(40, 40, 60, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f0f0f0;
     }
 
     .capital-form button {
@@ -1141,6 +1359,11 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
+    body.dark-mode .welcome-message {
+      background-color: #1e1e2f;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .welcome-message h2 {
       color: #4361ee;
       margin-bottom: 15px;
@@ -1151,6 +1374,10 @@
       color: rgba(0, 0, 0, 0.8);
       margin-bottom: 20px;
       line-height: 1.6;
+    }
+
+    body.dark-mode .welcome-message p {
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .welcome-message button {
@@ -1177,10 +1404,19 @@
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
+    body.dark-mode .non-logged-message {
+      background-color: rgba(30, 30, 47, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     .non-logged-message h2 {
       color: #333;
       margin-bottom: 15px;
       font-size: 24px;
+    }
+
+    body.dark-mode .non-logged-message h2 {
+      color: #f0f0f0;
     }
 
     .non-logged-message p {
@@ -1190,6 +1426,10 @@
       max-width: 500px;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    body.dark-mode .non-logged-message p {
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .non-logged-message button {
@@ -1212,109 +1452,10 @@
       display: none;
     }
 
-    /* Light mode adjustments */
-    body.light-mode {
-      color: #333;
-    }
-
-    body.light-mode .trade-form,
-    body.light-mode .trade-table-container,
-    body.light-mode .stat-card,
-    body.light-mode .chart-card,
-    body.light-mode .performance-stat,
-    body.light-mode .emotional-patterns,
-    body.light-mode .daily-feedback,
-    body.light-mode #calendar,
-    body.light-mode .broker-card,
-    body.light-mode .settings-card,
-    body.light-mode .non-logged-message {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      color: #333;
-    }
-
-    body.light-mode .trade-form h3,
-    body.light-mode .stat-card h4,
-    body.light-mode .chart-card h2,
-    body.light-mode .performance-stat h3,
-    body.light-mode .emotional-patterns h2,
-    body.light-mode .daily-feedback h2,
-    body.light-mode #calendar-section h1,
-    body.light-mode #performance-section h1,
-    body.light-mode #brokers-section h1,
-    body.light-mode #settings-section h1,
-    body.light-mode #notes-section h1,
-    body.light-mode .broker-header h3,
-    body.light-mode .settings-card h2,
-    body.light-mode .non-logged-message h2 {
-      color: #333;
-    }
-
-    body.light-mode .form-group label,
-    body.light-mode .filter-group label,
-    body.light-mode .broker-header p,
-    body.light-mode .broker-feature p,
-    body.light-mode .setting-group label,
-    body.light-mode .non-logged-message p {
-      color: rgba(0, 0, 0, 0.7);
-    }
-
-    body.light-mode .form-group input,
-    body.light-mode .form-group select,
-    body.light-mode .filter-group input,
-    body.light-mode .filter-group select,
-    body.light-mode .setting-group input[type="number"] {
-      background-color: white;
-      color: #333;
-      border: 1px solid #ddd;
-    }
-
-    body.light-mode .user-email {
-      color: #333;
-      background-color: rgba(0, 0, 0, 0.05);
-    }
-
-    body.light-mode .sidebar {
-      background-color: rgba(255, 255, 255, 0.9);
-      border-right: 1px solid rgba(0, 0, 0, 0.1);
-    }
-
-    body.light-mode .sidebar i {
-      color: rgba(0, 0, 0, 0.7);
-    }
-
-    body.light-mode .sidebar i:hover,
-    body.light-mode .sidebar i.active {
-      color: #4361ee;
-    }
-
-    body.light-mode #tradeTable {
-      color: #333;
-    }
-
-    body.light-mode #tradeTable th {
-      background-color: rgba(67, 97, 238, 0.1);
-    }
-
-    body.light-mode #tradeTable td {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    body.light-mode #tradeTable tr:hover {
-      background-color: rgba(0, 0, 0, 0.03);
-    }
-
-    body.light-mode .welcome-message {
-      background-color: white;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-    }
-
-    body.light-mode .welcome-message h2 {
-      color: #4361ee;
-    }
-
-    body.light-mode .welcome-message p {
-      color: rgba(0, 0, 0, 0.8);
+    /* User email in dark mode */
+    body.dark-mode .user-email {
+      color: #f0f0f0;
+      background-color: rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
@@ -1639,13 +1780,6 @@
                   <i class="fas fa-check"></i>
                   <p>Support client 24/7</p>
                 </div>
-                <div class="broker-rating">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star-half-alt"></i>
-                </div>
                 <div class="broker-actions">
                   <a href="https://one.exnesstrack.org/a/i911hyordj" target="_blank">Ouvrir un compte</a>
                 </div>
@@ -1677,13 +1811,6 @@
                 <div class="broker-feature">
                   <i class="fas fa-check"></i>
                   <p>Support client 24/5</p>
-                </div>
-                <div class="broker-rating">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="far fa-star"></i>
                 </div>
                 <div class="broker-actions">
                   <a href="https://www.litefinance.org/?uid=114959820" target="_blank">Ouvrir un compte</a>
@@ -1717,13 +1844,6 @@
                   <i class="fas fa-check"></i>
                   <p>Support client 24/5</p>
                 </div>
-                <div class="broker-rating">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star-half-alt"></i>
-                  <i class="far fa-star"></i>
-                </div>
                 <div class="broker-actions">
                   <a href="https://headway.partners/user/signup?hwp=2107f0" target="_blank">Ouvrir un compte</a>
                 </div>
@@ -1756,13 +1876,6 @@
                   <i class="fas fa-check"></i>
                   <p>Support client 24/7</p>
                 </div>
-                <div class="broker-rating">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="far fa-star"></i>
-                </div>
                 <div class="broker-actions">
                   <a href="https://fbs.partners?ibl=891392&ibp=25515221" target="_blank">Ouvrir un compte</a>
                 </div>
@@ -1794,13 +1907,6 @@
                 <div class="broker-feature">
                   <i class="fas fa-check"></i>
                   <p>Support client 24/5</p>
-                </div>
-                <div class="broker-rating">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star-half-alt"></i>
                 </div>
                 <div class="broker-actions">
                   <a href="https://my.roboforex.com/en/?a=eqylm" target="_blank">Ouvrir un compte</a>
@@ -2329,6 +2435,10 @@
       document.getElementById('nonLoggedMessageSettings').style.display = isLoggedIn ? 'none' : 'block';
       document.getElementById('loggedContentSettings').style.display = isLoggedIn ? 'block' : 'none';
       
+      // Show/hide brokers content
+      document.getElementById('nonLoggedMessageBrokers').style.display = isLoggedIn ? 'none' : 'block';
+      document.getElementById('loggedContentBrokers').style.display = isLoggedIn ? 'block' : 'none';
+      
       // Show/hide user info
       document.querySelector('.user-info').style.display = isLoggedIn ? 'flex' : 'none';
       
@@ -2366,7 +2476,13 @@
           document.getElementById('initialCapital').value = initialCapital;
           document.getElementById('initialCapitalSetting').value = initialCapital;
           document.getElementById('darkModeToggle').checked = darkMode;
-          if (!darkMode) document.body.classList.add('light-mode');
+          
+          // Apply dark mode if needed
+          if (darkMode) {
+            document.body.classList.add('dark-mode');
+          } else {
+            document.body.classList.remove('dark-mode');
+          }
           
           document.querySelectorAll('.language-option').forEach(opt => {
             opt.classList.remove('active');
@@ -3200,9 +3316,9 @@
     function toggleDarkMode() {
       darkMode = !darkMode;
       if (darkMode) {
-        document.body.classList.remove('light-mode');
+        document.body.classList.add('dark-mode');
       } else {
-        document.body.classList.add('light-mode');
+        document.body.classList.remove('dark-mode');
       }
       
       if (currentUser) {
@@ -3264,6 +3380,10 @@
         document.querySelector('#nonLoggedMessageSettings h2').textContent = 'Connectez-vous pour accéder aux paramètres';
         document.querySelector('#nonLoggedMessageSettings p').textContent = 'Veuillez vous connecter ou créer un compte pour personnaliser votre expérience.';
         document.querySelector('#nonLoggedMessageSettings button').textContent = 'Se connecter';
+        
+        document.querySelector('#nonLoggedMessageBrokers h2').textContent = 'Connectez-vous pour accéder aux recommandations de brokers';
+        document.querySelector('#nonLoggedMessageBrokers p').textContent = 'Veuillez vous connecter ou créer un compte pour voir nos recommandations.';
+        document.querySelector('#nonLoggedMessageBrokers button').textContent = 'Se connecter';
       } else {
         // English translations
         document.querySelector('#dashboard-section h3').textContent = 'ADD A TRADE';
@@ -3297,6 +3417,10 @@
         document.querySelector('#nonLoggedMessageSettings h2').textContent = 'Login to access settings';
         document.querySelector('#nonLoggedMessageSettings p').textContent = 'Please login or create an account to customize your experience.';
         document.querySelector('#nonLoggedMessageSettings button').textContent = 'Login';
+        
+        document.querySelector('#nonLoggedMessageBrokers h2').textContent = 'Login to access broker recommendations';
+        document.querySelector('#nonLoggedMessageBrokers p').textContent = 'Please login or create an account to see our recommendations.';
+        document.querySelector('#nonLoggedMessageBrokers button').textContent = 'Login';
       }
       
       // Update calendar language if it exists
@@ -3396,8 +3520,10 @@
       
       // Charger les préférences locales si pas connecté
       darkMode = localStorage.getItem('darkMode') !== 'false';
-      if (!darkMode) {
-        document.body.classList.add('light-mode');
+      if (darkMode) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
       }
       
       currentLanguage = localStorage.getItem('tradingLanguage') || 'fr';
