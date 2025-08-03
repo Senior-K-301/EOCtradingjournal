@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Journal de Trading - EOC Pro</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -23,6 +24,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Inter', sans-serif;
+      color: #333;
     }
 
     body {
@@ -39,6 +41,20 @@
       background-color: #f2f2f2;
       color: #333;
       background-image: none;
+    }
+
+    /* EOC Logo */
+    .eoc-logo {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #4cc9f0;
+      z-index: 1000;
+      display: block;
+      text-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
     }
 
     #splash {
@@ -58,27 +74,67 @@
     }
     
     #splash h1 {
-      font-size: 4rem;
-      margin-bottom: 20px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 5rem;
+      margin-bottom: 10px;
       animation: fadeIn 2s ease;
+      color: #4cc9f0;
+      text-shadow: 0 0 15px rgba(76, 201, 240, 0.7);
+      letter-spacing: 2px;
     }
     
     #splash p {
-      font-size: 1.25rem;
-      opacity: 0.8;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.8rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+      font-weight: 500;
+      color: #ffffff;
     }
     
     #enterBtn {
       margin-top: 40px;
-      padding: 12px 25px;
-      font-size: 1rem;
-      background-color: #4cc9f0;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 30px;
       cursor: pointer;
       opacity: 0;
       animation: fadeIn 1s ease 1s forwards;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      box-shadow: 0 5px 20px rgba(67, 97, 238, 0.5);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    #enterBtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(67, 97, 238, 0.7);
+    }
+    
+    #enterBtn:active {
+      transform: translateY(1px);
+    }
+    
+    #enterBtn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    
+    #enterBtn:hover::after {
+      transform: translateX(0);
     }
     
     @keyframes fadeIn {
@@ -86,18 +142,18 @@
       to { opacity: 1; transform: scale(1); }
     }
 
-    /* Auth Modal Styles */
+    /* Auth Modal */
     .auth-modal {
-      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       background-color: rgba(0, 0, 0, 0.7);
-      z-index: 10000;
+      display: none;
       justify-content: center;
       align-items: center;
+      z-index: 1000;
     }
 
     .auth-container {
@@ -106,543 +162,902 @@
       border-radius: 10px;
       width: 90%;
       max-width: 400px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    body.light-mode .auth-container {
-      background-color: #ffffff;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     }
 
     .auth-container h2 {
-      color: white;
-      margin-bottom: 20px;
+      color: #4cc9f0;
       text-align: center;
-    }
-
-    body.light-mode .auth-container h2 {
-      color: #333;
+      margin-bottom: 20px;
+      font-family: 'Poppins', sans-serif;
     }
 
     .auth-container input {
       width: 100%;
-      padding: 12px;
+      padding: 12px 15px;
       margin-bottom: 15px;
-      border-radius: 5px;
       border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
       background-color: rgba(30, 30, 47, 0.5);
       color: white;
-    }
-
-    body.light-mode .auth-container input {
-      background-color: white;
-      color: #333;
-      border: 1px solid #ddd;
+      font-size: 16px;
     }
 
     .auth-container button {
       width: 100%;
       padding: 12px;
-      border-radius: 5px;
-      border: none;
-      background-color: #4361ee;
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
       color: white;
-      font-weight: 600;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
-      margin-bottom: 10px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      transition: all 0.3s;
     }
 
     .auth-container button:hover {
-      background-color: #3a56d4;
+      opacity: 0.9;
     }
 
-    .auth-container .switch-auth {
-      color: #4361ee;
-      cursor: pointer;
+    #googleLoginBtn {
+      background: linear-gradient(135deg, #4285F4, #34A853);
+    }
+
+    .switch-auth {
+      color: #a1a1aa;
       text-align: center;
       margin-top: 15px;
+      cursor: pointer;
+      transition: color 0.3s;
     }
 
-    .auth-container .switch-auth:hover {
-      text-decoration: underline;
+    .switch-auth:hover {
+      color: #4cc9f0;
     }
 
-    .auth-container .error-message {
+    .error-message {
       color: #f87171;
       margin-bottom: 15px;
       text-align: center;
+      font-size: 14px;
+    }
+
+    /* Main App */
+    #mainApp {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
     }
 
     .user-info {
-      position: absolute;
-      top: 10px;
-      right: 10px;
+      position: fixed;
+      top: 20px;
+      right: 20px;
       display: flex;
       align-items: center;
       gap: 10px;
-      color: white;
-      z-index: 101;
+      z-index: 1000;
     }
 
-    body.light-mode .user-info {
+    .user-email {
       color: #333;
+      font-size: 14px;
+      background-color: rgba(0, 0, 0, 0.05);
+      padding: 5px 10px;
+      border-radius: 20px;
     }
 
-    .user-info img {
+    .logout-btn {
+      background: rgba(248, 113, 113, 0.2);
+      border: none;
+      color: #f87171;
       width: 30px;
       height: 30px;
       border-radius: 50%;
-    }
-
-    .user-info .user-email {
-      font-size: 14px;
-    }
-
-    .user-info .logout-btn {
-      background: none;
-      border: none;
-      color: inherit;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       cursor: pointer;
-      font-size: 14px;
+      transition: all 0.3s;
     }
 
-    .user-info .logout-btn:hover {
-      text-decoration: underline;
+    .logout-btn:hover {
+      background: rgba(248, 113, 113, 0.4);
     }
 
+    /* Sidebar */
     .sidebar {
-      background-color: #1e1e2f;
-      color: white;
-      padding: 20px 10px;
+      position: fixed;
+      left: 0;
+      top: 0;
       width: 70px;
+      height: 100vh;
+      background-color: rgba(255, 255, 255, 0.9);
       display: flex;
       flex-direction: column;
       align-items: center;
+      padding-top: 80px;
       gap: 25px;
-      transition: all 0.3s ease;
       z-index: 100;
-    }
-
-    body.light-mode .sidebar {
-      background-color: #ffffff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .sidebar i {
+      color: rgba(0, 0, 0, 0.7);
       font-size: 20px;
       cursor: pointer;
-      padding: 10px;
-      border-radius: 8px;
-      transition: all 0.3s ease;
+      transition: all 0.3s;
     }
 
-    .sidebar i:hover, .sidebar i.active {
-      background-color: rgba(67, 97, 238, 0.5);
-      color: #fff;
+    .sidebar i:hover {
+      color: #4361ee;
+      transform: scale(1.1);
     }
 
     .sidebar i.active {
-      background-color: #4361ee;
+      color: #4361ee;
     }
 
-    body.light-mode .sidebar i {
-      color: #333;
-    }
-
+    /* Main Content */
     .main {
-      flex-grow: 1;
+      margin-left: 70px;
       padding: 20px;
-      background-color: rgba(30, 30, 47, 0.9);
-      transition: all 0.3s ease;
+      width: calc(100% - 70px);
+      min-height: 100vh;
     }
 
-    body.light-mode .main {
-      background-color: rgba(242, 242, 242, 0.9);
+    .section {
+      display: none;
+      animation: fadeIn 0.5s ease;
     }
 
-    .stats {
-      display: flex;
-      gap: 20px;
+    .section.active {
+      display: block;
+    }
+
+    /* Dashboard Section */
+    #dashboard-section {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    #dashboard-section h3 {
+      color: #333;
       margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .card {
-      background-color: rgba(30, 41, 59, 0.8);
-      padding: 20px;
-      border-radius: 10px;
-      flex: 1;
-      min-width: 200px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      text-align: center;
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .card {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-
-    .card h4 {
-      font-size: 14px;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 10px;
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .card h4 {
-      color: #666;
-    }
-
-    .card p {
       font-size: 24px;
       font-weight: 600;
-      transition: all 0.3s ease;
     }
 
-    .profit { color: #4ade80; }
-    .loss { color: #f87171; }
-    .neutral { color: #4361ee; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: rgba(30, 41, 59, 0.8);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode table {
+    .trade-form {
       background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-
-    th, td {
-      padding: 12px;
-      text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode th, 
-    body.light-mode td {
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-    }
-
-    th {
-      background-color: rgba(30, 30, 47, 0.7);
-      font-weight: 600;
-      color: rgba(255,255,255,0.7);
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode th {
-      background-color: rgba(244, 244, 244, 0.9);
-      color: #555;
-    }
-
-    tr:nth-child(even) {
-      background-color: rgba(255,255,255,0.03);
-    }
-
-    body.light-mode tr:nth-child(even) {
-      background-color: rgba(0,0,0,0.02);
-    }
-
-    tr:hover {
-      background-color: rgba(67, 97, 238, 0.1);
-    }
-
-    .badge {
-      padding: 5px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      display: inline-block;
-    }
-
-    .buy { background-color: rgba(74, 222, 128, 0.2); color: #4ade80; }
-    .sell { background-color: rgba(248, 113, 113, 0.2); color: #f87171; }
-    
-    .tag {
-      background-color: rgba(67, 97, 238, 0.2);
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      display: inline-block;
-      color: #4361ee;
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .tag {
-      background-color: rgba(67, 97, 238, 0.1);
-    }
-
-    .add-trade {
-      background-color: rgba(30, 41, 59, 0.8);
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .add-trade {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-
-    .add-trade h3 {
-      margin-bottom: 15px;
-      color: rgba(255,255,255,0.9);
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .add-trade h3 {
-      color: #333;
-    }
-
-    .add-trade input, 
-    .add-trade select {
-      padding: 10px;
-      margin-bottom: 12px;
-      width: 100%;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 5px;
-      font-size: 14px;
-      background-color: rgba(30, 30, 47, 0.5);
-      color: white;
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .add-trade input,
-    body.light-mode .add-trade select {
-      background-color: white;
-      color: #333;
-      border: 1px solid #ddd;
-    }
-
-    .add-trade button {
-      background-color: #4361ee;
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 14px;
-      transition: background-color 0.3s;
-      width: 100%;
-    }
-
-    .add-trade button:hover {
-      background-color: #3a56d4;
+      margin-bottom: 30px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .form-row {
       display: flex;
+      flex-wrap: wrap;
       gap: 15px;
       margin-bottom: 15px;
     }
 
-    .form-row > * {
+    .form-group {
       flex: 1;
-    }
-
-    .filter-container {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .filter-container input,
-    .filter-container select {
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background-color: rgba(30, 30, 47, 0.5);
-      color: white;
       min-width: 200px;
     }
 
-    body.light-mode .filter-container input,
-    body.light-mode .filter-container select {
-      background-color: white;
-      color: #333;
-      border: 1px solid #ddd;
+    .form-group label {
+      display: block;
+      color: rgba(0, 0, 0, 0.7);
+      margin-bottom: 5px;
+      font-size: 14px;
     }
 
-    .export-buttons {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .export-buttons button {
+    .form-group input,
+    .form-group select {
+      width: 100%;
       padding: 10px 15px;
       border-radius: 5px;
+      border: 1px solid #ddd;
+      background-color: white;
+      color: #333;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .form-actions button {
+      padding: 10px 20px;
+      border-radius: 5px;
       border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    #saveTradeBtn {
       background-color: #4361ee;
       color: white;
-      cursor: pointer;
-      font-weight: 600;
+    }
+
+    #saveTradeBtn:hover {
+      background-color: #3a56d4;
+    }
+
+    #resetFormBtn {
+      background-color: rgba(0, 0, 0, 0.1);
+      color: #333;
+    }
+
+    #resetFormBtn:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Trade Table */
+    .trade-table-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      overflow-x: auto;
+    }
+
+    #tradeTable {
+      width: 100%;
+      border-collapse: collapse;
+      color: #333;
+    }
+
+    #tradeTable th {
+      text-align: left;
+      padding: 12px 15px;
+      background-color: rgba(67, 97, 238, 0.1);
+      font-weight: 500;
+    }
+
+    #tradeTable td {
+      padding: 12px 15px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    #tradeTable tr:hover {
+      background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge.buy {
+      background-color: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+    }
+
+    .badge.sell {
+      background-color: rgba(248, 113, 113, 0.2);
+      color: #f87171;
+    }
+
+    .badge.win {
+      background-color: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+    }
+
+    .badge.loss {
+      background-color: rgba(248, 113, 113, 0.2);
+      color: #f87171;
+    }
+
+    .profit {
+      color: #4ade80;
+    }
+
+    .loss {
+      color: #f87171;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .filter-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filter-group label {
+      display: block;
+      color: rgba(0, 0, 0, 0.7);
+      margin-bottom: 5px;
       font-size: 14px;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      width: 100%;
+      padding: 10px 15px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      background-color: white;
+      color: #333;
+    }
+
+    /* Stats */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card h4 {
+      color: rgba(0, 0, 0, 0.7);
+      font-size: 14px;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .stat-card p {
+      color: #333;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    /* Journal Actions */
+    .journal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .journal-actions button {
+      padding: 10px 20px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
       transition: all 0.3s;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .export-buttons button:hover {
+    #saveJournalBtn {
+      background-color: #4361ee;
+      color: white;
+    }
+
+    #saveJournalBtn:hover {
       background-color: #3a56d4;
     }
 
-    .export-buttons button.reset-btn {
-      background-color: #f87171;
+    #resetJournalBtn {
+      background-color: rgba(248, 113, 113, 0.2);
+      color: #f87171;
     }
 
-    .export-buttons button.reset-btn:hover {
-      background-color: #ef4444;
+    #resetJournalBtn:hover {
+      background-color: rgba(248, 113, 113, 0.3);
     }
 
-    .export-buttons button.save-btn {
-      background-color: #4ade80;
+    #exportCSVBtn {
+      background-color: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
     }
 
-    .export-buttons button.save-btn:hover {
-      background-color: #22c55e;
+    #exportCSVBtn:hover {
+      background-color: rgba(74, 222, 128, 0.3);
+    }
+
+    #exportExcelBtn {
+      background-color: rgba(234, 179, 8, 0.2);
+      color: #eab308;
+    }
+
+    #exportExcelBtn:hover {
+      background-color: rgba(234, 179, 8, 0.3);
+    }
+
+    #importTradesBtn {
+      background-color: rgba(139, 92, 246, 0.2);
+      color: #8b5cf6;
+    }
+
+    #importTradesBtn:hover {
+      background-color: rgba(139, 92, 246, 0.3);
+    }
+
+    /* Performance Section */
+    #performance-section {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    #performance-section h1 {
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .charts-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    @media (min-width: 992px) {
+      .charts-container {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    .chart-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-card h2 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 600;
     }
 
     .chart-container {
-      background-color: rgba(30, 41, 59, 0.8);
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+
+    .performance-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .performance-stat {
+      background-color: rgba(255, 255, 255, 0.9);
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    body.light-mode .chart-container {
+    .performance-stat h3 {
+      color: rgba(0, 0, 0, 0.7);
+      font-size: 14px;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .performance-stat p {
+      color: #333;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    /* Emotional Patterns */
+    .emotional-patterns {
       background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0,0,0,0.1);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
     }
 
-    .chart-container h2 {
-      margin-bottom: 20px;
-      color: rgba(255,255,255,0.9);
+    .emotional-patterns h2 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 18px;
+      font-weight: 600;
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    body.light-mode .chart-container h2 {
-      color: #333;
+    .emotional-patterns h2 i {
+      color: #4cc9f0;
     }
 
-    .broker-card {
-      background-color: rgba(30, 41, 59, 0.8);
-      padding: 20px;
-      border-radius: 10px;
+    #emotionalPatternText {
+      color: rgba(0, 0, 0, 0.9);
+      font-size: 16px;
+      line-height: 1.6;
       margin-bottom: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: all 0.3s ease;
-      position: relative;
     }
 
-    body.light-mode .broker-card {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-
-    .broker-card h3 {
-      margin-bottom: 10px;
-      color: rgba(255,255,255,0.9);
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .broker-card h3 {
-      color: #333;
-    }
-
-    .broker-card p {
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 5px;
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .broker-card p {
-      color: #666;
-    }
-
-    .broker-link {
-      display: inline-block;
-      margin-top: 10px;
+    .emotional-patterns button {
       padding: 8px 15px;
-      background-color: #4361ee;
-      color: white;
+      background-color: rgba(76, 201, 240, 0.2);
+      color: #4cc9f0;
+      border: none;
       border-radius: 5px;
-      text-decoration: none;
+      cursor: pointer;
       font-weight: 500;
       transition: all 0.3s;
     }
 
-    .broker-link:hover {
-      background-color: #3a56d4;
+    .emotional-patterns button:hover {
+      background-color: rgba(76, 201, 240, 0.3);
     }
 
-    .settings-option {
+    /* Daily Feedback */
+    .daily-feedback {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .daily-feedback h2 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .daily-feedback h2 i {
+      color: #8b5cf6;
+    }
+
+    #dailyFeedbackText {
+      color: rgba(0, 0, 0, 0.9);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* Calendar Section */
+    #calendar-section {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    #calendar-section h1 {
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    #calendar {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    /* Brokers Section */
+    #brokers-section {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    #brokers-section h1 {
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .brokers-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .broker-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .broker-header {
+      padding: 15px 20px;
+      background-color: rgba(67, 97, 238, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .broker-header h3 {
+      color: #333;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .broker-header p {
+      color: rgba(0, 0, 0, 0.7);
+      font-size: 14px;
+    }
+
+    .broker-body {
+      padding: 20px;
+    }
+
+    .broker-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .broker-feature i {
+      color: #4cc9f0;
+      font-size: 16px;
+    }
+
+    .broker-feature p {
+      color: rgba(0, 0, 0, 0.8);
+      font-size: 14px;
+    }
+
+    .broker-rating {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 20px;
+    }
+
+    .broker-rating i {
+      color: #eab308;
+      font-size: 16px;
+    }
+
+    .broker-actions {
+      margin-top: 20px;
+    }
+
+    .broker-actions a {
+      display: inline-block;
+      padding: 8px 15px;
+      background-color: rgba(67, 97, 238, 0.2);
+      color: #4361ee;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .broker-actions a:hover {
+      background-color: rgba(67, 97, 238, 0.4);
+    }
+
+    /* Notes Section */
+    #notes-section {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .notes-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       margin-bottom: 20px;
-    }
-
-    .settings-option h3 {
-      margin-bottom: 10px;
-      color: rgba(255,255,255,0.9);
+      border: 1px solid rgba(0,0,0,0.1);
       transition: all 0.3s ease;
     }
 
-    body.light-mode .settings-option h3 {
+    body.light-mode .notes-container {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .notes-container h2 {
+      margin-bottom: 15px;
+      color: #333;
+      transition: all 0.3s ease;
+    }
+
+    body.light-mode .notes-container h2 {
       color: #333;
     }
 
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 34px;
+    #notesEditor {
+      width: 100%;
+      min-height: 300px;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background-color: white;
+      color: #333;
+      font-size: 16px;
+      line-height: 1.6;
+      resize: vertical;
+      transition: all 0.3s ease;
     }
 
-    .switch input {
+    body.light-mode #notesEditor {
+      background-color: white;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+
+    .notes-toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .notes-toolbar button {
+      padding: 8px 15px;
+      border-radius: 5px;
+      border: none;
+      background-color: #4361ee;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .notes-toolbar button:hover {
+      background-color: #3a56d4;
+    }
+
+    .notes-toolbar button i {
+      font-size: 14px;
+    }
+
+    /* Emoji Picker Styles */
+    .emoji-picker {
+      position: absolute;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      z-index: 1000;
+      display: none;
+      max-width: 300px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    body.light-mode .emoji-picker {
+      background-color: white;
+      border: 1px solid #ddd;
+    }
+
+    .emoji-picker span {
+      font-size: 20px;
+      padding: 5px;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .emoji-picker span:hover {
+      transform: scale(1.2);
+    }
+
+    /* Settings Section */
+    #settings-section {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    #settings-section h1 {
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .settings-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .settings-container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .settings-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .settings-card h2 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .settings-card h2 i {
+      color: #4cc9f0;
+    }
+
+    .setting-group {
+      margin-bottom: 20px;
+    }
+
+    .setting-group label {
+      display: block;
+      color: rgba(0, 0, 0, 0.7);
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .setting-group input[type="number"] {
+      width: 100%;
+      padding: 10px 15px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      background-color: white;
+      color: #333;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
       opacity: 0;
       width: 0;
       height: 0;
     }
 
-    .slider {
+    .toggle-slider {
       position: absolute;
       cursor: pointer;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #ccc;
+      background-color: rgba(0, 0, 0, 0.1);
       transition: .4s;
-      border-radius: 34px;
+      border-radius: 24px;
     }
 
-    .slider:before {
+    .toggle-slider:before {
       position: absolute;
       content: "";
-      height: 26px;
-      width: 26px;
+      height: 16px;
+      width: 16px;
       left: 4px;
       bottom: 4px;
       background-color: white;
@@ -650,25 +1065,24 @@
       border-radius: 50%;
     }
 
-    input:checked + .slider {
+    input:checked + .toggle-slider {
       background-color: #4361ee;
     }
 
-    input:checked + .slider:before {
+    input:checked + .toggle-slider:before {
       transform: translateX(26px);
     }
 
-    .language-selector {
+    .language-options {
       display: flex;
-      gap: 15px;
-      margin-top: 10px;
+      gap: 10px;
     }
 
     .language-option {
       padding: 8px 15px;
       border-radius: 5px;
-      background-color: rgba(67, 97, 238, 0.2);
-      color: #4361ee;
+      background-color: rgba(0, 0, 0, 0.1);
+      color: #333;
       cursor: pointer;
       transition: all 0.3s;
     }
@@ -678,111 +1092,37 @@
       color: white;
     }
 
-    /* Emotional Patterns */
-    .emotional-patterns {
-      background-color: rgba(30, 41, 59, 0.8);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: all 0.3s ease;
-      text-align: center;
-      min-height: 120px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .language-option:hover:not(.active) {
+      background-color: rgba(0, 0, 0, 0.2);
     }
 
-    body.light-mode .emotional-patterns {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-
-    .emotional-patterns h3 {
-      margin-bottom: 15px;
-      color: rgba(255,255,255,0.9);
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .emotional-patterns h3 {
-      color: #333;
-    }
-
-    .emotional-patterns p {
-      font-size: 16px;
-      color: rgba(255,255,255,0.9);
-      font-style: italic;
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .emotional-patterns p {
-      color: #555;
-    }
-
-    /* Daily Feedback */
-    .daily-feedback {
-      background-color: rgba(30, 41, 59, 0.8);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: all 0.3s ease;
-      text-align: center;
-    }
-
-    body.light-mode .daily-feedback {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-
-    .daily-feedback h3 {
-      margin-bottom: 15px;
-      color: rgba(255,255,255,0.9);
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .daily-feedback h3 {
-      color: #333;
-    }
-
-    .daily-feedback p {
-      font-size: 16px;
-      color: rgba(255,255,255,0.9);
-      font-style: italic;
-      transition: all 0.3s ease;
-    }
-
-    body.light-mode .daily-feedback p {
-      color: #555;
-    }
-
-    /* Welcome message */
+    /* Welcome Message */
     .welcome-message {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: rgba(30, 41, 59, 0.95);
-      padding: 20px 30px;
+      background-color: white;
+      padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      z-index: 1000;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+      z-index: 1001;
+      max-width: 500px;
+      width: 90%;
       text-align: center;
-      max-width: 80%;
-      animation: fadeIn 0.5s ease;
-      border: 1px solid #4361ee;
+      border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .welcome-message h2 {
-      color: #4cc9f0;
-      margin-bottom: 10px;
+      color: #4361ee;
+      margin-bottom: 15px;
+      font-size: 24px;
     }
 
     .welcome-message p {
-      color: rgba(255,255,255,0.9);
+      color: rgba(0, 0, 0, 0.8);
       margin-bottom: 20px;
+      line-height: 1.6;
     }
 
     .welcome-message button {
@@ -792,111 +1132,36 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 500;
+      transition: all 0.3s;
     }
 
     .welcome-message button:hover {
       background-color: #3a56d4;
     }
 
-    /* Calendar Styles */
-    #calendar {
-      background-color: rgba(30, 41, 59, 0.8);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    body.light-mode #calendar {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-
-    .fc-event {
-      cursor: pointer;
-      font-size: 0.85em;
-      padding: 2px 4px;
-    }
-
-    .fc-event.win-event {
-      background-color: rgba(74, 222, 128, 0.7);
-      border-color: rgba(74, 222, 128, 0.9);
-    }
-
-    .fc-event.loss-event {
-      background-color: rgba(248, 113, 113, 0.7);
-      border-color: rgba(248, 113, 113, 0.9);
-    }
-
-    .fc-toolbar-title {
-      color: rgba(255,255,255,0.9);
-    }
-
-    body.light-mode .fc-toolbar-title {
-      color: #333;
-    }
-
-    .fc-col-header-cell-cushion {
-      color: rgba(255,255,255,0.9);
-    }
-
-    body.light-mode .fc-col-header-cell-cushion {
-      color: #333;
-    }
-
-    .fc-daygrid-day-number {
-      color: rgba(255,255,255,0.9);
-    }
-
-    body.light-mode .fc-daygrid-day-number {
-      color: #333;
-    }
-
-    .fc-scrollgrid {
-      border-color: rgba(255,255,255,0.1) !important;
-    }
-
-    body.light-mode .fc-scrollgrid {
-      border-color: rgba(0,0,0,0.1) !important;
-    }
-
-    .fc-daygrid-day-frame {
-      border-color: rgba(255,255,255,0.1) !important;
-    }
-
-    body.light-mode .fc-daygrid-day-frame {
-      border-color: rgba(0,0,0,0.1) !important;
-    }
-
-    /* Hide sections by default */
-    .section {
-      display: none;
-    }
-    
-    .section.active {
-      display: block;
-    }
-
-    /* Non-logged state */
+    /* Non-logged message */
     .non-logged-message {
-      text-align: center;
+      background-color: rgba(255, 255, 255, 0.9);
       padding: 40px 20px;
-      background-color: rgba(30, 41, 59, 0.8);
       border-radius: 10px;
-      margin: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
+      text-align: center;
+      border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .non-logged-message h2 {
-      color: #4cc9f0;
+      color: #333;
       margin-bottom: 15px;
+      font-size: 24px;
     }
 
     .non-logged-message p {
-      color: rgba(255,255,255,0.8);
-      margin-bottom: 20px;
+      color: rgba(0, 0, 0, 0.8);
+      margin-bottom: 25px;
+      line-height: 1.6;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .non-logged-message button {
@@ -906,66 +1171,129 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 500;
+      transition: all 0.3s;
     }
 
     .non-logged-message button:hover {
       background-color: #3a56d4;
     }
 
-    @media (max-width: 768px) {
-      .stats {
-        flex-direction: column;
-      }
-      
-      .sidebar {
-        width: 60px;
-        padding: 15px 5px;
-        gap: 15px;
-      }
-      
-      .main {
-        padding: 15px;
-      }
-      
-      th, td {
-        padding: 8px;
-        font-size: 14px;
-      }
-      
-      .form-row {
-        flex-direction: column;
-        gap: 0;
-      }
+    /* File input (hidden) */
+    #fileInput {
+      display: none;
+    }
 
-      .filter-container {
-        flex-direction: column;
-        gap: 10px;
-      }
+    /* Light mode adjustments */
+    body.light-mode {
+      color: #333;
+    }
 
-      .filter-container input,
-      .filter-container select {
-        min-width: 100%;
-      }
+    body.light-mode .trade-form,
+    body.light-mode .trade-table-container,
+    body.light-mode .stat-card,
+    body.light-mode .chart-card,
+    body.light-mode .performance-stat,
+    body.light-mode .emotional-patterns,
+    body.light-mode .daily-feedback,
+    body.light-mode #calendar,
+    body.light-mode .broker-card,
+    body.light-mode .settings-card,
+    body.light-mode .non-logged-message {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      color: #333;
+    }
 
-      .export-buttons button {
-        padding: 8px 12px;
-        font-size: 12px;
-      }
+    body.light-mode .trade-form h3,
+    body.light-mode .stat-card h4,
+    body.light-mode .chart-card h2,
+    body.light-mode .performance-stat h3,
+    body.light-mode .emotional-patterns h2,
+    body.light-mode .daily-feedback h2,
+    body.light-mode #calendar-section h1,
+    body.light-mode #performance-section h1,
+    body.light-mode #brokers-section h1,
+    body.light-mode #settings-section h1,
+    body.light-mode #notes-section h1,
+    body.light-mode .broker-header h3,
+    body.light-mode .settings-card h2,
+    body.light-mode .non-logged-message h2 {
+      color: #333;
+    }
 
-      .user-info {
-        position: static;
-        justify-content: flex-end;
-        margin-bottom: 15px;
-      }
+    body.light-mode .form-group label,
+    body.light-mode .filter-group label,
+    body.light-mode .broker-header p,
+    body.light-mode .broker-feature p,
+    body.light-mode .setting-group label,
+    body.light-mode .non-logged-message p {
+      color: rgba(0, 0, 0, 0.7);
+    }
 
-      .user-info .user-email {
-        display: none;
-      }
+    body.light-mode .form-group input,
+    body.light-mode .form-group select,
+    body.light-mode .filter-group input,
+    body.light-mode .filter-group select,
+    body.light-mode .setting-group input[type="number"] {
+      background-color: white;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+
+    body.light-mode .user-email {
+      color: #333;
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    body.light-mode .sidebar {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-mode .sidebar i {
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    body.light-mode .sidebar i:hover,
+    body.light-mode .sidebar i.active {
+      color: #4361ee;
+    }
+
+    body.light-mode #tradeTable {
+      color: #333;
+    }
+
+    body.light-mode #tradeTable th {
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+
+    body.light-mode #tradeTable td {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    body.light-mode #tradeTable tr:hover {
+      background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    body.light-mode .welcome-message {
+      background-color: white;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    body.light-mode .welcome-message h2 {
+      color: #4361ee;
+    }
+
+    body.light-mode .welcome-message p {
+      color: rgba(0, 0, 0, 0.8);
     }
   </style>
 </head>
 <body>
+  <!-- EOC Logo (always visible) -->
+  <div class="eoc-logo">EOC</div>
+
   <div id="splash">
     <h1>EOC</h1>
     <p>Bienvenue dans ton Journal de Trading</p>
@@ -1008,6 +1336,7 @@
       <i class="fas fa-chart-bar" data-section="performance"></i>
       <i class="fas fa-calendar-alt" data-section="calendar"></i>
       <i class="fas fa-building" data-section="brokers"></i>
+      <i class="fas fa-sticky-note" data-section="notes"></i>
       <i class="fas fa-cog" data-section="settings"></i>
     </div>
 
@@ -1021,101 +1350,145 @@
         </div>
 
         <div id="loggedContent" style="display: none;">
-          <div class="emotional-patterns">
-            <h3>PATTERN ÉMOTIONNEL</h3>
-            <p id="emotionalPatternText">Le capital c'est ton oxygène. Protège-le.</p>
-          </div>
-
-          <div class="daily-feedback">
-            <h3>FEEDBACK QUOTIDIEN</h3>
-            <p id="dailyFeedbackText">Analyse de tes performances en cours...</p>
-          </div>
-
-          <div class="stats">
-            <div class="card">
-              <h4>TRADES</h4>
-              <p class="neutral" id="totalTrades">0</p>
-            </div>
-            <div class="card">
-              <h4>WIN RATE</h4>
-              <p class="profit" id="winRate">0%</p>
-            </div>
-            <div class="card">
-              <h4>PROFIT</h4>
-              <p class="profit" id="totalProfit">$0</p>
-            </div>
-            <div class="card">
-              <h4>AVG R/R RATIO</h4>
-              <p class="neutral" id="averageRRR">0</p>
-            </div>
-            <div class="card">
-              <h4>CAPITAL</h4>
-              <p class="neutral" id="currentCapital">$1000</p>
-            </div>
-          </div>
-
-          <div class="filter-container">
-            <input type="text" id="symbolFilter" placeholder="Filtrer par symbole" oninput="filterTrades()">
-            <input type="text" id="dateFromFilter" placeholder="Date de début" class="date-filter">
-            <input type="text" id="dateToFilter" placeholder="Date de fin" class="date-filter">
-            <select id="resultFilter" onchange="filterTrades()">
-              <option value="all">Tous les résultats</option>
-              <option value="win">Gagnants seulement</option>
-              <option value="loss">Perdants seulement</option>
-            </select>
-          </div>
-
-          <div class="export-buttons">
-            <button onclick="exportToCSV()"><i class="fas fa-file-csv"></i> Exporter CSV</button>
-            <button onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Exporter Excel</button>
-            <button onclick="importFromFile()"><i class="fas fa-file-import"></i> Importer</button>
-            <button class="save-btn" onclick="saveJournal()"><i class="fas fa-save"></i> Sauvegarder</button>
-            <button class="reset-btn" onclick="resetJournal()"><i class="fas fa-trash-alt"></i> Réinitialiser</button>
-            <input type="file" id="fileInput" style="display: none;" accept=".csv,.xlsx,.xls">
-          </div>
-
-          <table id="tradeTable">
-            <thead>
-              <tr>
-                <th>DATE</th>
-                <th>SYMBOLE</th>
-                <th>TYPE</th>
-                <th>ENTRY</th>
-                <th>SORTIE</th>
-                <th>LOT</th>
-                <th>RÉSULTAT</th>
-                <th>P&L</th>
-                <th>R/R</th>
-                <th>ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-
-          <div class="add-trade">
-            <h3>AJOUTER UN TRADE</h3>
+          <h3>AJOUTER UN TRADE</h3>
+          
+          <div class="trade-form">
             <div class="form-row">
-              <input type="text" id="tradeDate" class="date-input" placeholder="Date">
-              <input type="text" id="tradeSymbol" placeholder="Symbole (ex: EURUSD)">
-              <select id="tradeType">
-                <option value="Buy">Buy</option>
-                <option value="Sell">Sell</option>
+              <div class="form-group">
+                <label for="tradeDate">Date</label>
+                <input type="text" id="tradeDate" class="date-input" placeholder="YYYY-MM-DD">
+              </div>
+              <div class="form-group">
+                <label for="tradeSymbol">Symbole</label>
+                <input type="text" id="tradeSymbol" placeholder="EURUSD, AAPL, BTCUSD...">
+              </div>
+              <div class="form-group">
+                <label for="tradeType">Type</label>
+                <select id="tradeType">
+                  <option value="Buy">Achat</option>
+                  <option value="Sell">Vente</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="tradeEntry">Prix d'entrée</label>
+                <input type="number" id="tradeEntry" step="0.0001" placeholder="1.1234">
+              </div>
+              <div class="form-group">
+                <label for="tradeExit">Prix de sortie</label>
+                <input type="number" id="tradeExit" step="0.0001" placeholder="1.1256">
+              </div>
+              <div class="form-group">
+                <label for="tradeLot">Taille (lot)</label>
+                <input type="number" id="tradeLot" step="0.01" placeholder="0.10">
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="tradeResult">Résultat</label>
+                <select id="tradeResult">
+                  <option value="win">Gagné</option>
+                  <option value="loss">Perdu</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="tradePL">Profit/Perte ($)</label>
+                <input type="number" id="tradePL" step="0.01" placeholder="25.50">
+              </div>
+              <div class="form-group">
+                <label for="tradeRR">Ratio R/R</label>
+                <input type="number" id="tradeRR" step="0.01" placeholder="1.50" readonly>
+              </div>
+            </div>
+            
+            <div class="form-actions">
+              <button id="resetFormBtn">Réinitialiser</button>
+              <button id="saveTradeBtn" onclick="saveTrade()">Enregistrer</button>
+            </div>
+          </div>
+          
+          <div class="filters">
+            <div class="filter-group">
+              <label for="symbolFilter">Symbole</label>
+              <input type="text" id="symbolFilter" placeholder="Filtrer par symbole" oninput="filterTrades()">
+            </div>
+            <div class="filter-group">
+              <label for="dateFromFilter">De</label>
+              <input type="text" id="dateFromFilter" class="date-filter" placeholder="Date de début" onchange="filterTrades()">
+            </div>
+            <div class="filter-group">
+              <label for="dateToFilter">À</label>
+              <input type="text" id="dateToFilter" class="date-filter" placeholder="Date de fin" onchange="filterTrades()">
+            </div>
+            <div class="filter-group">
+              <label for="resultFilter">Résultat</label>
+              <select id="resultFilter" onchange="filterTrades()">
+                <option value="all">Tous</option>
+                <option value="win">Gagnés</option>
+                <option value="loss">Perdus</option>
               </select>
             </div>
-            <div class="form-row">
-              <input type="number" id="tradeEntry" placeholder="Prix d'entrée" step="0.0001">
-              <input type="number" id="tradeExit" placeholder="Prix de sortie" step="0.0001">
-              <input type="number" id="tradeLot" placeholder="Lot (0.01 min)" step="0.01" min="0.01">
+          </div>
+          
+          <div class="trade-table-container">
+            <table id="tradeTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Symbole</th>
+                  <th>Type</th>
+                  <th>Entry</th>
+                  <th>Exit</th>
+                  <th>Lot</th>
+                  <th>Résultat</th>
+                  <th>P&L</th>
+                  <th>R/R</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Trades will be inserted here -->
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="stats-container">
+            <div class="stat-card">
+              <h4>Nombre de trades</h4>
+              <p id="totalTrades">0</p>
             </div>
-            <div class="form-row">
-              <select id="tradeResult">
-                <option value="win">Win</option>
-                <option value="loss">Loss</option>
-              </select>
-              <input type="number" id="tradePL" placeholder="Profit/Loss">
-              <input type="number" id="tradeRR" placeholder="R/R Ratio" readonly>
+            <div class="stat-card">
+              <h4>Taux de réussite</h4>
+              <p id="winRate">0%</p>
             </div>
-            <button type="button" onclick="saveTrade()">AJOUTER LE TRADE</button>
+            <div class="stat-card">
+              <h4>Profit total</h4>
+              <p id="totalProfit">$0.00</p>
+            </div>
+            <div class="stat-card">
+              <h4>R/R moyen</h4>
+              <p id="averageRRR">0.00</p>
+            </div>
+            <div class="stat-card">
+              <h4>Capital initial</h4>
+              <p><input type="number" id="initialCapital" value="1000" step="100" style="width: 80px; background: transparent; border: none; color: #333; font-size: 24px; font-weight: 600;" onchange="updateCapital()"> $</p>
+            </div>
+            <div class="stat-card">
+              <h4>Capital actuel</h4>
+              <p id="currentCapital">$1000.00</p>
+            </div>
+          </div>
+          
+          <div class="journal-actions">
+            <button id="importTradesBtn" onclick="importFromFile()"><i class="fas fa-file-import"></i> Importer</button>
+            <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
+            <button id="exportCSVBtn" onclick="exportToCSV()"><i class="fas fa-file-csv"></i> CSV</button>
+            <button id="exportExcelBtn" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Excel</button>
+            <button id="resetJournalBtn" onclick="resetJournal()"><i class="fas fa-trash-alt"></i> Réinitialiser</button>
+            <button id="saveJournalBtn" onclick="saveJournal()"><i class="fas fa-save"></i> Sauvegarder</button>
           </div>
         </div>
       </section>
@@ -1129,40 +1502,59 @@
         </div>
 
         <div id="loggedContentPerformance" style="display: none;">
-          <h1><i class="fas fa-chart-bar"></i> ANALYSE DE PERFORMANCE</h1>
+          <h1>ANALYSE DE PERFORMANCE</h1>
           
-          <div class="stats">
-            <div class="card">
-              <h4>RISK/REWARD MOYEN</h4>
-              <p class="neutral" id="avgRiskReward">0</p>
+          <div class="charts-container">
+            <div class="chart-card">
+              <h2>Évolution du capital</h2>
+              <div class="chart-container">
+                <canvas id="capitalChart"></canvas>
+              </div>
             </div>
-            <div class="card">
-              <h4>MAX DRAWNDOWN</h4>
-              <p class="loss" id="maxDrawdown">$0</p>
-            </div>
-            <div class="card">
-              <h4>MAX LOSS/JOUR</h4>
-              <p class="loss" id="maxDailyLoss">$0</p>
-            </div>
-            <div class="card">
-              <h4>MAX WIN/JOUR</h4>
-              <p class="profit" id="maxDailyWin">$0</p>
+            
+            <div class="chart-card">
+              <h2>Trades gagnants vs perdants</h2>
+              <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+              </div>
             </div>
           </div>
-
-          <div class="chart-container">
-            <h2><i class="fas fa-chart-line"></i> EVOLUTION DU CAPITAL</h2>
-            <canvas id="capitalChart" height="300"></canvas>
+          
+          <div class="performance-stats">
+            <div class="performance-stat">
+              <h3>Ratio Risk/Reward moyen</h3>
+              <p id="avgRiskReward">0.00</p>
+            </div>
+            <div class="performance-stat">
+              <h3>Max Drawdown</h3>
+              <p id="maxDrawdown">$0.00</p>
+            </div>
+            <div class="performance-stat">
+              <h3>Plus grosse perte quotidienne</h3>
+              <p id="maxDailyLoss">$0.00</p>
+            </div>
+            <div class="performance-stat">
+              <h3>Plus gros gain quotidien</h3>
+              <p id="maxDailyWin">$0.00</p>
+            </div>
           </div>
           
-          <div class="chart-container">
-            <h2><i class="fas fa-chart-pie"></i> REPARTITION GAINS/PERDUS</h2>
-            <canvas id="pieChart" height="300"></canvas>
+          <div class="chart-card">
+            <h2>Performance quotidienne</h2>
+            <div class="chart-container">
+              <canvas id="dailyChart"></canvas>
+            </div>
           </div>
           
-          <div class="chart-container">
-            <h2><i class="fas fa-chart-bar"></i> PERFORMANCE PAR JOUR</h2>
-            <canvas id="dailyChart" height="300"></canvas>
+          <div class="emotional-patterns">
+            <h2><i class="fas fa-brain"></i> Pattern Émotionnel</h2>
+            <p id="emotionalPatternText">Le capital c'est ton oxygène. Protège-le.</p>
+            <button onclick="showNextEmotionalPattern()">Suivant</button>
+          </div>
+          
+          <div class="daily-feedback">
+            <h2><i class="fas fa-comment-dots"></i> Feedback Quotidien</h2>
+            <p id="dailyFeedbackText">Analyse tes trades perdants pour identifier les patterns à éviter.</p>
           </div>
         </div>
       </section>
@@ -1183,58 +1575,166 @@
 
       <!-- Brokers Section -->
       <section id="brokers-section" class="section">
-        <h1><i class="fas fa-building"></i> RECOMMANDATION DE BROKERS</h1>
-        
-        <div id="brokersList">
-          <!-- Recommended Brokers -->
-          <div class="broker-card">
-            <h3>EXNESS</h3>
-            <p><strong>Spread:</strong> À partir de 0.0 pips</p>
-            <p><strong>Effet de levier:</strong> Jusqu'à 1:Unlimited</p>
-            <p><strong>Régulation:</strong> FSA, CySEC, FCA</p>
-            <p><strong>Dépôt minimum:</strong> $10</p>
-            <p><strong>Note:</strong> ★★★★★</p>
-            <a href="https://one.exnesstrack.org/a/i911hyordj" target="_blank" class="broker-link">Ouvrir un compte</a>
+        <div id="nonLoggedMessageBrokers" class="non-logged-message" style="display: none;">
+          <h2>Connectez-vous pour accéder aux recommandations de brokers</h2>
+          <p>Veuillez vous connecter ou créer un compte pour voir nos recommandations.</p>
+          <button id="loginFromBrokersBtn">Se connecter</button>
+        </div>
+
+        <div id="loggedContentBrokers" style="display: none;">
+          <h1>RECOMMANDATION DE BROKERS</h1>
+          
+          <div class="brokers-container">
+            <div class="broker-card">
+              <div class="broker-header">
+                <h3>Broker Pro</h3>
+                <p>Pour les traders expérimentés</p>
+              </div>
+              <div class="broker-body">
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Spreads à partir de 0.0 pips</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Exécution ultra-rapide</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Plateformes avancées (MT4, MT5, cTrader)</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Leverage jusqu'à 1:500</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Support client 24/5</p>
+                </div>
+                <div class="broker-rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+                <div class="broker-actions">
+                  <a href="https://www.icmarkets.com" target="_blank">Visiter le site</a>
+                </div>
+              </div>
+            </div>
+            
+            <div class="broker-card">
+              <div class="broker-header">
+                <h3>Broker Standard</h3>
+                <p>Pour la plupart des traders</p>
+              </div>
+              <div class="broker-body">
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Spreads à partir de 1.0 pips</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Exécution rapide</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Plateformes conviviales (MT4, WebTrader)</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Leverage jusqu'à 1:200</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Support client 24/5</p>
+                </div>
+                <div class="broker-rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="far fa-star"></i>
+                </div>
+                <div class="broker-actions">
+                  <a href="https://www.xm.com" target="_blank">Visiter le site</a>
+                </div>
+              </div>
+            </div>
+            
+            <div class="broker-card">
+              <div class="broker-header">
+                <h3>Broker Débutant</h3>
+                <p>Pour les nouveaux traders</p>
+              </div>
+              <div class="broker-body">
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Spreads à partir de 1.5 pips</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Interface simplifiée</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Éducation et support</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Leverage jusqu'à 1:100</p>
+                </div>
+                <div class="broker-feature">
+                  <i class="fas fa-check"></i>
+                  <p>Support client 24/5</p>
+                </div>
+                <div class="broker-rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                  <i class="far fa-star"></i>
+                </div>
+                <div class="broker-actions">
+                  <a href="https://www.etoro.com" target="_blank">Visiter le site</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notes Section -->
+      <section id="notes-section" class="section">
+        <div id="nonLoggedMessageNotes" class="non-logged-message" style="display: none;">
+          <h2>Connectez-vous pour accéder aux notes</h2>
+          <p>Veuillez vous connecter ou créer un compte pour enregistrer vos notes personnelles.</p>
+          <button id="loginFromNotesBtn">Se connecter</button>
+        </div>
+
+        <div id="loggedContentNotes" style="display: none;">
+          <h1><i class="fas fa-sticky-note"></i> MES NOTES</h1>
+          
+          <div class="notes-container">
+            <h2>ÉDITEUR DE NOTES</h2>
+            <div class="notes-toolbar">
+              <button onclick="formatText('bold')"><i class="fas fa-bold"></i> Gras</button>
+              <button onclick="formatText('italic')"><i class="fas fa-italic"></i> Italique</button>
+              <button onclick="formatText('underline')"><i class="fas fa-underline"></i> Souligné</button>
+              <button onclick="insertEmoji()"><i class="far fa-smile"></i> Emoji</button>
+              <button onclick="clearNotes()"><i class="fas fa-trash-alt"></i> Effacer</button>
+              <button onclick="saveNotes()" class="save-btn"><i class="fas fa-save"></i> Sauvegarder</button>
+            </div>
+            
+            <div class="emoji-picker" id="emojiPicker"></div>
+            
+            <textarea id="notesEditor" placeholder="Écrivez ici tout ce que vous voulez : vos pensées, sentiments, analyses de marché, plans de trading..."></textarea>
           </div>
           
-          <div class="broker-card">
-            <h3>LITEFINANCE</h3>
-            <p><strong>Spread:</strong> À partir de 0.0 pips</p>
-            <p><strong>Effet de levier:</strong> Jusqu'à 1:500</p>
-            <p><strong>Régulation:</strong> CySEC, FSA</p>
-            <p><strong>Dépôt minimum:</strong> $50</p>
-            <p><strong>Note:</strong> ★★★★☆</p>
-            <a href="https://www.litefinance.org/?uid=114959820" target="_blank" class="broker-link">Ouvrir un compte</a>
-          </div>
-          
-          <div class="broker-card">
-            <h3>HEADWAY</h3>
-            <p><strong>Spread:</strong> À partir de 0.0 pips</p>
-            <p><strong>Effet de levier:</strong> Jusqu'à 1:500</p>
-            <p><strong>Régulation:</strong> FSA, CySEC</p>
-            <p><strong>Dépôt minimum:</strong> $10</p>
-            <p><strong>Note:</strong> ★★★★☆</p>
-            <a href="https://headway.partners/user/signup?hwp=2107f0" target="_blank" class="broker-link">Ouvrir un compte</a>
-          </div>
-          
-          <div class="broker-card">
-            <h3>FBS</h3>
-            <p><strong>Spread:</strong> À partir de 0.5 pips</p>
-            <p><strong>Effet de levier:</strong> Jusqu'à 1:3000</p>
-            <p><strong>Régulation:</strong> IFSC, CySEC, ASIC</p>
-            <p><strong>Dépôt minimum:</strong> $5</p>
-            <p><strong>Note:</strong> ★★★★☆</p>
-            <a href="https://fbs.partners?ibl=891392&ibp=25515221" target="_blank" class="broker-link">Ouvrir un compte</a>
-          </div>
-          
-          <div class="broker-card">
-            <h3>ROBOFOREX</h3>
-            <p><strong>Spread:</strong> À partir de 0.0 pips</p>
-            <p><strong>Effet de levier:</strong> Jusqu'à 1:2000</p>
-            <p><strong>Régulation:</strong> CySEC, IFSC</p>
-            <p><strong>Dépôt minimum:</strong> $10</p>
-            <p><strong>Note:</strong> ★★★★☆</p>
-            <a href="https://my.roboforex.com/en/?a=eqylm" target="_blank" class="broker-link">Ouvrir un compte</a>
+          <div class="notes-container">
+            <h2>PRÉVISUALISATION</h2>
+            <div id="notesPreview" style="padding: 15px; border-radius: 8px; background-color: rgba(0, 0, 0, 0.05); min-height: 100px; white-space: pre-wrap;"></div>
           </div>
         </div>
       </section>
@@ -1248,29 +1748,47 @@
         </div>
 
         <div id="loggedContentSettings" style="display: none;">
-          <h1><i class="fas fa-cog"></i> PARAMÈTRES</h1>
+          <h1>PARAMÈTRES</h1>
           
-          <div class="settings-option">
-            <h3>APPARENCE</h3>
-            <label class="switch">
-              <input type="checkbox" id="darkModeToggle" checked>
-              <span class="slider"></span>
-            </label>
-            <span style="margin-left: 10px;">Mode sombre</span>
-          </div>
-          
-          <div class="settings-option">
-            <h3>LANGUE</h3>
-            <div class="language-selector">
-              <div class="language-option active" data-lang="fr">Français</div>
-              <div class="language-option" data-lang="en">English</div>
+          <div class="settings-container">
+            <div class="settings-card">
+              <h2><i class="fas fa-palette"></i> Apparence</h2>
+              
+              <div class="setting-group">
+                <label>Mode sombre</label>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="darkModeToggle" checked onchange="toggleDarkMode()">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              
+              <div class="setting-group">
+                <label>Langue</label>
+                <div class="language-options">
+                  <div class="language-option active" data-lang="fr" onclick="changeLanguage('fr')">Français</div>
+                  <div class="language-option" data-lang="en" onclick="changeLanguage('en')">English</div>
+                </div>
+              </div>
             </div>
-          </div>
-          
-          <div class="settings-option">
-            <h3>CAPITAL INITIAL</h3>
-            <input type="number" id="initialCapital" value="1000" style="width: 200px; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.1); background-color: rgba(30, 30, 47, 0.5); color: white;">
-            <button onclick="updateCapital()" style="margin-left: 10px; padding: 10px 15px; border-radius: 5px; border: none; background-color: #4361ee; color: white; cursor: pointer;">Mettre à jour</button>
+            
+            <div class="settings-card">
+              <h2><i class="fas fa-user-cog"></i> Compte</h2>
+              
+              <div class="setting-group">
+                <label>Email</label>
+                <p id="userEmailDisplay" style="color: #333;"></p>
+              </div>
+              
+              <div class="setting-group">
+                <label>Changer de mot de passe</label>
+                <button style="padding: 8px 15px; background-color: rgba(76, 201, 240, 0.2); color: #4cc9f0; border: none; border-radius: 5px; cursor: pointer;">Modifier</button>
+              </div>
+              
+              <div class="setting-group">
+                <label>Supprimer le compte</label>
+                <button style="padding: 8px 15px; background-color: rgba(248, 113, 113, 0.2); color: #f87171; border: none; border-radius: 5px; cursor: pointer;">Supprimer</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1287,10 +1805,10 @@
   <!-- Trade Details Modal -->
   <div class="modal fade" id="tradeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content" style="background-color: #1e1e2f; color: white;">
+      <div class="modal-content" style="background-color: white; color: #333;">
         <div class="modal-header">
           <h5 class="modal-title">Détails du Trade</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="tradeModalBody">
           <!-- Trade details will be inserted here -->
@@ -1360,7 +1878,162 @@
       "N'oublie pas de définir ton stop loss avant chaque trade."
     ];
 
-    // Initialiser le calendrier
+    // Notes functionality
+    let notesContent = "";
+    const emojis = ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾"];
+
+    // Initialize Emoji Picker
+    function initEmojiPicker() {
+      const picker = document.getElementById('emojiPicker');
+      picker.innerHTML = '';
+      
+      emojis.forEach(emoji => {
+        const span = document.createElement('span');
+        span.textContent = emoji;
+        span.onclick = () => {
+          insertTextAtCursor(emoji);
+          picker.style.display = 'none';
+        };
+        picker.appendChild(span);
+      });
+    }
+
+    // Format text in notes editor
+    function formatText(format) {
+      const editor = document.getElementById('notesEditor');
+      const startPos = editor.selectionStart;
+      const endPos = editor.selectionEnd;
+      const selectedText = editor.value.substring(startPos, endPos);
+      
+      let formattedText = '';
+      switch(format) {
+        case 'bold':
+          formattedText = `**${selectedText}**`;
+          break;
+        case 'italic':
+          formattedText = `*${selectedText}*`;
+          break;
+        case 'underline':
+          formattedText = `_${selectedText}_`;
+          break;
+      }
+      
+      editor.value = editor.value.substring(0, startPos) + formattedText + editor.value.substring(endPos);
+      
+      // Update preview
+      updateNotesPreview();
+    }
+
+    // Insert text at cursor position
+    function insertTextAtCursor(text) {
+      const editor = document.getElementById('notesEditor');
+      const startPos = editor.selectionStart;
+      const endPos = editor.selectionEnd;
+      
+      editor.value = editor.value.substring(0, startPos) + text + editor.value.substring(endPos);
+      
+      // Set cursor position after inserted text
+      editor.selectionStart = editor.selectionEnd = startPos + text.length;
+      editor.focus();
+      
+      // Update preview
+      updateNotesPreview();
+    }
+
+    // Show emoji picker
+    function insertEmoji() {
+      const picker = document.getElementById('emojiPicker');
+      const editor = document.getElementById('notesEditor');
+      
+      // Position the picker near the cursor
+      const rect = editor.getBoundingClientRect();
+      picker.style.top = `${rect.bottom + window.scrollY}px`;
+      picker.style.left = `${rect.left + window.scrollX}px`;
+      
+      picker.style.display = picker.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Update notes preview
+    function updateNotesPreview() {
+      const editor = document.getElementById('notesEditor');
+      const preview = document.getElementById('notesPreview');
+      
+      // Simple markdown-like formatting
+      let content = editor.value
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/_(.*?)_/g, '<u>$1</u>')
+        .replace(/\n/g, '<br>');
+      
+      preview.innerHTML = content;
+    }
+
+    // Clear notes
+    function clearNotes() {
+      if (confirm(currentLanguage === 'fr' ? 'Voulez-vous vraiment effacer toutes vos notes ?' : 'Do you really want to clear all your notes?')) {
+        document.getElementById('notesEditor').value = '';
+        document.getElementById('notesPreview').innerHTML = '';
+        notesContent = '';
+        
+        if (currentUser) {
+          saveNotesToFirestore('');
+        } else {
+          localStorage.setItem('tradingNotes', '');
+        }
+      }
+    }
+
+    // Save notes to Firestore
+    function saveNotesToFirestore(content) {
+      if (!currentUser) return;
+      
+      db.collection('users').doc(currentUser.uid).set({
+        notes: content,
+        notesUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true })
+      .then(() => {
+        console.log(currentLanguage === 'fr' ? 'Notes sauvegardées avec succès' : 'Notes saved successfully');
+      })
+      .catch(error => {
+        console.error("Error saving notes: ", error);
+      });
+    }
+
+    // Save notes
+    function saveNotes() {
+      notesContent = document.getElementById('notesEditor').value;
+      
+      if (currentUser) {
+        saveNotesToFirestore(notesContent);
+        alert(currentLanguage === 'fr' ? 'Notes sauvegardées avec succès !' : 'Notes saved successfully!');
+      } else {
+        localStorage.setItem('tradingNotes', notesContent);
+        alert(currentLanguage === 'fr' ? 'Notes sauvegardées localement' : 'Notes saved locally');
+      }
+    }
+
+    // Load notes
+    function loadNotes() {
+      if (currentUser) {
+        db.collection('users').doc(currentUser.uid).get()
+          .then(doc => {
+            if (doc.exists && doc.data().notes) {
+              notesContent = doc.data().notes;
+              document.getElementById('notesEditor').value = notesContent;
+              updateNotesPreview();
+            }
+          })
+          .catch(error => {
+            console.error("Error loading notes: ", error);
+          });
+      } else {
+        notesContent = localStorage.getItem('tradingNotes') || '';
+        document.getElementById('notesEditor').value = notesContent;
+        updateNotesPreview();
+      }
+    }
+
+    // Initialisation du calendrier
     function initCalendar() {
       const calendarEl = document.getElementById('calendar');
       
@@ -1534,6 +2207,10 @@
       document.getElementById('nonLoggedMessageCalendar').style.display = isLoggedIn ? 'none' : 'block';
       document.getElementById('loggedContentCalendar').style.display = isLoggedIn ? 'block' : 'none';
       
+      // Show/hide notes content
+      document.getElementById('nonLoggedMessageNotes').style.display = isLoggedIn ? 'none' : 'block';
+      document.getElementById('loggedContentNotes').style.display = isLoggedIn ? 'block' : 'none';
+      
       // Show/hide settings content
       document.getElementById('nonLoggedMessageSettings').style.display = isLoggedIn ? 'none' : 'block';
       document.getElementById('loggedContentSettings').style.display = isLoggedIn ? 'block' : 'none';
@@ -1555,6 +2232,7 @@
 
       // Update UI with user info
       document.getElementById('userEmail').textContent = currentUser.email;
+      document.getElementById('userEmailDisplay').textContent = currentUser.email;
       toggleLoggedUI(true);
       
       // Load user's trading journal data from Firestore
@@ -1627,6 +2305,9 @@
         updatePerformanceStats();
         generateDailyFeedback();
         initCalendar();
+        
+        // Load notes after everything else
+        loadNotes();
       }).catch((error) => {
         console.error("Error loading data:", error);
       });
@@ -1817,6 +2498,11 @@
                 }
               }
             }
+          },
+          scales: {
+            y: {
+              beginAtZero: false
+            }
           }
         }
       });
@@ -1886,7 +2572,7 @@
       const exit = parseFloat(document.getElementById('tradeExit').value) || 0;
       const lot = parseFloat(document.getElementById('tradeLot').value) || 0;
       const result = document.getElementById('tradeResult').value;
-      const pl = parseFloat(document.getElementById('tradePL').value) || 0;
+      let pl = parseFloat(document.getElementById('tradePL').value) || 0;
       
       if (!date || !symbol || lot < 0.01) {
         alert(currentLanguage === 'fr' ? 'Veuillez remplir tous les champs requis (date, symbole, lot minimum 0.01)' : 'Please fill all required fields (date, symbol, minimum lot 0.01)');
@@ -1896,6 +2582,10 @@
       // Calcul du R/R ratio
       const rr = calculateRR(entry, exit, result, pl);
       
+      // Ajuster le P&L en fonction du résultat
+      if (result === 'win' && pl < 0) pl = Math.abs(pl);
+      if (result === 'loss' && pl > 0) pl = -pl;
+      
       const tradeData = {
         date: date,
         symbol: symbol,
@@ -1904,7 +2594,7 @@
         exit: exit,
         lot: lot,
         result: result,
-        pl: result === 'win' ? pl : -pl,
+        pl: pl,
         rrr: rr,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       };
@@ -2126,7 +2816,7 @@
     function updateCapitalChart() {
       if (trades.length === 0) {
         capitalChart.data.labels = [];
-        capitalChart.data.datasets[0].data = [];
+        capitalChart.data.datasets[0].data = [initialCapital];
         capitalChart.update();
         return;
       }
@@ -2140,7 +2830,7 @@
       let balance = parseFloat(initialCapital);
       
       // Ajouter le point de départ
-      dates.push(new Date(sortedTrades[0].date).toLocaleDateString(currentLanguage === 'fr' ? 'fr-FR' : 'en-US'));
+      dates.push("Départ");
       balances.push(balance);
       
       sortedTrades.forEach(trade => {
@@ -2413,6 +3103,7 @@
         document.querySelector('#calendar-section h1').innerHTML = '<i class="fas fa-calendar-alt"></i> CALENDRIER DES TRADES';
         document.querySelector('#brokers-section h1').textContent = 'RECOMMANDATION DE BROKERS';
         document.querySelector('#settings-section h1').textContent = 'PARAMÈTRES';
+        document.querySelector('#notes-section h1').innerHTML = '<i class="fas fa-sticky-note"></i> MES NOTES';
         
         // Mettre à jour les textes des boutons, etc.
         document.querySelector('button[onclick="saveJournal()"]').innerHTML = '<i class="fas fa-save"></i> Sauvegarder';
@@ -2431,6 +3122,10 @@
         document.querySelector('#nonLoggedMessageCalendar p').textContent = 'Veuillez vous connecter ou créer un compte pour visualiser vos trades sur le calendrier.';
         document.querySelector('#nonLoggedMessageCalendar button').textContent = 'Se connecter';
         
+        document.querySelector('#nonLoggedMessageNotes h2').textContent = 'Connectez-vous pour accéder aux notes';
+        document.querySelector('#nonLoggedMessageNotes p').textContent = 'Veuillez vous connecter ou créer un compte pour enregistrer vos notes personnelles.';
+        document.querySelector('#nonLoggedMessageNotes button').textContent = 'Se connecter';
+        
         document.querySelector('#nonLoggedMessageSettings h2').textContent = 'Connectez-vous pour accéder aux paramètres';
         document.querySelector('#nonLoggedMessageSettings p').textContent = 'Veuillez vous connecter ou créer un compte pour personnaliser votre expérience.';
         document.querySelector('#nonLoggedMessageSettings button').textContent = 'Se connecter';
@@ -2441,6 +3136,7 @@
         document.querySelector('#calendar-section h1').innerHTML = '<i class="fas fa-calendar-alt"></i> TRADING CALENDAR';
         document.querySelector('#brokers-section h1').textContent = 'BROKER RECOMMENDATIONS';
         document.querySelector('#settings-section h1').textContent = 'SETTINGS';
+        document.querySelector('#notes-section h1').innerHTML = '<i class="fas fa-sticky-note"></i> MY NOTES';
         
         // Update button texts
         document.querySelector('button[onclick="saveJournal()"]').innerHTML = '<i class="fas fa-save"></i> Save';
@@ -2458,6 +3154,10 @@
         document.querySelector('#nonLoggedMessageCalendar h2').textContent = 'Login to access calendar';
         document.querySelector('#nonLoggedMessageCalendar p').textContent = 'Please login or create an account to view your trades on the calendar.';
         document.querySelector('#nonLoggedMessageCalendar button').textContent = 'Login';
+        
+        document.querySelector('#nonLoggedMessageNotes h2').textContent = 'Login to access notes';
+        document.querySelector('#nonLoggedMessageNotes p').textContent = 'Please login or create an account to save your personal notes.';
+        document.querySelector('#nonLoggedMessageNotes button').textContent = 'Login';
         
         document.querySelector('#nonLoggedMessageSettings h2').textContent = 'Login to access settings';
         document.querySelector('#nonLoggedMessageSettings p').textContent = 'Please login or create an account to customize your experience.';
@@ -2521,6 +3221,7 @@
           // User is signed in
           currentUser = user;
           document.getElementById('userEmail').textContent = user.email;
+          document.getElementById('userEmailDisplay').textContent = user.email;
           
           // Hide auth modal if it's visible
           hideAuthModal();
@@ -2534,6 +3235,7 @@
           // User is signed out
           currentUser = null;
           document.getElementById('userEmail').textContent = '';
+          document.getElementById('userEmailDisplay').textContent = '';
           toggleLoggedUI(false);
           
           // Show auth modal when splash screen is dismissed
@@ -2548,6 +3250,7 @@
       document.getElementById('loginFromAppBtn')?.addEventListener('click', showAuthModal);
       document.getElementById('loginFromPerformanceBtn')?.addEventListener('click', showAuthModal);
       document.getElementById('loginFromCalendarBtn')?.addEventListener('click', showAuthModal);
+      document.getElementById('loginFromNotesBtn')?.addEventListener('click', showAuthModal);
       document.getElementById('loginFromSettingsBtn')?.addEventListener('click', showAuthModal);
       
       // Fermer le message de bienvenue
@@ -2661,6 +3364,19 @@
           const result = document.getElementById('tradeResult').value;
           const rr = calculateRR(entry, exit, result, pl);
           document.getElementById('tradeRR').value = rr.toFixed(2);
+        }
+      });
+
+      // Initialize emoji picker
+      initEmojiPicker();
+      
+      // Update notes preview when typing
+      document.getElementById('notesEditor').addEventListener('input', updateNotesPreview);
+      
+      // Close emoji picker when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#emojiPicker') && !e.target.closest('[onclick="insertEmoji()"]')) {
+          document.getElementById('emojiPicker').style.display = 'none';
         }
       });
     });
