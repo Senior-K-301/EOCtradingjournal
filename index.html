@@ -223,6 +223,19 @@
       font-size: 14px;
     }
 
+    .forgot-password {
+      color: #a1a1aa;
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .forgot-password:hover {
+      color: #4cc9f0;
+    }
+
     /* Main App */
     #mainApp {
       display: none;
@@ -240,12 +253,17 @@
       z-index: 1000;
     }
 
-    .user-email {
+    .user-name {
       color: #333;
       font-size: 14px;
       background-color: rgba(0, 0, 0, 0.05);
       padding: 5px 10px;
       border-radius: 20px;
+    }
+
+    body.dark-mode .user-name {
+      color: #f0f0f0;
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
     .logout-btn {
@@ -1108,6 +1126,17 @@
       font-size: 14px;
     }
 
+    /* Notes Preview */
+    #notesPreview {
+      color: #333;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    body.dark-mode #notesPreview {
+      color: #f0f0f0;
+    }
+
     /* Emoji Picker Styles */
     .emoji-picker {
       position: absolute;
@@ -1452,10 +1481,81 @@
       display: none;
     }
 
-    /* User email in dark mode */
-    body.dark-mode .user-email {
-      color: #f0f0f0;
-      background-color: rgba(255, 255, 255, 0.1);
+    /* Password Reset Modal */
+    .reset-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .reset-container {
+      background-color: #1e1e2f;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .reset-container h2 {
+      color: #4cc9f0;
+      text-align: center;
+      margin-bottom: 20px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .reset-container input {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      background-color: rgba(30, 30, 47, 0.5);
+      color: white;
+      font-size: 16px;
+    }
+
+    .reset-container button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 15px;
+      transition: all 0.3s;
+    }
+
+    .reset-container button:hover {
+      opacity: 0.9;
+    }
+
+    #resetError {
+      color: #f87171;
+      margin-bottom: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .back-to-login {
+      color: #a1a1aa;
+      text-align: center;
+      margin-top: 15px;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .back-to-login:hover {
+      color: #4cc9f0;
     }
   </style>
 </head>
@@ -1479,12 +1579,14 @@
         <input type="password" id="loginPassword" placeholder="Mot de passe">
         <button id="loginBtn">Se connecter</button>
         <button id="googleLoginBtn">Se connecter avec Google</button>
+        <div class="forgot-password" id="forgotPassword">Mot de passe oublié ?</div>
         <div class="switch-auth" id="showRegister">Créer un compte</div>
       </div>
       
       <div id="registerView" style="display: none;">
         <h2>CRÉER UN COMPTE</h2>
         <div id="registerError" class="error-message"></div>
+        <input type="text" id="registerUsername" placeholder="Nom d'utilisateur">
         <input type="email" id="registerEmail" placeholder="Email">
         <input type="password" id="registerPassword" placeholder="Mot de passe (6 caractères min)">
         <input type="password" id="registerConfirmPassword" placeholder="Confirmer le mot de passe">
@@ -1494,9 +1596,20 @@
     </div>
   </div>
 
+  <!-- Password Reset Modal -->
+  <div id="resetModal" class="reset-modal">
+    <div class="reset-container">
+      <h2>RÉINITIALISER LE MOT DE PASSE</h2>
+      <div id="resetError" class="error-message"></div>
+      <input type="email" id="resetEmail" placeholder="Email">
+      <button id="resetBtn">Envoyer le lien de réinitialisation</button>
+      <div class="back-to-login" id="backToLogin">Retour à la connexion</div>
+    </div>
+  </div>
+
   <div id="mainApp" style="display: none;">
     <div class="user-info">
-      <span class="user-email" id="userEmail"></span>
+      <span class="user-name" id="userName"></span>
       <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
@@ -1995,6 +2108,11 @@
               <h2><i class="fas fa-user-cog"></i> Compte</h2>
               
               <div class="setting-group">
+                <label>Nom d'utilisateur</label>
+                <p id="userNameDisplay" style="color: #333;"></p>
+              </div>
+
+              <div class="setting-group">
                 <label>Email</label>
                 <p id="userEmailDisplay" style="color: #333;"></p>
               </div>
@@ -2336,6 +2454,16 @@
       document.getElementById('registerError').textContent = '';
     }
 
+    function showResetModal() {
+      document.getElementById('authModal').style.display = 'none';
+      document.getElementById('resetModal').style.display = 'flex';
+    }
+
+    function hideResetModal() {
+      document.getElementById('resetModal').style.display = 'none';
+      document.getElementById('resetError').textContent = '';
+    }
+
     function showLoginView() {
       document.getElementById('loginView').style.display = 'block';
       document.getElementById('registerView').style.display = 'none';
@@ -2347,6 +2475,15 @@
     }
 
     function registerUser(email, password) {
+      const username = document.getElementById('registerUsername').value;
+      
+      if (!username) {
+        document.getElementById('registerError').textContent = currentLanguage === 'fr' 
+          ? 'Veuillez entrer un nom d\'utilisateur' 
+          : 'Please enter a username';
+        return;
+      }
+
       auth.createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
           // User registered successfully
@@ -2354,6 +2491,7 @@
           
           // Create user data in Firestore
           return db.collection('users').doc(userCredential.user.uid).set({
+            username: username,
             email: userCredential.user.email,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             initialCapital: 1000,
@@ -2383,6 +2521,20 @@
         })
         .catch((error) => {
           document.getElementById('loginError').textContent = error.message;
+        });
+    }
+
+    function resetPassword(email) {
+      auth.sendPasswordResetEmail(email)
+        .then(() => {
+          alert(currentLanguage === 'fr' 
+            ? 'Un email de réinitialisation a été envoyé. Vérifiez votre boîte de réception.' 
+            : 'A reset email has been sent. Please check your inbox.');
+          hideResetModal();
+          showAuthModal();
+        })
+        .catch((error) => {
+          document.getElementById('resetError').textContent = error.message;
         });
     }
 
@@ -2455,18 +2607,19 @@
       }
 
       // Update UI with user info
-      document.getElementById('userEmail').textContent = currentUser.email;
-      document.getElementById('userEmailDisplay').textContent = currentUser.email;
-      toggleLoggedUI(true);
-      
-      // Load user's trading journal data from Firestore
       const userRef = db.collection('users').doc(currentUser.uid);
       
-      // Load user settings
       userRef.get().then((doc) => {
         if (doc.exists) {
           const userData = doc.data();
           
+          // Update username display
+          const username = userData.username || userData.email.split('@')[0];
+          document.getElementById('userName').textContent = username;
+          document.getElementById('userNameDisplay').textContent = username;
+          document.getElementById('userEmailDisplay').textContent = userData.email;
+          
+          // Load user settings
           initialCapital = userData.initialCapital || 1000;
           lastDailyFeedbackDate = userData.lastDailyFeedbackDate || null;
           darkMode = userData.darkMode !== false;
@@ -2495,13 +2648,20 @@
           return userRef.collection('trades').orderBy('date', 'desc').get();
         } else {
           // Create user document if it doesn't exist
+          const username = currentUser.email.split('@')[0];
           return userRef.set({
+            username: username,
             email: currentUser.email,
             initialCapital: 1000,
             darkMode: true,
             currentLanguage: 'fr',
             lastDailyFeedbackDate: null
           }).then(() => {
+            // Update username display
+            document.getElementById('userName').textContent = username;
+            document.getElementById('userNameDisplay').textContent = username;
+            document.getElementById('userEmailDisplay').textContent = currentUser.email;
+            
             return userRef.collection('trades').get(); // Returns empty collection
           });
         }
@@ -2542,6 +2702,8 @@
       }).catch((error) => {
         console.error("Error loading data:", error);
       });
+      
+      toggleLoggedUI(true);
     }
 
     function saveUserData() {
@@ -3451,6 +3613,16 @@
       // Configurer les écouteurs d'authentification
       document.getElementById('showRegister').addEventListener('click', showRegisterView);
       document.getElementById('showLogin').addEventListener('click', showLoginView);
+      document.getElementById('forgotPassword').addEventListener('click', showResetModal);
+      document.getElementById('backToLogin').addEventListener('click', () => {
+        hideResetModal();
+        showAuthModal();
+      });
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        const email = document.getElementById('resetEmail').value;
+        resetPassword(email);
+      });
+      
       document.getElementById('registerBtn').addEventListener('click', () => {
         const email = document.getElementById('registerEmail').value;
         const password = document.getElementById('registerPassword').value;
@@ -3479,11 +3651,10 @@
         if (user) {
           // User is signed in
           currentUser = user;
-          document.getElementById('userEmail').textContent = user.email;
-          document.getElementById('userEmailDisplay').textContent = user.email;
           
           // Hide auth modal if it's visible
           hideAuthModal();
+          hideResetModal();
           
           // Show the main app if splash screen is not shown
           if (splash.style.display === 'none') {
@@ -3493,8 +3664,6 @@
         } else {
           // User is signed out
           currentUser = null;
-          document.getElementById('userEmail').textContent = '';
-          document.getElementById('userEmailDisplay').textContent = '';
           toggleLoggedUI(false);
           
           // Show auth modal when splash screen is dismissed
